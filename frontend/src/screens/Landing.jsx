@@ -1,14 +1,25 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
 
 export const Landing = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (event) => {
+  // async function handleSubmit (e) {}
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Handle login logic here
-    console.log("Email:", email);
-    console.log("Password:", password);
+    try {
+      await axios.post("http://localhost:5173/", {
+        email,
+        password,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+
+    // console.log("Email:", email);
+    // console.log("Password:", password);
   };
 
   return (
@@ -29,8 +40,8 @@ export const Landing = () => {
         <div className="w-1/2 p-8">
           <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
           <form
-            onSubmit={handleSubmit}
             className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+            action="POST"
           >
             <div className="mb-4">
               <label
@@ -44,6 +55,7 @@ export const Landing = () => {
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 required
               />
@@ -60,6 +72,7 @@ export const Landing = () => {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                 required
               />
@@ -68,12 +81,18 @@ export const Landing = () => {
             <div className="flex items-center justify-between text-center">
               <button
                 type="submit"
+                onSubmit={handleSubmit}
                 className={`text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline && 'opacity-50 cursor-not-allowed'}`}
               >
-                'Logging in...' : 'Login'
+                'Login'
               </button>
             </div>
           </form>
+          <br />
+          <p>OR</p>
+          <br />
+
+          <Link to="/signup">Signup Page</Link>
         </div>
       </div>
     </div>
