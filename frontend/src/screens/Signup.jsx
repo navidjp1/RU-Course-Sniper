@@ -8,23 +8,20 @@ export const Signup = () => {
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
-    async function handleSubmit(event) {
-        // const handleSubmit = async (event) => {
+    // async function handleSubmit(event) {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
         const userData = { username, email, password };
 
         await axios
-            .post("http://localhost:5173/signup", userData)
+            .post("http://localhost:3000/signup", userData)
             .then((result) => {
-                console.log(result.data);
+                console.log(result);
                 navigate("/");
             })
             .catch((err) => console.log(err));
-
-        // console.log("Email:", email);
-        // console.log("Password:", password);
-    }
+    };
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">

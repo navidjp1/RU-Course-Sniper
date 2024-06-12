@@ -6,13 +6,8 @@ const userModel = require("./models/User");
 
 const app = express();
 app.use(express.json());
-app.use(
-    cors({
-        origin: "http://localhost:5173",
-        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-        credentials: true, // if your frontend sends cookies
-    })
-);
+app.use(cors());
+
 (async () => {
     try {
         await mongoose.connect(process.env.MONGODB_URI);
@@ -22,14 +17,28 @@ app.use(
     }
 })();
 
+app.post("/", async (req, res) => {
+    const { username, password } = req.body;
+    userModel.findOne({ username: username }).then((user) => {
+        if (user) {
+            if (user.password === password) {
+                res.json("Success");
+            } else {
+                res.json("Password is incorrect");
+            }
+        } else {
+            res.json("Username not found");
+        }
+    });
+});
+
 app.post("/signup", async (req, res) => {
-    console.log("HI");
     await userModel
         .create(req.body)
         .then((users) => res.json(users))
         .catch((err) => res.json(err));
 });
 
-app.listen(5173, () => {
-    console.log("server is running on port 5173");
+app.listen(3000, () => {
+    console.log("server is running on port 3000");
 });
