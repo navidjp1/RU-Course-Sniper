@@ -34,10 +34,10 @@ app.post("/", async (req, res) => {
 
 app.post("/dashboard", async (req, res) => {
     const { courseIdx, campus, semester, year } = req.body;
-    console.log(courseIdx);
-    console.log(campus);
-    console.log(semester);
-    console.log(year);
+    // console.log(courseIdx);
+    // console.log(campus);
+    // console.log(semester);
+    // console.log(year);
 
     res.json("Success");
 });
