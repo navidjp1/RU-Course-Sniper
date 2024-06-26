@@ -18,6 +18,7 @@ export const Landing = () => {
             .then((result) => {
                 console.log(result);
                 if (result.data === "Success") {
+                    localStorage.setItem("username", username);
                     navigate("/dashboard");
                 }
             })
@@ -28,18 +29,16 @@ export const Landing = () => {
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
             <div className="flex w-full max-w-4xl bg-white shadow-md rounded-lg overflow-hidden">
                 <div className="w-1/2 p-8 bg-blue-500 text-white">
-                    <h2 className="text-3xl font-bold mb-4">
-                        Welcome to Our Project
-                    </h2>
+                    <h2 className="text-3xl font-bold mb-4">Home</h2>
                     <p className="text-lg mb-6">
-                        Our project aims to provide an innovative solution to
-                        help you manage your tasks efficiently and effectively.
-                        Join us to experience a new way of task management.
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                        In hendrerit accumsan neque. Nullam egestas magna in
+                        nisl gravida dignissim.
                     </p>
                     <p className="text-lg">
-                        Whether you are an individual or a team, our tool is
-                        designed to fit your needs and help you achieve your
-                        goals.
+                        Sed sollicitudin ac enim et iaculis. Curabitur turpis
+                        metus, finibus vitae lectus eu, aliquam semper nisi.
+                        Nulla facilisi.
                     </p>
                 </div>
                 <div className="w-1/2 p-8">
@@ -85,13 +84,18 @@ export const Landing = () => {
                             />
                         </div>
                         <p className="text-red-500 text-xs italic mb-4"></p>
-                        <div className="flex items-center justify-between text-center">
+                        <div className=" items-center justify-between text-center">
                             <button
                                 type="submit"
-                                className={`text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline && 'opacity-50 cursor-not-allowed'}`}
+                                className={`text-center w-48 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline && 'opacity-50 cursor-not-allowed'}`}
                             >
-                                'Login'
+                                Login
                             </button>
+                            <Link to="/dashboard">
+                                <button className=" pl-4 w-48 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 rounded">
+                                    Dashboard
+                                </button>
+                            </Link>
                         </div>
                     </form>
                     <br />

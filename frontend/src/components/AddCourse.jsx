@@ -13,13 +13,19 @@ const AddCourse = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (courseIdx == " ") {
-            //regex
+        if (courseIdx.match(/^[/\d]{5}?$/) == null) {
             alert("Please enter a valid 5-digit course index.");
             return;
         }
 
-        const userData = { courseIdx, campus, semester, year };
+        const userConfirm = confirm(
+            "Are you sure you want to add this course?"
+        );
+
+        if (!userConfirm) return;
+
+        const username = localStorage.getItem("username");
+        const userData = { username, courseIdx, campus, semester, year };
 
         await axios
             .post("http://localhost:3000/dashboard", userData)
@@ -34,8 +40,7 @@ const AddCourse = () => {
                     navigate("/dashboard");
                 }
             })
-            .catch((err) => console.log(err))
-            .finally(() => {});
+            .catch((err) => console.log(err));
     };
 
     const [open, setOpen] = useState(false);
@@ -63,6 +68,7 @@ const AddCourse = () => {
                                 <input
                                     type="text"
                                     id="courseIndex"
+                                    autoComplete="off"
                                     value={courseIdx}
                                     onChange={(e) => setIdx(e.target.value)}
                                     placeholder="Enter course index (5 digits)"
