@@ -13,6 +13,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    courseIDs: {
+        type: Array,
+        default: [],
+    },
 });
 
 const userModel = mongoose.model("users", userSchema);

@@ -32,14 +32,33 @@ app.post("/", async (req, res) => {
     });
 });
 
-app.post("/dashboard", async (req, res) => {
-    const { courseIdx, campus, semester, year } = req.body;
-    // console.log(courseIdx);
-    // console.log(campus);
-    // console.log(semester);
-    // console.log(year);
+app.post("/api/get_courses", async (req, res) => {
+    const { username } = req.body;
+    userModel
+        .findOne({ username: username })
+        .then((user) => {
+            ids = user.courseIDs;
+            res.json(ids);
+        })
+        .catch((err) => {
+            res.json(`Error: ${err}`);
+        });
+});
 
-    res.json("Success");
+app.post("/dashboard", async (req, res) => {
+    const { username, courseIdx, campus, semester, year } = req.body;
+
+    userModel
+        .findOne({ username: username })
+        .then(async (user) => {
+            id = user.courseIDs;
+            id.push(courseIdx);
+            await user.save();
+            res.json("Success");
+        })
+        .catch((err) => {
+            res.json(`Error adding course ${err}`);
+        });
 });
 
 app.post("/signup", async (req, res) => {
