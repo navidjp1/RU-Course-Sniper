@@ -4,7 +4,7 @@ import AddCourse from "../components/AddCourse";
 import axios from "axios";
 
 export const Dashboard = () => {
-    const [courses, setCourses] = useState([]);
+    const [courses, setCourses] = useState({});
     const [loading, setLoading] = useState(true);
 
     const fetchCourses = async () => {
@@ -20,7 +20,7 @@ export const Dashboard = () => {
 
     useEffect(() => {
         fetchCourses();
-    });
+    }, []);
 
     return (
         <main className="dashboard">
@@ -36,14 +36,15 @@ export const Dashboard = () => {
                             <div className="courses-grid">
                                 {courses.map((course) => (
                                     <div
-                                        key={course}
+                                        //key={course}
                                         className="p-4 bg-white shadow rounded-lg relative"
                                     >
-                                        {/* <h2 className="text-xl font-bold">
+                                        <p className="font-bold">
                                             {course.title}
-                                        </h2> */}
+                                        </p>
                                         <p className="font-semibold">
-                                            Index: {course}
+                                            Index: {course.id} Section:
+                                            {course.section}
                                         </p>
                                         {/* Add more course details here */}
                                     </div>

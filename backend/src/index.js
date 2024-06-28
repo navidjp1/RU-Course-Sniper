@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const userModel = require("./models/User");
+const courseModel = require("./models/CourseData");
 
 const app = express();
 app.use(express.json());
@@ -33,16 +34,35 @@ app.post("/", async (req, res) => {
 });
 
 app.post("/api/get_courses", async (req, res) => {
-    const { username } = req.body;
-    userModel
-        .findOne({ username: username })
-        .then((user) => {
-            ids = user.courseIDs;
-            res.json(ids);
-        })
-        .catch((err) => {
-            res.json(`Error: ${err}`);
+    try {
+        const { username } = req.body;
+        const user = await userModel.findOne({ username: username });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const ids = user.courseIDs;
+
+        const courseDetails = await Promise.all(
+            ids.map(async (id) => {
+                const idData = await courseModel.findOne({ index: id });
+                if (idData) {
+                    const section = idData.section;
+                    const title = idData.name;
+                    return { id, section, title };
+                } else {
+                    return { id, section: null, title: null };
+                }
+            })
+        );
+        res.json(courseDetails);
+    } catch (err) {
+        console.log(`Error fetching course data: ${err}`);
+        res.status(500).json({
+            message: `Error processing request: ${err.message}`,
         });
+    }
 });
 
 app.post("/dashboard", async (req, res) => {
