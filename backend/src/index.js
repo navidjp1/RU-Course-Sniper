@@ -65,7 +65,7 @@ app.post("/api/get_courses", async (req, res) => {
     }
 });
 
-app.post("/dashboard", async (req, res) => {
+app.post("/api/add", async (req, res) => {
     const { username, courseIdx, campus, semester, year } = req.body;
 
     userModel
@@ -73,6 +73,26 @@ app.post("/dashboard", async (req, res) => {
         .then(async (user) => {
             id = user.courseIDs;
             id.push(courseIdx);
+            await user.save();
+            res.json("Success");
+        })
+        .catch((err) => {
+            res.json(`Error adding course ${err}`);
+        });
+});
+
+app.post("/api/delete", async (req, res) => {
+    const { username, courseID } = req.body;
+
+    userModel
+        .findOne({ username: username })
+        .then(async (user) => {
+            let ids = user.courseIDs;
+            const index = ids.indexOf(courseID.id);
+            if (index > -1) {
+                ids.splice(index, 1);
+            }
+            user.courseIDs = ids;
             await user.save();
             res.json("Success");
         })

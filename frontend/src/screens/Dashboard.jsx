@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import AddCourse from "../components/AddCourse";
+import DeleteCourse from "../components/DeleteCourse";
 import axios from "axios";
 
 export const Dashboard = () => {
     const [courses, setCourses] = useState({});
     const [loading, setLoading] = useState(true);
+    const [update, setUpdate] = useState(false);
 
     const fetchCourses = async () => {
         const username = localStorage.getItem("username");
@@ -20,7 +22,12 @@ export const Dashboard = () => {
 
     useEffect(() => {
         fetchCourses();
-    }, []);
+        setUpdate(false);
+    }, [update]);
+
+    const updateRender = () => {
+        setUpdate(true); // Trigger useEffect to refetch courses
+    };
 
     return (
         <main className="dashboard">
@@ -36,23 +43,27 @@ export const Dashboard = () => {
                             <div className="courses-grid">
                                 {courses.map((course) => (
                                     <div
-                                        //key={course}
+                                        key={course}
                                         className="p-4 bg-white shadow rounded-lg relative"
                                     >
                                         <p className="font-bold">
                                             {course.title}
                                         </p>
                                         <p className="font-semibold">
-                                            Index: {course.id} Section:
+                                            Index: {course.id} Section:{" "}
                                             {course.section}
                                         </p>
+                                        <DeleteCourse
+                                            updateRender={updateRender}
+                                            courseID={course}
+                                        />
                                         {/* Add more course details here */}
                                     </div>
                                 ))}
                             </div>
                         )}
                     </div>
-                    <AddCourse />
+                    <AddCourse updateRender={updateRender} />
                 </>
             )}
         </main>

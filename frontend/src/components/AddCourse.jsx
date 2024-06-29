@@ -1,14 +1,12 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Modal from "./Modal";
 
-const AddCourse = () => {
+const AddCourse = ({ updateRender }) => {
     const [courseIdx, setIdx] = useState("");
     const [campus, setCampus] = useState("New Brunswick");
     const [semester, setSemester] = useState("Spring");
     const [year, setYear] = useState("2024");
-    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -28,16 +26,16 @@ const AddCourse = () => {
         const userData = { username, courseIdx, campus, semester, year };
 
         await axios
-            .post("http://localhost:3000/dashboard", userData)
+            .post("http://localhost:3000/api/add", userData)
             .then((result) => {
                 console.log(result);
                 if (result.data === "Success") {
+                    updateRender();
                     setOpen(false); // Close the modal
                     setIdx("");
                     setCampus("New Brunswick");
                     setSemester("Spring");
                     setYear("2024");
-                    navigate("/dashboard");
                 }
             })
             .catch((err) => console.log(err));
