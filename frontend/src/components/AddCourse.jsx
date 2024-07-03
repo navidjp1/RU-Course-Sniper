@@ -3,7 +3,7 @@ import axios from "axios";
 import Modal from "./Modal";
 
 const AddCourse = ({ updateRender }) => {
-    const [courseIdx, setIdx] = useState("");
+    const [courseID, setID] = useState("");
     const [campus, setCampus] = useState("New Brunswick");
     const [semester, setSemester] = useState("Spring");
     const [year, setYear] = useState("2024");
@@ -11,7 +11,7 @@ const AddCourse = ({ updateRender }) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (courseIdx.match(/^[/\d]{5}?$/) == null) {
+        if (courseID.match(/^[/\d]{5}?$/) == null) {
             alert("Please enter a valid 5-digit course index.");
             return;
         }
@@ -23,7 +23,7 @@ const AddCourse = ({ updateRender }) => {
         if (!userConfirm) return;
 
         const username = localStorage.getItem("username");
-        const userData = { username, courseIdx, campus, semester, year };
+        const userData = { username, courseID, campus, semester, year };
 
         await axios
             .post("http://localhost:3000/api/add", userData)
@@ -32,7 +32,13 @@ const AddCourse = ({ updateRender }) => {
                 if (result.data === "Success") {
                     updateRender();
                     setOpen(false); // Close the modal
-                    setIdx("");
+                    setID("");
+                    setCampus("New Brunswick");
+                    setSemester("Spring");
+                    setYear("2024");
+                } else if (result.data === "Duplicate") {
+                    alert("You are already sniping this course");
+                    setID("");
                     setCampus("New Brunswick");
                     setSemester("Spring");
                     setYear("2024");
@@ -67,8 +73,8 @@ const AddCourse = ({ updateRender }) => {
                                     type="text"
                                     id="courseIndex"
                                     autoComplete="off"
-                                    value={courseIdx}
-                                    onChange={(e) => setIdx(e.target.value)}
+                                    value={courseID}
+                                    onChange={(e) => setID(e.target.value)}
                                     placeholder="Enter course index (5 digits)"
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                     required

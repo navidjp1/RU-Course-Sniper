@@ -66,13 +66,17 @@ app.post("/api/get_courses", async (req, res) => {
 });
 
 app.post("/api/add", async (req, res) => {
-    const { username, courseIdx, campus, semester, year } = req.body;
+    const { username, courseID } = req.body;
 
     userModel
         .findOne({ username: username })
         .then(async (user) => {
-            id = user.courseIDs;
-            id.push(courseIdx);
+            const ids = user.courseIDs;
+            if (ids.indexOf(courseID) != -1) {
+                res.json("Duplicate");
+                return;
+            }
+            ids.push(courseID);
             await user.save();
             res.json("Success");
         })
@@ -101,10 +105,90 @@ app.post("/api/delete", async (req, res) => {
         });
 });
 
+app.post("/api/get_data", async (req, res) => {
+    const { username } = req.body;
+
+    userModel
+        .findOne({ username: username })
+        .then(async (user) => {
+            const preferences = user.preferences;
+            const restartTime = user.restartTime;
+            res.json({ preferences, restartTime });
+        })
+        .catch((err) => {
+            res.json(`Error adding course ${err}`);
+        });
+});
+
+app.post("/settings", async (req, res) => {
+    const {
+        currentUsername,
+        newUsername,
+        newEmail,
+        currentPassword,
+        newPassword,
+        preferences,
+        newTime,
+    } = req.body;
+
+    userModel
+        .findOne({ username: currentUsername })
+        .then(async (user) => {
+            if (user.password != currentPassword) {
+                res.json("Incorrect password");
+                return;
+            }
+
+            if (newUsername != "") {
+                user.username = newUsername;
+                localStorage.setItem("username", newUsername);
+            }
+            if (newEmail != "") {
+                user.email = newEmail;
+            }
+            if (newPassword != "") {
+                user.password = newPassword;
+            }
+
+            const currPref = user.preferences;
+
+            if (currPref.emailNotifications != preferences.emailNotifications) {
+                user.preferences.emailNotifications =
+                    preferences.emailNotifications;
+            }
+
+            if (currPref.smsNotifications != preferences.smsNotifications) {
+                user.preferences.smsNotifications =
+                    preferences.smsNotifications;
+            }
+
+            if (newTime != user.restartTime) {
+                user.restartTime = newTime;
+            }
+
+            await user.save();
+            res.json("Success");
+        })
+        .catch((err) => {
+            res.json(`Error updating settings: ${err}`);
+        });
+});
+
 app.post("/signup", async (req, res) => {
+    const { username, email } = req.body;
+    const user = await userModel.findOne({ username: username });
+    const mail = await userModel.findOne({ email: email });
+    if (mail != null) {
+        res.json("Duplicate email");
+        return;
+    }
+    if (user != null) {
+        res.json("Duplicate username");
+        return;
+    }
     await userModel
         .create(req.body)
-        .then((users) => res.json(users))
+        .then(() => res.json("Success"))
         .catch((err) => res.json(err));
 });
 

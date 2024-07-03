@@ -34,6 +34,9 @@ export const Dashboard = () => {
             <Link to="/">
                 <button className="absolute top-10 right-10">Logout</button>
             </Link>
+            <Link to="/settings">
+                <button className="absolute top-10 left-10">Settings</button>
+            </Link>
             {!loading && (
                 <>
                     <div className="space-y-4">

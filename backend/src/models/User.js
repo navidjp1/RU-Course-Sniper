@@ -17,6 +17,20 @@ const userSchema = new mongoose.Schema({
         type: Array,
         default: [],
     },
+    preferences: {
+        emailNotifications: {
+            type: Boolean,
+            default: true,
+        },
+        smsNotifications: {
+            type: Boolean,
+            default: false,
+        },
+    },
+    restartTime: {
+        type: String,
+        default: "18:00",
+    },
 });
 
 const userModel = mongoose.model("users", userSchema);

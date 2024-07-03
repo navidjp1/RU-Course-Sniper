@@ -17,8 +17,15 @@ export const Signup = () => {
         await axios
             .post("http://localhost:3000/signup", userData)
             .then((result) => {
-                console.log(result);
-                navigate("/");
+                if (result.data === "Duplicate username") {
+                    alert("Username taken, try again");
+                }
+                if (result.data === "Duplicate email") {
+                    alert("Email already registered, go to login page");
+                }
+                if (result.data === "Success") {
+                    navigate("/");
+                }
             })
             .catch((err) => console.log(err));
     };
@@ -87,7 +94,7 @@ export const Signup = () => {
                         type="submit"
                         className={`text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline && 'opacity-50 cursor-not-allowed'}`}
                     >
-                        'Login'
+                        Sign up
                     </button>
                 </form>
                 <br />
