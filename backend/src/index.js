@@ -4,6 +4,8 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const userModel = require("./models/User");
 const courseModel = require("./models/CourseData");
+const { testLogin } = require("./sniper_paclogin/testLogin");
+const { runSniper } = require("./sniper_paclogin/sniperMain");
 
 const app = express();
 app.use(express.json());
@@ -101,7 +103,7 @@ app.post("/api/delete", async (req, res) => {
             res.json("Success");
         })
         .catch((err) => {
-            res.json(`Error adding course ${err}`);
+            res.json(`Error deleting course ${err}`);
         });
 });
 
@@ -113,10 +115,74 @@ app.post("/api/get_data", async (req, res) => {
         .then(async (user) => {
             const preferences = user.preferences;
             const restartTime = user.restartTime;
-            res.json({ preferences, restartTime });
+            const RUID = user.RUID;
+            const PAC = user.PAC;
+            res.json({ preferences, restartTime, RUID, PAC });
         })
         .catch((err) => {
-            res.json(`Error adding course ${err}`);
+            res.json(`Error fetching user data ${err}`);
+        });
+});
+
+app.post("/api/get_cred", async (req, res) => {
+    const { username } = req.body;
+
+    userModel
+        .findOne({ username: username })
+        .then(async (user) => {
+            const RUID = user.RUID;
+            const PAC = user.PAC;
+            const testLogin = user.testLogin;
+
+            if (RUID === "" || PAC === "") {
+                res.json("No cred");
+            } else if (!testLogin) {
+                res.json("Test login");
+            } else {
+                res.json("Success");
+            }
+        })
+        .catch((err) => {
+            res.json(`Error fetching user data ${err}`);
+        });
+});
+
+app.post("/api/start_sniper", async (req, res) => {
+    const { username } = req.body;
+
+    userModel
+        .findOne({ username: username })
+        .then(async (user) => {
+            const RUID = user.RUID;
+            const PAC = user.PAC;
+            const restartTime = user.restartTime;
+
+            runSniper(RUID, PAC, restartTime, true);
+            res.json("Success");
+        })
+        .catch((err) => {
+            res.json(`Error fetching user data ${err}`);
+        });
+});
+
+app.post("/api/test_login", async (req, res) => {
+    const { username } = req.body;
+
+    userModel
+        .findOne({ username: username })
+        .then(async (user) => {
+            const RUID = user.RUID;
+            const PAC = user.PAC;
+
+            const msg = await testLogin(RUID, PAC);
+            if (msg === "Success") {
+                user.testLogin = true;
+                await user.save();
+            }
+            res.json(msg);
+        })
+        .catch((err) => {
+            res.json(`Error fetching user data ${err}`);
         });
 });
 
@@ -129,6 +195,8 @@ app.post("/settings", async (req, res) => {
         newPassword,
         preferences,
         newTime,
+        RUID,
+        PAC,
     } = req.body;
 
     userModel
@@ -148,6 +216,16 @@ app.post("/settings", async (req, res) => {
             }
             if (newPassword != "") {
                 user.password = newPassword;
+            }
+
+            if (RUID != "") {
+                user.RUID = RUID;
+                user.testLogin = false;
+            }
+
+            if (PAC != "") {
+                user.PAC = PAC;
+                user.testLogin = false;
             }
 
             const currPref = user.preferences;

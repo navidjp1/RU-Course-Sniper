@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { TimeInput } from "@mantine/dates";
+import { TimeInput, DateInput } from "@mantine/dates";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
@@ -13,6 +13,8 @@ export const Settings = () => {
         smsNotifications: false,
     });
     const [newTime, setTime] = useState("18:00"); // Default to 6:00 PM
+    const [RUID, setRUID] = useState("");
+    const [birthday, setBirthday] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true);
 
@@ -23,6 +25,15 @@ export const Settings = () => {
             .then((response) => {
                 setPreferences(response.data.preferences);
                 setTime(response.data.restartTime);
+                setRUID(response.data.RUID);
+                const PAC = response.data.PAC;
+                if (PAC != "") {
+                    const month = PAC.substring(0, 2) - 1;
+                    const day = PAC.substring(2, 4);
+                    const year = new Date().getFullYear();
+                    const date = new Date(year, month, day);
+                    setBirthday(date);
+                }
             })
             .catch((err) => console.log(`Error fetching courses: ${err}`))
             .finally(() => setLoading(false));
@@ -31,12 +42,6 @@ export const Settings = () => {
     useEffect(() => {
         fetchUserData();
     }, []);
-
-    const handlePreferenceChange = (e) => {
-        const { name, checked } = e.target;
-        setPreferences((prev) => ({ ...prev, [name]: checked }));
-        console.log(preferences);
-    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -54,7 +59,23 @@ export const Settings = () => {
             newPassword,
             preferences,
             newTime,
+            RUID,
+            PAC: birthday,
         };
+
+        if (RUID != "" && RUID.match(/^[/\d]{9}?$/) == null) {
+            alert("Please enter your 9-digit RUID.");
+            return;
+        }
+
+        if (birthday != "") {
+            const date = new Date(birthday);
+            let month = date.getMonth() + 1;
+            month = month < 10 ? "0" + month : "" + month;
+            let day = date.getDate();
+            day = day < 10 ? "0" + day : "" + day;
+            userData.PAC = month + day;
+        }
 
         await axios
             .post("http://localhost:3000/settings", userData)
@@ -70,6 +91,12 @@ export const Settings = () => {
                 }
             })
             .catch((err) => console.log(err));
+    };
+
+    const handlePreferenceChange = (e) => {
+        const { name, checked } = e.target;
+        setPreferences((prev) => ({ ...prev, [name]: checked }));
+        console.log(preferences);
     };
 
     const validateTime = (time) => {
@@ -180,6 +207,19 @@ export const Settings = () => {
                             </div>
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2">
+                                    RUID:
+                                </label>
+                                <input
+                                    type="text"
+                                    id="ruid"
+                                    value={RUID}
+                                    onChange={(e) => setRUID(e.target.value)}
+                                    placeholder="Enter your RUID"
+                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2">
                                     Preferences:
                                 </label>
                                 <div className="flex justify-center items-center mb-2">
@@ -216,8 +256,18 @@ export const Settings = () => {
                                 </div>
                                 <br />
                                 <div>
+                                    <DateInput
+                                        label="Birthday"
+                                        placeholder="Enter your birthday"
+                                        valueFormat="MM/DD"
+                                        value={birthday}
+                                        onChange={setBirthday}
+                                    />
+                                </div>
+                                <br />
+                                <div>
                                     <TimeInput
-                                        label="Change daily restart time"
+                                        label="Daily restart time"
                                         value={newTime}
                                         onChange={changeTime}
                                         error={error}

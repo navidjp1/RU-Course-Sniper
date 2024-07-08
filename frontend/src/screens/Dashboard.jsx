@@ -14,6 +14,7 @@ export const Dashboard = () => {
         await axios
             .post("http://localhost:3000/api/get_courses", { username })
             .then((response) => {
+                //console.log(response.data);
                 setCourses(response.data);
             })
             .catch((err) => console.log(`Error fetching courses: ${err}`))
@@ -29,24 +30,115 @@ export const Dashboard = () => {
         setUpdate(true); // Trigger useEffect to refetch courses
     };
 
+    const fetchCred = async (username) => {
+        await axios
+            .post("http://localhost:3000/api/get_cred", { username })
+            .then((response) => {
+                const msg = response.data;
+                if (msg === "No cred") {
+                    alert(
+                        "You have not entered in your required credentials in order to start sniping. Please do so at the settings page."
+                    );
+                }
+                if (msg === "Test login") {
+                    alert(
+                        "You have not tested whether your login works. Please click the 'Test Login' button."
+                    );
+                }
+                if (msg === "Success") {
+                    alert("Successfully starting sniping your course(s)!");
+                    return true;
+                }
+                return false;
+            })
+            .catch((err) =>
+                console.log(`Error fetching user credentials: ${err}`)
+            );
+    };
+
+    const handleStart = async (event) => {
+        event.preventDefault();
+        const username = localStorage.getItem("username");
+
+        const success = await fetchCred(username);
+        if (!success) return;
+        await axios
+            .post("http://localhost:3000/api/start_sniper", { username })
+            .then((response) => {
+                const msg = response.data;
+                if (msg === "Success") {
+                    alert("Successfully started sniping your courses!");
+                } else {
+                    console.log(msg);
+                    alert("There was an error in the system. Try again later.");
+                }
+            })
+            .catch((err) => console.log(`Error starting sniper: ${err}`));
+    };
+
+    const handleTestLogin = async (event) => {
+        event.preventDefault();
+
+        const username = localStorage.getItem("username");
+        await axios
+            .post("http://localhost:3000/api/test_login", { username })
+            .then((response) => {
+                const msg = response.data;
+                if (msg === "Success") {
+                    alert(
+                        "Successfully tested your login! You may press the 'Start Sniping' button now!"
+                    );
+                } else if (msg === "Invalid login credentials") {
+                    alert(
+                        "Your login credentials did not work. Make sure you entered in your correct RUID and birthday in the settings page."
+                    );
+                } else {
+                    console.log(msg);
+                    alert("There was an error in the system. Try again later.");
+                }
+            })
+            .catch((err) => console.log(`Error testing login courses: ${err}`));
+    };
+
+    const handleStop = async (event) => {
+        event.preventDefault();
+
+        console.log("stop");
+    };
+
     return (
         <main className="dashboard">
-            <Link to="/">
-                <button className="absolute top-10 right-10">Logout</button>
-            </Link>
-            <Link to="/settings">
-                <button className="absolute top-10 left-10">Settings</button>
-            </Link>
             {!loading && (
                 <>
-                    <div className="space-y-4">
+                    <Link to="/">
+                        <button className="absolute top-10 right-10">
+                            Logout
+                        </button>
+                    </Link>
+                    <Link to="/settings">
+                        <button className="absolute top-10 left-10">
+                            Settings
+                        </button>
+                    </Link>
+                    <div className="p-4">
+                        <button className="mx-4" onClick={handleStart}>
+                            Start Sniping
+                        </button>
+                        <button className="mx-4" onClick={handleTestLogin}>
+                            Test Login
+                        </button>
+                        <button className="mx-4" onClick={handleStop}>
+                            Stop Sniping
+                        </button>
+                    </div>
+                    <div className="space-y-4 mb-4 px-4">
                         {courses.length === 0 ? (
                             <p>No courses yet. Add a course to get started!</p>
                         ) : (
                             <div className="courses-grid">
                                 {courses.map((course) => (
                                     <div
-                                        key={course}
+                                        key={course.id}
                                         className="p-4 bg-white shadow rounded-lg relative"
                                     >
                                         <p className="font-bold">
@@ -60,7 +152,6 @@ export const Dashboard = () => {
                                             updateRender={updateRender}
                                             courseID={course}
                                         />
-                                        {/* Add more course details here */}
                                     </div>
                                 ))}
                             </div>

@@ -28,7 +28,6 @@ const AddCourse = ({ updateRender }) => {
         await axios
             .post("http://localhost:3000/api/add", userData)
             .then((result) => {
-                console.log(result);
                 if (result.data === "Success") {
                     updateRender();
                     setOpen(false); // Close the modal
@@ -50,7 +49,7 @@ const AddCourse = ({ updateRender }) => {
     const [open, setOpen] = useState(false);
     return (
         <>
-            <button className="btn btn-danger" onClick={() => setOpen(true)}>
+            <button className="mb-4" onClick={() => setOpen(true)}>
                 Add
             </button>
 

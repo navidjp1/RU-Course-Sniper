@@ -31,6 +31,18 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "18:00",
     },
+    RUID: {
+        type: String,
+        default: "",
+    },
+    PAC: {
+        type: String,
+        default: "",
+    },
+    testLogin: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const userModel = mongoose.model("users", userSchema);
