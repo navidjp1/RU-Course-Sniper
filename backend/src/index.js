@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const userModel = require("./models/User");
 const courseModel = require("./models/CourseData");
 const { testLogin } = require("./sniper_paclogin/testLogin");
-const { runSniper } = require("./sniper_paclogin/sniperMain");
+const { runSniper } = require("./sniper_paclogin/sniperPAC");
 
 const app = express();
 app.use(express.json());
@@ -124,29 +124,6 @@ app.post("/api/get_data", async (req, res) => {
         });
 });
 
-app.post("/api/get_cred", async (req, res) => {
-    const { username } = req.body;
-
-    userModel
-        .findOne({ username: username })
-        .then(async (user) => {
-            const RUID = user.RUID;
-            const PAC = user.PAC;
-            const testLogin = user.testLogin;
-
-            if (RUID === "" || PAC === "") {
-                res.json("No cred");
-            } else if (!testLogin) {
-                res.json("Test login");
-            } else {
-                res.json("Success");
-            }
-        })
-        .catch((err) => {
-            res.json(`Error fetching user data ${err}`);
-        });
-});
-
 app.post("/api/start_sniper", async (req, res) => {
     const { username } = req.body;
 
@@ -155,9 +132,23 @@ app.post("/api/start_sniper", async (req, res) => {
         .then(async (user) => {
             const RUID = user.RUID;
             const PAC = user.PAC;
-            const restartTime = user.restartTime;
+            const testedLogin = user.testedLogin;
+            if (RUID === "" || PAC === "") {
+                res.json("No cred");
+            } else if (!testedLogin) {
+                const msg = await testLogin(RUID, PAC);
+                if (msg != "Success") {
+                    res.json(msg);
+                    return;
+                }
+                user.testedLogin = true;
+                await user.save();
+            }
 
-            runSniper(RUID, PAC, restartTime, true);
+            const courseIDs = user.courseIDs;
+            const restartTime = user.restartTime.split(":").map(Number);
+
+            runSniper(RUID, PAC, courseIDs, restartTime, true);
             res.json("Success");
         })
         .catch((err) => {
@@ -165,25 +156,9 @@ app.post("/api/start_sniper", async (req, res) => {
         });
 });
 
-app.post("/api/test_login", async (req, res) => {
-    const { username } = req.body;
-
-    userModel
-        .findOne({ username: username })
-        .then(async (user) => {
-            const RUID = user.RUID;
-            const PAC = user.PAC;
-
-            const msg = await testLogin(RUID, PAC);
-            if (msg === "Success") {
-                user.testLogin = true;
-                await user.save();
-            }
-            res.json(msg);
-        })
-        .catch((err) => {
-            res.json(`Error fetching user data ${err}`);
-        });
+app.post("/api/stop_sniper", async (req, res) => {
+    const success = await runSniper("", "", [], [], false);
+    success ? res.json("Success") : res.json("Error");
 });
 
 app.post("/settings", async (req, res) => {

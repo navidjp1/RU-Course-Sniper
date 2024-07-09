@@ -30,80 +30,47 @@ export const Dashboard = () => {
         setUpdate(true); // Trigger useEffect to refetch courses
     };
 
-    const fetchCred = async (username) => {
+    const handleStart = async (event) => {
+        event.preventDefault();
+        const username = localStorage.getItem("username");
+
         await axios
-            .post("http://localhost:3000/api/get_cred", { username })
+            .post("http://localhost:3000/api/start_sniper", { username })
             .then((response) => {
                 const msg = response.data;
                 if (msg === "No cred") {
                     alert(
                         "You have not entered in your required credentials in order to start sniping. Please do so at the settings page."
                     );
-                }
-                if (msg === "Test login") {
+                } else if (msg === "Invalid login credentials") {
                     alert(
-                        "You have not tested whether your login works. Please click the 'Test Login' button."
+                        "Your login credentials did not work. Make sure you entered in your correct RUID and birthday in the settings page."
                     );
-                }
-                if (msg === "Success") {
-                    alert("Successfully starting sniping your course(s)!");
-                    return true;
-                }
-                return false;
-            })
-            .catch((err) =>
-                console.log(`Error fetching user credentials: ${err}`)
-            );
-    };
-
-    const handleStart = async (event) => {
-        event.preventDefault();
-        const username = localStorage.getItem("username");
-
-        const success = await fetchCred(username);
-        if (!success) return;
-        await axios
-            .post("http://localhost:3000/api/start_sniper", { username })
-            .then((response) => {
-                const msg = response.data;
-                if (msg === "Success") {
+                } else if (msg === "Success") {
                     alert("Successfully started sniping your courses!");
                 } else {
                     console.log(msg);
                     alert("There was an error in the system. Try again later.");
                 }
             })
-            .catch((err) => console.log(`Error starting sniper: ${err}`));
-    };
-
-    const handleTestLogin = async (event) => {
-        event.preventDefault();
-
-        const username = localStorage.getItem("username");
-        await axios
-            .post("http://localhost:3000/api/test_login", { username })
-            .then((response) => {
-                const msg = response.data;
-                if (msg === "Success") {
-                    alert(
-                        "Successfully tested your login! You may press the 'Start Sniping' button now!"
-                    );
-                } else if (msg === "Invalid login credentials") {
-                    alert(
-                        "Your login credentials did not work. Make sure you entered in your correct RUID and birthday in the settings page."
-                    );
-                } else {
-                    console.log(msg);
-                    alert("There was an error in the system. Try again later.");
-                }
-            })
-            .catch((err) => console.log(`Error testing login courses: ${err}`));
+            .catch((err) => console.log(`Error sending api request: ${err}`));
     };
 
     const handleStop = async (event) => {
         event.preventDefault();
 
-        console.log("stop");
+        await axios
+            .post("http://localhost:3000/api/stop_sniper", {})
+            .then((response) => {
+                const msg = response.data;
+                if (msg === "Success") {
+                    alert("Successfully stopped sniping your courses!");
+                } else {
+                    console.log(msg);
+                    alert("There was an error in the system. Try again later.");
+                }
+            })
+            .catch((err) => console.log(`Error starting sniper: ${err}`));
     };
 
     return (
@@ -123,9 +90,6 @@ export const Dashboard = () => {
                     <div className="p-4">
                         <button className="mx-4" onClick={handleStart}>
                             Start Sniping
-                        </button>
-                        <button className="mx-4" onClick={handleTestLogin}>
-                            Test Login
                         </button>
                         <button className="mx-4" onClick={handleStop}>
                             Stop Sniping

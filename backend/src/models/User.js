@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "",
     },
-    testLogin: {
+    testedLogin: {
         type: Boolean,
         default: false,
     },
