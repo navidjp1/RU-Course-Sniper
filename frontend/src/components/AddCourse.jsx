@@ -22,6 +22,20 @@ const AddCourse = ({ updateRender }) => {
 
         if (!userConfirm) return;
 
+        let proceed = true;
+        await axios
+            .post("http://localhost:3000/api/check_course", { courseID })
+            .then((result) => {
+                if (result.data === "Course not in DB") {
+                    proceed = confirm(
+                        "This course was not found. Are you sure you entered in the right index number? Click 'OK' to add the course regardless."
+                    );
+                }
+            })
+            .catch((err) => console.log(err));
+
+        if (!proceed) return;
+
         const username = localStorage.getItem("username");
         const userData = { username, courseID, campus, semester, year };
 

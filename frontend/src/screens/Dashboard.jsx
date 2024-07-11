@@ -1,13 +1,17 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import AddCourse from "../components/AddCourse";
 import DeleteCourse from "../components/DeleteCourse";
-import axios from "axios";
+import { doSignOut } from "../firebase/auth";
+import { useAuth } from "../contexts/authContext/authContext";
 
 export const Dashboard = () => {
+    const { currentUser, userLoggedIn } = useAuth();
     const [courses, setCourses] = useState({});
     const [loading, setLoading] = useState(true);
     const [update, setUpdate] = useState(false);
+    const navigate = useNavigate();
 
     const fetchCourses = async () => {
         const username = localStorage.getItem("username");
@@ -73,15 +77,28 @@ export const Dashboard = () => {
             .catch((err) => console.log(`Error starting sniper: ${err}`));
     };
 
+    const handleLogout = async (event) => {
+        event.preventDefault();
+        const userConfirm = confirm("Are you sure you want to logout?");
+        if (userConfirm) {
+            console.log(currentUser);
+            await doSignOut();
+            navigate("/");
+        }
+    };
+
     return (
         <main className="dashboard">
             {!loading && (
                 <>
-                    <Link to="/">
-                        <button className="absolute top-10 right-10">
+                    <div>
+                        <button
+                            className="absolute top-10 right-10"
+                            onClick={handleLogout}
+                        >
                             Logout
                         </button>
-                    </Link>
+                    </div>
                     <Link to="/settings">
                         <button className="absolute top-10 left-10">
                             Settings

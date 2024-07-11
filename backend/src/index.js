@@ -20,21 +20,6 @@ app.use(cors());
     }
 })();
 
-app.post("/", async (req, res) => {
-    const { username, password } = req.body;
-    userModel.findOne({ username: username }).then((user) => {
-        if (user) {
-            if (user.password === password) {
-                res.json("Success");
-            } else {
-                res.json("Password is incorrect");
-            }
-        } else {
-            res.json("Username not found.");
-        }
-    });
-});
-
 app.post("/api/get_courses", async (req, res) => {
     try {
         const { username } = req.body;
@@ -65,6 +50,23 @@ app.post("/api/get_courses", async (req, res) => {
             message: `Error processing request: ${err.message}`,
         });
     }
+});
+
+app.post("/api/check_course", async (req, res) => {
+    const { courseID } = req.body;
+
+    courseModel
+        .findOne({ index: courseID })
+        .then(async (id) => {
+            if (!id) {
+                res.json("Course not in DB");
+            } else {
+                res.json("Success");
+            }
+        })
+        .catch((err) => {
+            res.json(`Error checking course ${err}`);
+        });
 });
 
 app.post("/api/add", async (req, res) => {
@@ -227,18 +229,17 @@ app.post("/settings", async (req, res) => {
         });
 });
 
-app.post("/signup", async (req, res) => {
-    const { username, email } = req.body;
+app.post("/api/check_username", async (req, res) => {
+    const { username } = req.body;
     const user = await userModel.findOne({ username: username });
-    const mail = await userModel.findOne({ email: email });
-    if (mail != null) {
-        res.json("Duplicate email");
-        return;
-    }
     if (user != null) {
         res.json("Duplicate username");
-        return;
+    } else {
+        res.json("Success");
     }
+});
+
+app.post("/api/register_user_data", async (req, res) => {
     await userModel
         .create(req.body)
         .then(() => res.json("Success"))

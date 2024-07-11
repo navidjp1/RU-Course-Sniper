@@ -1,33 +1,76 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import { signUp } from "../firebase/auth";
+import { useAuth } from "../contexts/authContext/authContext";
 
 export const Signup = () => {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [isSigningUp, setIsSigningUp] = useState(false);
     const navigate = useNavigate();
 
-    // async function handleSubmit(event) {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        if (!username || !email || !password) return;
+        if (password != confirmPassword) {
+            alert("Your passwords do not match. Try again.");
+            return;
+        }
+        if (password.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/) == null) {
+            alert(
+                "Make sure your password has minimum eight characters, at least one letter and one number."
+            );
+            return;
+        }
+
+        try {
+            const result = await axios.post(
+                "http://localhost:3000/api/check_username",
+                { username }
+            );
+            if (result.data === "Duplicate username") {
+                alert("Username already taken. Try a different one.");
+                return;
+            }
+        } catch (error) {
+            console.log("Error sending API request: " + error);
+            return;
+        }
+
         const userData = { username, email, password };
 
-        await axios
-            .post("http://localhost:3000/signup", userData)
-            .then((result) => {
-                if (result.data === "Duplicate username") {
-                    alert("Username taken, try again");
-                }
-                if (result.data === "Duplicate email") {
-                    alert("Email already registered, go to login page");
-                }
-                if (result.data === "Success") {
-                    navigate("/");
-                }
-            })
-            .catch((err) => console.log(err));
+        if (!isSigningUp) {
+            setIsSigningUp(true);
+            const success = await signUp(username, email, password);
+            if (success) {
+                await axios
+                    .post(
+                        "http://localhost:3000/api/register_user_data",
+                        userData
+                    )
+                    .then((result) => {
+                        if (result.data === "Success") {
+                            alert("Successfully signed up!");
+                            navigate("/");
+                        } else {
+                            alert(
+                                "There was an error in the system. Try again."
+                            );
+                            console.log(result.data);
+                        }
+                    })
+                    .catch((err) =>
+                        console.log("Error sending API request: " + err)
+                    );
+            } else {
+                alert("You already have an account. Please log in.");
+            }
+            setIsSigningUp(false);
+        }
     };
 
     return (
@@ -52,7 +95,7 @@ export const Signup = () => {
                             onChange={(e) => setUsername(e.target.value)}
                             placeholder="Enter username"
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            required
+                            // required
                         />
                     </div>
                     <div className="mb-4">
@@ -69,7 +112,7 @@ export const Signup = () => {
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="Enter email"
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            required
+                            // required
                         />
                     </div>
                     <div className="mb-6">
@@ -86,7 +129,24 @@ export const Signup = () => {
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="Enter password"
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                            required
+                            // required
+                        />
+                    </div>
+                    <div className="mb-6">
+                        <label
+                            htmlFor="password"
+                            className="block text-gray-700 text-sm font-bold mb-2"
+                        >
+                            Confirm Password:
+                        </label>
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            placeholder="Confirm password"
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                            // required
                         />
                     </div>
                     <p className="text-red-500 text-xs italic mb-4"></p>
