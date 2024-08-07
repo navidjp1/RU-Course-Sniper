@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { TimeInput, DateInput } from "@mantine/dates";
 import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../contexts/authContext/authContext";
 import axios from "axios";
 
 export const Settings = () => {
+    const { currentUser } = useAuth();
     const [newUsername, setUsername] = useState("");
     const [newEmail, setEmail] = useState("");
     const [currentPassword, setCurrentPassword] = useState("");
@@ -19,7 +21,7 @@ export const Settings = () => {
     const [loading, setLoading] = useState(true);
 
     const fetchUserData = async () => {
-        const username = localStorage.getItem("username");
+        const username = currentUser.displayName;
         await axios
             .post("http://localhost:3000/api/get_data", { username })
             .then((response) => {
@@ -50,7 +52,7 @@ export const Settings = () => {
             return;
         }
 
-        const currentUsername = localStorage.getItem("username");
+        const currentUsername = currentUser.displayName;
         const userData = {
             currentUsername,
             newUsername,
@@ -81,9 +83,7 @@ export const Settings = () => {
             .post("http://localhost:3000/settings", userData)
             .then((result) => {
                 if (result.data === "Incorrect password") {
-                    alert(
-                        "Incorrect password, type in your correct current password"
-                    );
+                    alert("Incorrect password, type in your correct current password");
                 }
 
                 if (result.data === "Success") {
@@ -130,9 +130,7 @@ export const Settings = () => {
             {!loading && (
                 <div className="flex items-center justify-center text-center w-96 bg-gray-100">
                     <div className="lg:w-3/4 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                        <h2 className="text-2xl font-bold mb-6 text-center">
-                            Settings
-                        </h2>
+                        <h2 className="text-2xl font-bold mb-6 text-center">Settings</h2>
                         <form onSubmit={handleSubmit}>
                             <div className="mb-4">
                                 <label
@@ -145,9 +143,7 @@ export const Settings = () => {
                                     type="text"
                                     id="username"
                                     value={newUsername}
-                                    onChange={(e) =>
-                                        setUsername(e.target.value)
-                                    }
+                                    onChange={(e) => setUsername(e.target.value)}
                                     placeholder="Enter new username"
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 />
@@ -179,9 +175,7 @@ export const Settings = () => {
                                     type="password"
                                     id="currentPassword"
                                     value={currentPassword}
-                                    onChange={(e) =>
-                                        setCurrentPassword(e.target.value)
-                                    }
+                                    onChange={(e) => setCurrentPassword(e.target.value)}
                                     placeholder="Enter current password"
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                     required
@@ -198,9 +192,7 @@ export const Settings = () => {
                                     type="password"
                                     id="newPassword"
                                     value={newPassword}
-                                    onChange={(e) =>
-                                        setNewPassword(e.target.value)
-                                    }
+                                    onChange={(e) => setNewPassword(e.target.value)}
                                     placeholder="Enter new password"
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 />

@@ -1,5 +1,16 @@
 const mongoose = require("mongoose");
 
+const courseIDSchema = new mongoose.Schema({
+    add: {
+        type: String,
+        required: true,
+    },
+    drop: {
+        type: [String], // Array of strings
+        default: [], // Optional field
+    },
+});
+
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -14,7 +25,7 @@ const userSchema = new mongoose.Schema({
         required: true,
     },
     courseIDs: {
-        type: Array,
+        type: [courseIDSchema],
         default: [],
     },
     preferences: {

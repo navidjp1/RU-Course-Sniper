@@ -29,7 +29,6 @@ export const Landing = () => {
 
     return (
         <div>
-            {userLoggedIn && <Navigate to={"/dashboard"} replace={true} />}
             <div className="flex items-center justify-center min-h-screen bg-gray-100">
                 <div className="flex w-full max-w-4xl bg-white shadow-md rounded-lg overflow-hidden">
                     <div className="w-1/2 p-8 bg-blue-500 text-white">

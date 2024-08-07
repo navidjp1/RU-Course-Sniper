@@ -7,18 +7,17 @@ import { doSignOut } from "../firebase/auth";
 import { useAuth } from "../contexts/authContext/authContext";
 
 export const Dashboard = () => {
-    const { currentUser, userLoggedIn } = useAuth();
+    const { currentUser } = useAuth();
     const [courses, setCourses] = useState({});
     const [loading, setLoading] = useState(true);
     const [update, setUpdate] = useState(false);
     const navigate = useNavigate();
 
     const fetchCourses = async () => {
-        const username = localStorage.getItem("username");
+        const username = currentUser.displayName;
         await axios
             .post("http://localhost:3000/api/get_courses", { username })
             .then((response) => {
-                //console.log(response.data);
                 setCourses(response.data);
             })
             .catch((err) => console.log(`Error fetching courses: ${err}`))
@@ -36,7 +35,7 @@ export const Dashboard = () => {
 
     const handleStart = async (event) => {
         event.preventDefault();
-        const username = localStorage.getItem("username");
+        const username = currentUser.displayName;
 
         await axios
             .post("http://localhost:3000/api/start_sniper", { username })
@@ -100,9 +99,7 @@ export const Dashboard = () => {
                         </button>
                     </div>
                     <Link to="/settings">
-                        <button className="absolute top-10 left-10">
-                            Settings
-                        </button>
+                        <button className="absolute top-10 left-10">Settings</button>
                     </Link>
                     <div className="p-4">
                         <button className="mx-4" onClick={handleStart}>
@@ -122,12 +119,9 @@ export const Dashboard = () => {
                                         key={course.id}
                                         className="p-4 bg-white shadow rounded-lg relative"
                                     >
-                                        <p className="font-bold">
-                                            {course.title}
-                                        </p>
+                                        <p className="font-bold">{course.title}</p>
                                         <p className="font-semibold">
-                                            Index: {course.id} Section:{" "}
-                                            {course.section}
+                                            Index: {course.id} Section: {course.section}
                                         </p>
                                         <DeleteCourse
                                             updateRender={updateRender}

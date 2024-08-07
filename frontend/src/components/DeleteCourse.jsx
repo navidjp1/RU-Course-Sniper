@@ -1,17 +1,16 @@
 import axios from "axios";
 import { Trash2 } from "react-feather";
-
+import { useAuth } from "../contexts/authContext/authContext";
 const DeleteCourse = ({ updateRender, courseID }) => {
+    const { currentUser } = useAuth();
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        const userConfirm = confirm(
-            "Are you sure you want to delete this course?"
-        );
+        const userConfirm = confirm("Are you sure you want to delete this course?");
 
         if (!userConfirm) return;
 
-        const username = localStorage.getItem("username");
+        const username = currentUser.displayName;
         const userData = { username, courseID };
 
         await axios
@@ -19,6 +18,8 @@ const DeleteCourse = ({ updateRender, courseID }) => {
             .then((result) => {
                 if (result.data === "Success") {
                     updateRender();
+                } else {
+                    console.log(result.data);
                 }
             })
             .catch((err) => console.log(err));

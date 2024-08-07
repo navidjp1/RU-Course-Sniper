@@ -29,10 +29,11 @@ app.post("/api/get_courses", async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        const ids = user.courseIDs;
+        const idObjects = user.courseIDs;
 
         const courseDetails = await Promise.all(
-            ids.map(async (id) => {
+            idObjects.map(async (obj) => {
+                const id = obj.add;
                 const idData = await courseModel.findOne({ index: id });
                 if (idData) {
                     const section = idData.section;
@@ -70,17 +71,18 @@ app.post("/api/check_course", async (req, res) => {
 });
 
 app.post("/api/add", async (req, res) => {
-    const { username, courseID } = req.body;
+    const { username, courseID, dropIDArray } = req.body;
 
     userModel
         .findOne({ username: username })
         .then(async (user) => {
-            const ids = user.courseIDs;
-            if (ids.indexOf(courseID) != -1) {
+            const idObjects = user.courseIDs;
+            const found = idObjects.some((obj) => obj.add === courseID);
+            if (found) {
                 res.json("Duplicate");
                 return;
             }
-            ids.push(courseID);
+            idObjects.push({ add: courseID, drop: dropIDArray });
             await user.save();
             res.json("Success");
         })
@@ -92,21 +94,31 @@ app.post("/api/add", async (req, res) => {
 app.post("/api/delete", async (req, res) => {
     const { username, courseID } = req.body;
 
-    userModel
-        .findOne({ username: username })
-        .then(async (user) => {
-            let ids = user.courseIDs;
-            const index = ids.indexOf(courseID.id);
-            if (index > -1) {
-                ids.splice(index, 1);
-            }
-            user.courseIDs = ids;
-            await user.save();
-            res.json("Success");
-        })
-        .catch((err) => {
-            res.json(`Error deleting course ${err}`);
-        });
+    try {
+        const result = await userModel.updateOne(
+            { username: username },
+            { $pull: { courseIDs: { add: courseID.id } } }
+        );
+        console.log(`Modified ${result.modifiedCount} document(s)`);
+        res.json("Success");
+    } catch (err) {
+        console.error("Error removing courseID:", err);
+        res.json(`Error deleting course ${err}`);
+    }
+
+    // userModel
+    //     .findOne({ username: username })
+    //     .then(async (user) => {
+    //         let idObjects = user.courseIDs;
+    //         const removedID = idObjects.filter((obj) => obj.add !== courseID.id);
+    //         console.log(removedID);
+    //         user.courseIDs = removedID;
+    //         await user.save();
+    //         res.json("Success");
+    //     })
+    //     .catch((err) => {
+    //         res.json(`Error deleting course ${err}`);
+    //     });
 });
 
 app.post("/api/get_data", async (req, res) => {
@@ -135,10 +147,11 @@ app.post("/api/start_sniper", async (req, res) => {
             const RUID = user.RUID;
             const PAC = user.PAC;
             const testedLogin = user.testedLogin;
+            const idObjects = user.courseIDs;
             if (RUID === "" || PAC === "") {
                 res.json("No cred");
             } else if (!testedLogin) {
-                const msg = await testLogin(RUID, PAC);
+                const msg = await testLogin(RUID, PAC, idObjects);
                 if (msg != "Success") {
                     res.json(msg);
                     return;
@@ -186,7 +199,6 @@ app.post("/settings", async (req, res) => {
 
             if (newUsername != "") {
                 user.username = newUsername;
-                localStorage.setItem("username", newUsername);
             }
             if (newEmail != "") {
                 user.email = newEmail;
@@ -208,13 +220,11 @@ app.post("/settings", async (req, res) => {
             const currPref = user.preferences;
 
             if (currPref.emailNotifications != preferences.emailNotifications) {
-                user.preferences.emailNotifications =
-                    preferences.emailNotifications;
+                user.preferences.emailNotifications = preferences.emailNotifications;
             }
 
             if (currPref.smsNotifications != preferences.smsNotifications) {
-                user.preferences.smsNotifications =
-                    preferences.smsNotifications;
+                user.preferences.smsNotifications = preferences.smsNotifications;
             }
 
             if (newTime != user.restartTime) {
