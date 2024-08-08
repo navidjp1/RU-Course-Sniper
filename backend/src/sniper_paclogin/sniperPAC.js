@@ -1,4 +1,5 @@
 const pt = require("puppeteer");
+const { getUserCurrentCourses } = require("./utils");
 var axios = require("axios").default;
 
 const url = "https://sims.rutgers.edu/webreg/pacLogin.htm";
@@ -7,6 +8,7 @@ let username = "";
 let password = "";
 let timeArray = [];
 let ids = [];
+let userCurrentCourses = [];
 let page = null;
 let browser = null;
 
@@ -24,10 +26,11 @@ async function sendRequest(ids) {
             params: { year: "2024", term: "9", campus: "NB" },
         })
         .then(function (response) {
-            ids.forEach(async (id) => {
+            ids.forEach(async (idObj) => {
+                const id = idObj.add;
                 if (response.data.includes(id)) {
                     console.log(`Course index: ${id} was found!`);
-                    //await register(id);
+                    //await register(idObj);
                 }
             });
         })
@@ -38,13 +41,13 @@ async function sendRequest(ids) {
     requestCount++;
 }
 
-async function runSniper(RUID, PAC, courseIDs, restartTime, shouldRun) {
+async function runSniper(RUID, PAC, idObjects, restartTime, shouldRun) {
     if (shouldRun && !isRunning) {
         isRunning = true;
 
         username = RUID;
         password = PAC;
-        ids = courseIDs;
+        ids = idObjects;
         timeArray = restartTime;
 
         console.log("Launching browser...");
@@ -102,8 +105,15 @@ async function authenticate(relogin) {
 
     await bypassLoadingScrn();
 
-    if (!relogin) console.log("Successfully logged in!");
-    else console.log("Successfully re-logged in!");
+    if (!relogin) {
+        try {
+            userCurrentCourses = await getUserCurrentCourses(page);
+        } catch (error) {
+            console.log("Could not fetch user current courses: " + error);
+            await errorFunc();
+        }
+        console.log("Successfully logged in!");
+    } else console.log("Successfully re-logged in!");
 }
 
 async function login() {
@@ -265,28 +275,53 @@ function delay(time) {
 //     await errorFunc();
 // }
 
-async function register(course_ID) {
-    let addAndDrop = true;
+async function testRegister(idObject) {
+    const addID = idObject.add;
+    const dropIDArray = idObject.drop;
 
-    if (course_ID == "07636") {
-        addAndDrop = false;
-        await add(course_ID);
+    if (dropIDArray.length === 0) {
+        console.log("Will add: ", addID);
+    } else {
+        for (const dropID of dropIDArray) {
+            const dropIDNumber = userCurrentCourses.indexOf(dropID) + 1;
+            if (dropIDNumber === -1) {
+                return;
+            }
+            console.log("Will drop id: ", dropID, " at index: ", dropIDNumber);
+        }
+        console.log("Will add: ", addID);
+
+        // if course not successfully added, re-add dropped courses
+        for (const dropID of dropIDArray) {
+            console.log("Will add: ", dropID);
+        }
     }
 
-    if (addAndDrop) {
-        let which_id = 5;
-        let which_course = "10486";
+    console.log(`Successfully tried to register for ${addID}!`);
 
-        // if (course_ID == '07589' || course_ID == '07590' || course_ID == '07591' || course_ID == '07592') {
-        //     which_id = 1;
-        //     which_course = '07609';
-        // }
+    // take screenshot of page after trying to register
+}
 
-        await drop(which_id);
+async function register(idObject) {
+    const addID = idObject.add;
+    const dropIDArray = idObject.drop;
 
-        await add(course_ID);
+    if (dropIDArray.length === 0) {
+        await add(addID);
+    } else {
+        for (const dropID of dropIDArray) {
+            const dropIDNumber = userCurrentCourses.indexOf(dropID) + 1;
+            if (dropIDNumber === -1) {
+                return;
+            }
+            await drop(dropIDNumber);
+        }
+        await add(addID);
 
-        await add(which_course); // attempting to re-add dropped course
+        // if course not successfully added, re-add dropped courses
+        for (const dropID of dropIDArray) {
+            await add(dropID);
+        }
     }
 
     console.log(`Successfully tried to register for ${course_ID}!`);
@@ -294,10 +329,10 @@ async function register(course_ID) {
     // take screenshot of page after trying to register
 }
 
-async function drop(which_id) {
+async function drop(idNum) {
     try {
         await page.waitForSelector(
-            `::-p-xpath(/html/body/div[2]/div[2]/dl[${which_id}]/dt/form/input[2])`
+            `::-p-xpath(/html/body/div[2]/div[2]/dl[${idNum}]/dt/form/input[2])`
         );
 
         page.on("dialog", async (dialog) => {
@@ -305,14 +340,14 @@ async function drop(which_id) {
         });
 
         await page.click(
-            `::-p-xpath(/html/body/div[2]/div[2]/dl[${which_id}]/dt/form/input[2])`
+            `::-p-xpath(/html/body/div[2]/div[2]/dl[${idNum}]/dt/form/input[2])`
         ); // dl[5] = dropping 5th course on user's WebReg screen
 
         console.log("Dropped course!");
     } catch (err) {
         console.log("Drop button not found");
         await quickReload();
-        await drop(which_id);
+        await drop(idNum);
     }
 
     await bypassLoadingScrn();

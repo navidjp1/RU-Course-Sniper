@@ -83,6 +83,7 @@ app.post("/api/add", async (req, res) => {
                 return;
             }
             idObjects.push({ add: courseID, drop: dropIDArray });
+            user.testedLogin = false;
             await user.save();
             res.json("Success");
         })
@@ -99,7 +100,6 @@ app.post("/api/delete", async (req, res) => {
             { username: username },
             { $pull: { courseIDs: { add: courseID.id } } }
         );
-        console.log(`Modified ${result.modifiedCount} document(s)`);
         res.json("Success");
     } catch (err) {
         console.error("Error removing courseID:", err);
@@ -160,10 +160,9 @@ app.post("/api/start_sniper", async (req, res) => {
                 await user.save();
             }
 
-            const courseIDs = user.courseIDs;
             const restartTime = user.restartTime.split(":").map(Number);
 
-            runSniper(RUID, PAC, courseIDs, restartTime, true);
+            runSniper(RUID, PAC, idObjects, restartTime, true);
             res.json("Success");
         })
         .catch((err) => {

@@ -59,19 +59,17 @@ const AddCourse = ({ updateRender }) => {
                 if (result.data === "Success") {
                     updateRender();
                     setOpen(false); // Close the modal
-                    setID("");
-                    setCampus("New Brunswick");
-                    setSemester("Spring");
-                    setYear("2024");
+                    alert("Successfully added course");
                 } else if (result.data === "Duplicate") {
                     alert("You are already sniping this course");
-                    setID("");
-                    setCampus("New Brunswick");
-                    setSemester("Spring");
-                    setYear("2024");
                 } else {
                     console.log("Error: " + result.data);
                 }
+                setID("");
+                setDropIDs("");
+                setCampus("New Brunswick");
+                setSemester("Spring");
+                setYear("2024");
             })
             .catch((err) => console.log(err));
     };
