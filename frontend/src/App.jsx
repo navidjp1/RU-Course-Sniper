@@ -5,6 +5,8 @@ import { Landing } from "./screens/Landing";
 import { Dashboard } from "./screens/Dashboard";
 import { Signup } from "./screens/Signup";
 import { Settings } from "./screens/Settings";
+import { Purchase } from "./screens/Purchase";
+import { Test } from "./screens/Test";
 import { MantineProvider } from "@mantine/core";
 import { AuthProvider } from "./contexts/authContext/authContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -22,6 +24,7 @@ function App() {
                         <BrowserRouter>
                             <Routes>
                                 <Route path="/" element={<Landing />} />
+                                <Route path="/signup" element={<Signup />} />
                                 <Route
                                     path="/dashboard"
                                     element={
@@ -30,10 +33,29 @@ function App() {
                                         </ProtectedRoute>
                                     }
                                 />
-                                <Route path="/signup" element={<Signup />} />
                                 <Route
                                     path="/settings"
-                                    element={<Settings />}
+                                    element={
+                                        <ProtectedRoute>
+                                            <Settings />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/purchase"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Purchase />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/test"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Test />
+                                        </ProtectedRoute>
+                                    }
                                 />
                             </Routes>
                         </BrowserRouter>

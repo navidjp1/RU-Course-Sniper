@@ -77,8 +77,11 @@ const AddCourse = ({ updateRender }) => {
     const [open, setOpen] = useState(false);
     return (
         <>
-            <button className="mb-4" onClick={() => setOpen(true)}>
-                Add
+            <button
+                className="h-12 w-48 bg-blue-500 rounded-md border text-center  text-xl font-sans text-white border-blue-gray-50 p-1 font-bold"
+                onClick={() => setOpen(true)}
+            >
+                Add Course
             </button>
 
             <Modal open={open} onClose={() => setOpen(false)}>
