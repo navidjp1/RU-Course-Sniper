@@ -31,15 +31,13 @@ const DeleteCourse = ({ updateRender, courseID }) => {
     };
 
     return (
-        <div className="relative align-middle select-none font-sans font-medium text-center uppercase transition-all ">
+        <div className="relative align-middle place-content-center select-none font-sans font-medium text-center uppercase transition-all ">
             <button
-                className="disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none w-10 max-w-[40px] h-10 max-h-[40px] rounded-lg text-xs hover:text-red-500 text-gray-900 hover:bg-gray-900/10 active:bg-gray-900/20"
+                className="disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none w-10 max-w-[40px] h-10 max-h-[40px] rounded-lg text-xs hover:text-red-500"
                 onClick={handleSubmit}
                 disabled={disabled}
             >
-                <span className="absolute  top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2">
-                    <Trash2 />
-                </span>
+                <Trash2 />
             </button>
         </div>
     );

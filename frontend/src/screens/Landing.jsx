@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { useNavigate, Navigate, Link } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { signIn } from "../firebase/auth";
-import { useAuth } from "../contexts/authContext/authContext";
 
 export const Landing = () => {
-    const { userLoggedIn } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [remember, setRemember] = useState(false);
     const [isSigningIn, setIsSigningIn] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        if (!email || !password) return;
 
         if (!isSigningIn) {
             setIsSigningIn(true);
@@ -28,87 +28,132 @@ export const Landing = () => {
     };
 
     return (
-        <div>
-            <div className="flex items-center justify-center min-h-screen bg-gray-100">
-                <div className="flex w-full max-w-4xl bg-white shadow-md rounded-lg overflow-hidden">
-                    <div className="w-1/2 p-8 bg-blue-500 text-white">
-                        <h2 className="text-3xl font-bold mb-4">Home</h2>
-                        <p className="text-lg mb-6">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit. In hendrerit accumsan neque. Nullam egestas
-                            magna in nisl gravida dignissim.
-                        </p>
-                        <p className="text-lg">
-                            Sed sollicitudin ac enim et iaculis. Curabitur
-                            turpis metus, finibus vitae lectus eu, aliquam
-                            semper nisi. Nulla facilisi.
-                        </p>
-                    </div>
-                    <div className="w-1/2 p-8">
-                        <h2 className="text-2xl font-bold mb-6 text-center">
-                            Login
-                        </h2>
-                        <form
-                            className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-                            onSubmit={handleSubmit}
-                        >
-                            <div className="mb-4">
-                                <label
-                                    htmlFor="email"
-                                    className="block text-gray-700 text-sm font-bold mb-2"
-                                >
-                                    Email:
-                                </label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="Enter email"
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    required
-                                />
-                            </div>
-                            <div className="mb-6">
-                                <label
-                                    htmlFor="password"
-                                    className="block text-gray-700 text-sm font-bold mb-2"
-                                >
-                                    Password:
-                                </label>
-                                <input
-                                    type="password"
-                                    id="password"
-                                    value={password}
-                                    onChange={(e) =>
-                                        setPassword(e.target.value)
-                                    }
-                                    placeholder="Enter password"
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                                    required
-                                />
-                            </div>
-                            <p className="text-red-500 text-xs italic mb-4"></p>
-                            <div className=" items-center justify-between text-center">
-                                <button
-                                    type="submit"
-                                    disabled={isSigningIn}
-                                    className={`text-center w-48 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline && 'opacity-50 cursor-not-allowed'}`}
-                                >
-                                    {isSigningIn ? "Signing In..." : "Sign In"}
-                                </button>
-                                <Link to="/dashboard">
-                                    <button className=" pl-4 w-48 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 rounded">
-                                        Dashboard
-                                    </button>
-                                </Link>
-                            </div>
-                        </form>
-                        <br />
-                        <p>OR</p>
-                        <br />
+        <div className="bg-white w-screen">
+            <div className="flex min-h-screen items-center py-12 px-24 justify-center">
+                <div className="w-3/5 p-6 text-center">
+                    <h2 className="text-3xl font-bold tracking-tight text-gray-900 ">
+                        RU Course Sniper
+                    </h2>
+                    <p className="mt-6 text-lg leading-8 text-gray-600">
+                        Distinctio et nulla eum soluta et neque labore quibusdam. Saepe et
+                        quasi iusto modi velit ut non voluptas in. Explicabo id ut
+                        laborum.
+                    </p>
+                </div>
+                <div className="pt-2 pb-4 w-2/5 overflow-scroll rounded-lg border border-gray-200 shadow-md bg-white">
+                    <div className="flex flex-col items-center justify-center p-4">
+                        <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                            <div className="space-y-4 md:space-y-6 sm:p-8">
+                                <h1 className="text-xl pb-4 font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                                    Sign in to your account
+                                </h1>
 
-                        <Link to="/signup">Signup Page</Link>
+                                <button className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white font-semibold dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    Sign in with Google
+                                </button>
+                                <div className="my-6 flex items-center">
+                                    <div
+                                        className="mr-3 grow border-t border-solid border-gray-400"
+                                        aria-hidden="true"
+                                    ></div>
+                                    <div className="text-gray-400">
+                                        Or, sign in with your email
+                                    </div>
+                                    <div
+                                        className="ml-3 grow border-t border-solid border-gray-400"
+                                        aria-hidden="true"
+                                    ></div>
+                                </div>
+                                <form
+                                    className="space-y-4 md:space-y-6"
+                                    onSubmit={handleSubmit}
+                                >
+                                    <div>
+                                        <label
+                                            htmlFor="email"
+                                            className="block mb-2 text-left text-sm font-medium text-gray-900 dark:text-white"
+                                        >
+                                            Email
+                                        </label>
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            id="email"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="example@gmail.com"
+                                            required=""
+                                        ></input>
+                                    </div>
+                                    <div>
+                                        <label
+                                            htmlFor="password"
+                                            className="block mb-2 text-sm text-left font-medium text-gray-900 dark:text-white"
+                                        >
+                                            Password
+                                        </label>
+                                        <input
+                                            type="password"
+                                            name="password"
+                                            id="password"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            placeholder="••••••••"
+                                            className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            required=""
+                                        ></input>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-start">
+                                            <div className="flex items-center justify-start text-sm">
+                                                <input
+                                                    type="checkbox"
+                                                    name="remember"
+                                                    id="remember"
+                                                    value={remember}
+                                                    onChange={(e) =>
+                                                        setRemember(e.target.checked)
+                                                    }
+                                                    className="hover:cursor-pointer peer h-4 w-4 shrink-0 border border-gray-600/50 text-white-main focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-primary-600/50 data-[state=checked]:bg-primary-800 rounded"
+                                                    required=""
+                                                ></input>
+                                                <label
+                                                    htmlFor="remember"
+                                                    className="pl-2 hover:cursor-pointer text-gray-500 dark:text-gray-300"
+                                                >
+                                                    Remember me
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <a
+                                            href="#"
+                                            className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500"
+                                        >
+                                            Forgot password?
+                                        </a>
+                                    </div>
+
+                                    <button
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 hover:text-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        type="submit"
+                                        disabled={isSigningIn}
+                                    >
+                                        {isSigningIn ? "Signing In..." : "Sign In"}
+                                    </button>
+
+                                    <p className="text-md font-light text-gray-500 dark:text-gray-400">
+                                        Don’t have an account yet?{" "}
+                                        <a
+                                            href="/signup"
+                                            className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                                        >
+                                            Sign up
+                                        </a>
+                                    </p>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
