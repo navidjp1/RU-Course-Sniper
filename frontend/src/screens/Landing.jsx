@@ -29,7 +29,7 @@ export const Landing = () => {
 
     return (
         <div className="bg-white w-screen">
-            <div className="flex min-h-screen items-center py-12 px-24 justify-center">
+            <div className="flex items-center justify-center min-h-screen py-12 px-24 ">
                 <div className="w-3/5 p-6 text-center">
                     <h2 className="text-3xl font-bold tracking-tight text-gray-900 ">
                         RU Course Sniper
@@ -48,7 +48,7 @@ export const Landing = () => {
                                     Sign in to your account
                                 </h1>
 
-                                <button className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white font-semibold dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <button className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 hover:text-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white font-semibold dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                     Sign in with Google
                                 </button>
                                 <div className="my-6 flex items-center">

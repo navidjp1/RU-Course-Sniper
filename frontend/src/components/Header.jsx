@@ -11,7 +11,7 @@ function Header({ pageNum }) {
     };
 
     return (
-        <header className="bg-white fixed top-0 w-full py-4 px-16">
+        <header className="bg-white opacity-75 fixed top-0 w-full py-4 px-16">
             <div className="flex text-xl justify-between">
                 <div className="flex items-center justify-start">
                     <p className="text-xl">RU</p>

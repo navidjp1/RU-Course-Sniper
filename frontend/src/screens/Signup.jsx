@@ -1,14 +1,11 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { useNavigate, Link } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { signUp } from "../firebase/auth";
-import { useAuth } from "../contexts/authContext/authContext";
 
 export const Signup = () => {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
     const [isSigningUp, setIsSigningUp] = useState(false);
     const navigate = useNavigate();
 
@@ -16,10 +13,7 @@ export const Signup = () => {
         event.preventDefault();
 
         if (!username || !email || !password) return;
-        if (password != confirmPassword) {
-            alert("Your passwords do not match. Try again.");
-            return;
-        }
+
         if (password.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/) == null) {
             alert(
                 "Make sure your password has minimum eight characters, at least one letter and one number."
@@ -28,10 +22,9 @@ export const Signup = () => {
         }
 
         try {
-            const result = await axios.post(
-                "http://localhost:3000/api/check_username",
-                { username }
-            );
+            const result = await axios.post("http://localhost:3000/api/check_username", {
+                username,
+            });
             if (result.data === "Duplicate username") {
                 alert("Username already taken. Try a different one.");
                 return;
@@ -48,24 +41,17 @@ export const Signup = () => {
             const success = await signUp(username, email, password);
             if (success) {
                 await axios
-                    .post(
-                        "http://localhost:3000/api/register_user_data",
-                        userData
-                    )
+                    .post("http://localhost:3000/api/register_user_data", userData)
                     .then((result) => {
                         if (result.data === "Success") {
                             alert("Successfully signed up!");
                             navigate("/");
                         } else {
-                            alert(
-                                "There was an error in the system. Try again."
-                            );
+                            alert("There was an error in the system. Try again.");
                             console.log(result.data);
                         }
                     })
-                    .catch((err) =>
-                        console.log("Error sending API request: " + err)
-                    );
+                    .catch((err) => console.log("Error sending API request: " + err));
             } else {
                 alert("You already have an account. Please log in.");
             }
@@ -74,94 +60,120 @@ export const Signup = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            <div className="w-3/9">
-                <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
-                <form
-                    onSubmit={handleSubmit}
-                    className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-                >
-                    <div className="mb-4">
-                        <label
-                            htmlFor="username"
-                            className="block text-gray-700 text-sm font-bold mb-2"
-                        >
-                            Username:
-                        </label>
-                        <input
-                            type="text"
-                            id="username"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            placeholder="Enter username"
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            // required
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label
-                            htmlFor="email"
-                            className="block text-gray-700 text-sm font-bold mb-2"
-                        >
-                            Email:
-                        </label>
-                        <input
-                            type="email"
-                            id="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder="Enter email"
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            // required
-                        />
-                    </div>
-                    <div className="mb-6">
-                        <label
-                            htmlFor="password"
-                            className="block text-gray-700 text-sm font-bold mb-2"
-                        >
-                            Password:
-                        </label>
-                        <input
-                            type="password"
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Enter password"
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                            // required
-                        />
-                    </div>
-                    <div className="mb-6">
-                        <label
-                            htmlFor="password"
-                            className="block text-gray-700 text-sm font-bold mb-2"
-                        >
-                            Confirm Password:
-                        </label>
-                        <input
-                            type="password"
-                            id="confirmPassword"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            placeholder="Confirm password"
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                            // required
-                        />
-                    </div>
-                    <p className="text-red-500 text-xs italic mb-4"></p>
-                    <button
-                        type="submit"
-                        className={`text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline && 'opacity-50 cursor-not-allowed'}`}
-                    >
-                        Sign up
-                    </button>
-                </form>
-                <br />
-                <p>OR</p>
-                <br />
+        <div className="bg-white w-screen">
+            <div className="flex min-h-screen items-center py-12 px-24 justify-center">
+                <div className="pt-2 pb-4 w-2/5 overflow-scroll rounded-lg border border-gray-200 shadow-md bg-white">
+                    <div className="flex flex-col items-center justify-center p-4">
+                        <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                            <div className="space-y-4 md:space-y-6 sm:p-8">
+                                <h1 className="text-xl pb-4 font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                                    Sign Up
+                                </h1>
 
-                <Link to="/">Login Page</Link>
+                                <button className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 hover:text-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white font-semibold dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    Sign up with Google
+                                </button>
+                                <div className="my-6 flex items-center">
+                                    <div
+                                        className="mr-3 grow border-t border-solid border-gray-400"
+                                        aria-hidden="true"
+                                    ></div>
+                                    <div className="text-gray-400">
+                                        Or, sign up with your email
+                                    </div>
+                                    <div
+                                        className="ml-3 grow border-t border-solid border-gray-400"
+                                        aria-hidden="true"
+                                    ></div>
+                                </div>
+                                <form
+                                    className="space-y-4 md:space-y-6"
+                                    onSubmit={handleSubmit}
+                                >
+                                    <div>
+                                        <label
+                                            htmlFor="username"
+                                            className="block mb-2 text-left text-sm font-medium text-gray-900 dark:text-white"
+                                        >
+                                            Username
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="username"
+                                            id="username"
+                                            value={username}
+                                            onChange={(e) => setUsername(e.target.value)}
+                                            className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="Enter a username"
+                                            required=""
+                                        ></input>
+                                    </div>
+                                    <div>
+                                        <label
+                                            htmlFor="email"
+                                            className="block mb-2 text-left text-sm font-medium text-gray-900 dark:text-white"
+                                        >
+                                            Email
+                                        </label>
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            id="email"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="example@gmail.com"
+                                            required=""
+                                        ></input>
+                                    </div>
+                                    <div>
+                                        <label
+                                            htmlFor="password"
+                                            className="block mb-2 text-sm text-left font-medium text-gray-900 dark:text-white"
+                                        >
+                                            Password
+                                        </label>
+                                        <input
+                                            type="password"
+                                            name="password"
+                                            id="password"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            placeholder="Enter a password (at least 8 characters)"
+                                            className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            required=""
+                                        ></input>
+                                    </div>
+
+                                    <div className="my-6 flex items-center">
+                                        <div
+                                            className="mr-3 grow border-t border-solid border-gray-400"
+                                            aria-hidden="true"
+                                        ></div>
+                                    </div>
+
+                                    <button
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 hover:text-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        type="submit"
+                                        disabled={isSigningUp}
+                                    >
+                                        {isSigningUp ? "Signing Up..." : "Sign Up"}
+                                    </button>
+
+                                    <p className="text-md font-light text-gray-500 dark:text-gray-400">
+                                        Already have an account?{" "}
+                                        <a
+                                            href="/"
+                                            className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                                        >
+                                            Sign in
+                                        </a>
+                                    </p>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );

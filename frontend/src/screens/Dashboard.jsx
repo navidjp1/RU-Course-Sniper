@@ -3,7 +3,7 @@ import CourseRow from "../components/CourseRow";
 import Header from "../components/Header";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import AddCourse from "../components/AddCourse";
 import { doSignOut } from "../firebase/auth";
 import { useAuth } from "../contexts/authContext/authContext";
@@ -111,7 +111,7 @@ export const Dashboard = () => {
             {!loading && (
                 <div className="bg-white ">
                     <Header pageNum={1} />
-                    <div className="flex pt-20 flex-col items-center justify-center w-screen min-h-screen p-2">
+                    <div className="flex flex-col items-center pt-24 w-screen min-h-screen p-2">
                         <div className="w-3/4">
                             <div className="flex flex-row w-full gap-x-12">
                                 <div className="justify-start text-left w-3/4">

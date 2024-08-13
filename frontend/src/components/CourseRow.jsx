@@ -28,10 +28,14 @@ function CourseRow({ course, status, updateRender }) {
             <td className="px-4 py-8 ">
                 <div className="flex flex-col items-start gap-1">
                     <p className="block antialiased font-sans text-sm leading-normal text-blue-gray-900 font-bold">
-                        {course.title.split(": ")[1]}
+                        {course.title
+                            ? course.title.split(": ")[1]
+                            : "NO COURSE TITLE FOUND"}
                     </p>
                     <p className="block antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal opacity-70">
-                        {course.title.split(": ")[0]}
+                        {course.title
+                            ? course.title.split(": ")[0]
+                            : "No Course Number Found"}
                     </p>
                 </div>
             </td>
@@ -42,7 +46,7 @@ function CourseRow({ course, status, updateRender }) {
             </td>
             <td className="px-4 py-8">
                 <p className="block antialiased text-center font-sans text-sm leading-normal text-blue-gray-900 font-normal">
-                    {course.section}
+                    {course.section ? course.section : "N/A"}
                 </p>
             </td>
             <td className="px-4 py-8">
