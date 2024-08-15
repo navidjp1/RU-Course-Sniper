@@ -7,6 +7,7 @@ import { Signup } from "./screens/Signup";
 import { Settings } from "./screens/Settings";
 import { Purchase } from "./screens/Purchase";
 import { Test } from "./screens/Test";
+import { Toaster } from "sonner";
 import { MantineProvider } from "@mantine/core";
 import { AuthProvider } from "./contexts/authContext/authContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -19,8 +20,9 @@ function App() {
     return (
         <AuthProvider>
             <MantineProvider>
+                <Toaster richColors position="top-left" />
                 {
-                    <div className="bg-slate-800">
+                    <div className="">
                         <BrowserRouter>
                             <Routes>
                                 <Route path="/" element={<Landing />} />

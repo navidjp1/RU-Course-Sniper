@@ -127,11 +127,9 @@ app.post("/api/get_data", async (req, res) => {
     userModel
         .findOne({ username: username })
         .then(async (user) => {
-            const preferences = user.preferences;
-            const restartTime = user.restartTime;
             const RUID = user.RUID;
             const PAC = user.PAC;
-            res.json({ preferences, restartTime, RUID, PAC });
+            res.json({ RUID, PAC });
         })
         .catch((err) => {
             res.json(`Error fetching user data ${err}`);

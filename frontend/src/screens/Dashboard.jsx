@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AddCourse from "../components/AddCourse";
 import { doSignOut } from "../firebase/auth";
+import { toast } from "sonner";
 import { useAuth } from "../contexts/authContext/authContext";
 
 export const Dashboard = () => {
@@ -47,24 +48,24 @@ export const Dashboard = () => {
             .then((response) => {
                 const msg = response.data;
                 if (msg === "Success") {
-                    alert("Successfully started sniping your courses!");
+                    toast.success("Successfully started sniping your courses!");
                     return;
                 }
                 if (msg === "No cred") {
-                    alert(
+                    toast.warning(
                         "You have not entered in your required credentials in order to start sniping. Please do so at the settings page."
                     );
                 } else if (msg === "Invalid login credentials") {
-                    alert(
+                    toast.error(
                         "Your login credentials did not work. Make sure you entered in your correct RUID and birthday in the settings page."
                     );
                 } else if (msg === "Invalid drop IDs") {
-                    alert(
+                    toast.error(
                         "One or more of the courses you intend to drop are courses that you are not currently enrolled in. Please update them and try again."
                     );
                 } else {
                     console.log(msg);
-                    alert("There was an error in the system. Try again later.");
+                    toast.warning("There was an error in the system. Try again later.");
                 }
                 setDisabled(false);
             })
@@ -84,10 +85,10 @@ export const Dashboard = () => {
             .then((response) => {
                 const msg = response.data;
                 if (msg === "Success") {
-                    alert("Successfully stopped sniping your courses!");
+                    toast.success("Successfully stopped sniping your courses!");
                 } else {
                     console.log(msg);
-                    alert("There was an error in the system. Try again later.");
+                    toast.warning("There was an error in the system. Try again later.");
                     setDisabled(true);
                 }
             })
@@ -111,60 +112,60 @@ export const Dashboard = () => {
             {!loading && (
                 <div className="bg-white ">
                     <Header pageNum={1} />
-                    <div className="flex flex-col items-center pt-24 w-screen min-h-screen p-2">
+                    <div className="flex flex-col items-center w-screen min-h-screen p-2 pt-24">
                         <div className="w-3/4">
                             <div className="flex flex-row w-full gap-x-12">
-                                <div className="justify-start text-left w-3/4">
+                                <div className="justify-start w-3/4 text-left">
                                     <h2 className="text-3xl font-bold tracking-tight text-gray-900 ">
                                         Your Courses
                                     </h2>
-                                    <p className="mt-3 text-lg pb-8 leading-8 text-gray-600">
+                                    <p className="pb-8 mt-3 text-lg leading-8 text-gray-600">
                                         You currently have {courses.length} courses on
                                         your list. Your account token balance is [...]
                                     </p>
                                 </div>
-                                <div className="p-4 place-content-center items-center w-1/4">
+                                <div className="items-center w-1/4 p-4 place-content-center">
                                     <AddCourse updateRender={updateRender} />
                                 </div>
                             </div>
-                            <div className="pt-2 pb-4 overflow-scroll px-4 rounded-lg border border-gray-200 shadow-md">
+                            <div className="px-4 pt-2 pb-4 overflow-scroll border border-gray-200 rounded-lg shadow-md">
                                 {courses.length === 0 ? (
                                     <p className="p-32 text-xl">
                                         There are no courses on your snipe list. Add a
                                         course to get started!
                                     </p>
                                 ) : (
-                                    <table className="w-full min-w-max table-auto text-left border-separate border-spacing-y-4">
+                                    <table className="w-full text-left border-separate table-auto min-w-max border-spacing-y-4">
                                         <thead>
                                             <tr>
-                                                <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 px-4 py-4 w-1/2">
-                                                    <p className="block antialiased font-sans text-sm text-blue-gray-900 font-normal leading-none opacity-70">
+                                                <th className="w-1/2 px-4 py-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
+                                                    <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
                                                         Course
                                                     </p>
                                                 </th>
-                                                <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 px-4 py-4">
-                                                    <p className="block antialiased text-center font-sans text-sm text-blue-gray-900 font-normal leading-none opacity-70">
+                                                <th className="px-4 py-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
+                                                    <p className="block font-sans text-sm antialiased font-normal leading-none text-center text-blue-gray-900 opacity-70">
                                                         Index
                                                     </p>
                                                 </th>
-                                                <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 px-4 py-4">
-                                                    <p className="block antialiased text-center font-sans text-sm text-blue-gray-900 font-normal leading-none opacity-70">
+                                                <th className="px-4 py-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
+                                                    <p className="block font-sans text-sm antialiased font-normal leading-none text-center text-blue-gray-900 opacity-70">
                                                         Section
                                                     </p>
                                                 </th>
-                                                <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 px-4 py-4">
-                                                    <p className="block antialiased text-center font-sans text-sm text-blue-gray-900 font-normal leading-none opacity-70">
+                                                <th className="px-4 py-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
+                                                    <p className="block font-sans text-sm antialiased font-normal leading-none text-center text-blue-gray-900 opacity-70">
                                                         Status
                                                     </p>
                                                 </th>
-                                                <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 px-4 py-4">
-                                                    <p className="block antialiased text-center font-sans text-sm text-blue-gray-900 font-normal leading-none opacity-70">
+                                                <th className="px-4 py-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
+                                                    <p className="block font-sans text-sm antialiased font-normal leading-none text-center text-blue-gray-900 opacity-70">
                                                         Action
                                                     </p>
                                                 </th>
 
-                                                <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 px-4 py-4">
-                                                    <p className="block antialiased text-center font-sans text-sm text-blue-gray-900 font-normal leading-none opacity-70"></p>
+                                                <th className="px-4 py-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
+                                                    <p className="block font-sans text-sm antialiased font-normal leading-none text-center text-blue-gray-900 opacity-70"></p>
                                                 </th>
                                             </tr>
                                         </thead>

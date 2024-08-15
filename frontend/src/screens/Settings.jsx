@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../contexts/authContext/authContext";
-import axios from "axios";
+import { toast } from "sonner";
 import Header from "../components/Header";
 import SettingsInput from "../components/SettingsInput";
 import { updateUserDetails } from "../firebase/auth";
+import { fetchUserCreds } from "../lib/fetchData";
 
 export const Settings = () => {
     const { currentUser } = useAuth();
@@ -21,17 +22,14 @@ export const Settings = () => {
         setUsername(username);
         setEmail(email);
 
-        await axios
-            .post("http://localhost:3000/api/get_data", { username })
-            .then((response) => {
-                setRUID(response.data.RUID);
-                setPAC(response.data.PAC);
-            })
-            .catch((err) => console.log(`Error fetching courses: ${err}`))
-            .finally(() => setLoading(false));
+        const { RUID, PAC } = await fetchUserCreds(username);
+        setRUID(RUID);
+        setPAC(PAC);
+        setLoading(false);
     };
 
     useEffect(() => {
+        setLoading(true);
         fetchUserData();
     }, []);
 
@@ -48,13 +46,13 @@ export const Settings = () => {
         const currentEmail = currentUser.email;
 
         if (username === currentUsername && email === currentEmail && password === "") {
-            alert("No changes have been made");
+            toast.error("No changes have been made");
             return;
         }
 
         await updateUserDetails(username, email, password);
 
-        alert("Successfully updated your account details!");
+        toast.success("Successfully updated your account details!");
 
         // const userData = {
         //     username,
@@ -65,7 +63,7 @@ export const Settings = () => {
         // console.log(userData);
 
         // if (RUID != "" && RUID.match(/^[/\d]{9}?$/) == null) {
-        //     alert("Please enter your 9-digit RUID.");
+        //     toast.error("Please enter your 9-digit RUID.");
         //     return;
         // }
 
@@ -73,26 +71,26 @@ export const Settings = () => {
         //     .post("http://localhost:3000/settings", userData)
         //     .then((result) => {
         //         if (result.data === "Incorrect password") {
-        //             alert("Incorrect password, type in your correct current password");
+        //             toast.error("Incorrect password, type in your correct current password");
         //         }
 
         //         if (result.data === "Success") {
-        //             alert("Successfully updated your info!");
+        //             toast.success("Successfully updated your info!");
         //         }
         //     })
         //     .catch((err) => console.log(err));
     };
 
     return (
-        <div className="bg-white w-screen min-h-screen">
+        <div className="w-screen min-h-screen bg-white">
             <Header pageNum={3} />
             {!loading && (
-                <div className="flex  justify-center py-20 px-12 gap-x-4">
-                    <div className="pt-2 pb-4 w-2/5 overflow-scroll rounded-lg border border-gray-200 shadow-md bg-white">
+                <div className="flex justify-center px-12 py-20 gap-x-4">
+                    <div className="w-2/5 pt-2 pb-4 overflow-scroll bg-white border border-gray-200 rounded-lg shadow-md">
                         <div className="flex flex-col items-center p-4 ">
-                            <div className="w-full  bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                            <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                                 <div className="space-y-4 md:space-y-6 sm:p-8">
-                                    <h1 className="text-xl pb-4 font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                                    <h1 className="pb-4 text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                                         Account Details
                                     </h1>
 
@@ -139,11 +137,11 @@ export const Settings = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="pt-2 pb-4 w-2/5 overflow-scroll rounded-lg border border-gray-200 shadow-md bg-white">
+                    <div className="w-2/5 pt-2 pb-4 overflow-scroll bg-white border border-gray-200 rounded-lg shadow-md">
                         <div className="flex flex-col items-center p-4">
                             <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                                 <div className="space-y-4 md:space-y-6 sm:p-8">
-                                    <h1 className="text-xl pb-4 font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                                    <h1 className="pb-4 text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                                         Credentials
                                     </h1>
 
@@ -168,7 +166,7 @@ export const Settings = () => {
                                             hidden={true}
                                         />
 
-                                        <div className="flex w-2/5 items-end ">
+                                        <div className="flex items-end w-2/5 ">
                                             <button
                                                 className="bg-gray-50 border text-sm border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-1.5 hover:bg-red-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                 type="submit"

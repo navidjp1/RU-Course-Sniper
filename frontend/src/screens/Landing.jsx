@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signIn } from "../firebase/auth";
+import { toast } from "sonner";
 
 export const Landing = () => {
     const [email, setEmail] = useState("");
@@ -22,14 +23,14 @@ export const Landing = () => {
             } catch (error) {
                 console.log("Error:" + error);
                 setIsSigningIn(false);
-                alert("Invalid username/password. Try again.");
+                toast.error("Invalid username/password. Try again.");
             }
         }
     };
 
     return (
-        <div className="bg-white w-screen">
-            <div className="flex items-center justify-center min-h-screen py-12 px-24 ">
+        <div className="w-screen bg-white">
+            <div className="flex items-center justify-center min-h-screen px-24 py-12 ">
                 <div className="w-3/5 p-6 text-center">
                     <h2 className="text-3xl font-bold tracking-tight text-gray-900 ">
                         RU Course Sniper
@@ -40,27 +41,27 @@ export const Landing = () => {
                         laborum.
                     </p>
                 </div>
-                <div className="pt-2 pb-4 w-2/5 overflow-scroll rounded-lg border border-gray-200 shadow-md bg-white">
+                <div className="w-2/5 pt-2 pb-4 overflow-scroll bg-white border border-gray-200 rounded-lg shadow-md">
                     <div className="flex flex-col items-center justify-center p-4">
                         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                             <div className="space-y-4 md:space-y-6 sm:p-8">
-                                <h1 className="text-xl pb-4 font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                                <h1 className="pb-4 text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                                     Sign in to your account
                                 </h1>
 
                                 <button className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 hover:text-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white font-semibold dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                     Sign in with Google
                                 </button>
-                                <div className="my-6 flex items-center">
+                                <div className="flex items-center my-6">
                                     <div
-                                        className="mr-3 grow border-t border-solid border-gray-400"
+                                        className="mr-3 border-t border-gray-400 border-solid grow"
                                         aria-hidden="true"
                                     ></div>
                                     <div className="text-gray-400">
                                         Or, sign in with your email
                                     </div>
                                     <div
-                                        className="ml-3 grow border-t border-solid border-gray-400"
+                                        className="ml-3 border-t border-gray-400 border-solid grow"
                                         aria-hidden="true"
                                     ></div>
                                 </div>
@@ -71,7 +72,7 @@ export const Landing = () => {
                                     <div>
                                         <label
                                             htmlFor="email"
-                                            className="block mb-2 text-left text-sm font-medium text-gray-900 dark:text-white"
+                                            className="block mb-2 text-sm font-medium text-left text-gray-900 dark:text-white"
                                         >
                                             Email
                                         </label>
@@ -89,7 +90,7 @@ export const Landing = () => {
                                     <div>
                                         <label
                                             htmlFor="password"
-                                            className="block mb-2 text-sm text-left font-medium text-gray-900 dark:text-white"
+                                            className="block mb-2 text-sm font-medium text-left text-gray-900 dark:text-white"
                                         >
                                             Password
                                         </label>
@@ -120,7 +121,7 @@ export const Landing = () => {
                                                 ></input>
                                                 <label
                                                     htmlFor="remember"
-                                                    className="pl-2 hover:cursor-pointer text-gray-500 dark:text-gray-300"
+                                                    className="pl-2 text-gray-500 hover:cursor-pointer dark:text-gray-300"
                                                 >
                                                     Remember me
                                                 </label>
@@ -142,7 +143,7 @@ export const Landing = () => {
                                         {isSigningIn ? "Signing In..." : "Sign In"}
                                     </button>
 
-                                    <p className="text-md font-light text-gray-500 dark:text-gray-400">
+                                    <p className="font-light text-gray-500 text-md dark:text-gray-400">
                                         Don’t have an account yet?{" "}
                                         <a
                                             href="/signup"

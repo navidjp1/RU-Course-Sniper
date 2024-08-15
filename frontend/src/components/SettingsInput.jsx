@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import PasswordModal from "./PasswordModal";
 import { useAuth } from "../contexts/authContext/authContext";
 import { reauthenticateUser } from "../firebase/auth";
+import { toast } from "sonner";
 import HiddenInput from "./HiddenInput";
 
 function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
@@ -39,9 +40,9 @@ function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
             setIsEditable(true);
             setIsModalOpen(false);
         } else if (success.message === "incorrect") {
-            alert("The password is incorrect, try again");
+            toast.error("The password is incorrect, try again");
         } else {
-            alert("Error in the system, try again later");
+            toast.warning("Error in the system, try again later");
         }
     };
 
@@ -56,7 +57,7 @@ function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
         <div ref={containerRef}>
             <label
                 htmlFor={type}
-                className="flex justify-start mb-2 text-sm text-left font-medium text-white"
+                className="flex justify-start mb-2 text-sm font-medium text-left text-white"
             >
                 {label}
             </label>
@@ -90,7 +91,7 @@ function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
                 )}
 
                 <button
-                    className="justify-end hover:cursor-pointer pl-2"
+                    className="justify-end pl-2 hover:cursor-pointer"
                     onClick={toggleEdit}
                     type="button"
                 >

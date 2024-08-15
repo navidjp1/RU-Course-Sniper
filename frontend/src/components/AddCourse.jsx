@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../contexts/authContext/authContext";
+import { toast } from "sonner";
 import axios from "axios";
 import Modal from "./Modal";
 
@@ -15,7 +16,7 @@ const AddCourse = ({ updateRender }) => {
         event.preventDefault();
 
         if (courseID.match(/^[/\d]{5}?$/) == null) {
-            alert("Please enter a valid 5-digit course index.");
+            toast.error("Please enter a valid 5-digit course index.");
             return;
         }
 
@@ -26,7 +27,7 @@ const AddCourse = ({ updateRender }) => {
             });
             for (const dropID of dropIDArray) {
                 if (dropID.match(/^[/\d]{5}?$/) == null) {
-                    alert("Please enter a valid 5-digit course index.");
+                    toast.error("Please enter a valid 5-digit course index.");
                     return;
                 }
             }
@@ -59,9 +60,9 @@ const AddCourse = ({ updateRender }) => {
                 if (result.data === "Success") {
                     updateRender();
                     setOpen(false); // Close the modal
-                    alert("Successfully added course");
+                    toast.success("Successfully added course");
                 } else if (result.data === "Duplicate") {
-                    alert("You are already sniping this course");
+                    toast.error("You are already sniping this course");
                 } else {
                     console.log("Error: " + result.data);
                 }
@@ -78,7 +79,7 @@ const AddCourse = ({ updateRender }) => {
     return (
         <>
             <button
-                className="h-12 w-48 bg-blue-500 rounded-md border text-center  text-xl font-sans text-white border-blue-gray-50 p-1 font-bold"
+                className="w-48 h-12 p-1 font-sans text-xl font-bold text-center text-white bg-blue-500 border rounded-md border-blue-gray-50"
                 onClick={() => setOpen(true)}
             >
                 Add Course
@@ -94,7 +95,7 @@ const AddCourse = ({ updateRender }) => {
                         <br />
                         <form onSubmit={handleSubmit}>
                             <div className="mb-4">
-                                <label className="block text-gray-700 text-sm font-bold mb-2">
+                                <label className="block mb-2 text-sm font-bold text-gray-700">
                                     Course Index:
                                 </label>
                                 <input
@@ -104,19 +105,19 @@ const AddCourse = ({ updateRender }) => {
                                     value={courseID}
                                     onChange={(e) => setID(e.target.value)}
                                     placeholder="Enter course index (5 digits)"
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
                                     required
                                 />
                             </div>
                             <div className="mb-4">
-                                <label className="block text-gray-700 text-sm font-bold mb-2">
+                                <label className="block mb-2 text-sm font-bold text-gray-700">
                                     Campus:
                                 </label>
                                 <select
                                     name="campus"
                                     value={campus}
                                     onChange={(e) => setCampus(e.target.value)}
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
                                 >
                                     <option>New Brunswick</option>
                                     <option>Newark</option>
@@ -124,14 +125,14 @@ const AddCourse = ({ updateRender }) => {
                                 </select>
                             </div>
                             <div className="mb-4">
-                                <label className="block text-gray-700 text-sm font-bold mb-2">
+                                <label className="block mb-2 text-sm font-bold text-gray-700">
                                     Semester:
                                 </label>
                                 <select
                                     name="semester"
                                     value={semester}
                                     onChange={(e) => setSemester(e.target.value)}
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
                                 >
                                     <option>Spring</option>
                                     <option>Summer</option>
@@ -140,21 +141,21 @@ const AddCourse = ({ updateRender }) => {
                                 </select>
                             </div>
                             <div className="mb-8">
-                                <label className="block text-gray-700 text-sm font-bold mb-2">
+                                <label className="block mb-2 text-sm font-bold text-gray-700">
                                     Year:
                                 </label>
                                 <select
                                     name="year"
                                     value={year}
                                     onChange={(e) => setYear(e.target.value)}
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
                                 >
                                     <option>2024</option>
                                     <option>2025</option>
                                 </select>
                             </div>
                             <div className="mb-4">
-                                <label className="block text-gray-700 text-sm font-bold mb-2">
+                                <label className="block mb-2 text-sm font-bold text-gray-700">
                                     Courses to Drop (optional):
                                 </label>
                                 <input
@@ -164,18 +165,18 @@ const AddCourse = ({ updateRender }) => {
                                     value={dropIDs}
                                     onChange={(e) => setDropIDs(e.target.value)}
                                     placeholder="Enter course indices to drop separated by commas"
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
                                 />
                             </div>
                             <div className="flex gap-4">
-                                <button type="submit" className="btn btn-danger w-full">
+                                <button type="submit" className="w-full btn btn-danger">
                                     Add
                                 </button>
                             </div>
                         </form>
                         <br />
                         <button
-                            className="btn btn-light w-full"
+                            className="w-full btn btn-light"
                             onClick={() => setOpen(false)}
                         >
                             Cancel
