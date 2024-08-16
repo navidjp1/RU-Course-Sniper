@@ -5,13 +5,6 @@ function PasswordModal({ isOpen, onClose, onConfirm }) {
 
     if (!isOpen) return null;
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (!currentPassword) return;
-        onConfirm(currentPassword);
-        setCurrentPassword("");
-    };
-
     const handleBackdropClick = () => {
         onClose();
     };

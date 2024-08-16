@@ -2,19 +2,13 @@ import axios from "axios";
 import { Trash2 } from "react-feather";
 import { useAuth } from "../contexts/authContext/authContext";
 import { useState } from "react";
+import ConfirmModal from "./ConfirmModal";
 const DeleteCourse = ({ updateRender, courseID }) => {
     const { currentUser } = useAuth();
     const [disabled, setDisabled] = useState(false);
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        setDisabled(true);
-        const userConfirm = confirm("Are you sure you want to delete this course?");
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
-        if (!userConfirm) {
-            setDisabled(false);
-            return;
-        }
-
+    const deleteCourse = async () => {
         const username = currentUser.displayName;
         const userData = { username, courseID };
 
@@ -28,17 +22,36 @@ const DeleteCourse = ({ updateRender, courseID }) => {
                 }
             })
             .catch((err) => console.log(err));
+
+        setIsConfirmModalOpen(false);
     };
 
     return (
-        <div className="relative align-middle place-content-center select-none font-sans font-medium text-center uppercase transition-all ">
+        <div className="relative font-sans font-medium text-center align-middle transition-all select-none place-content-center ">
             <button
                 className="disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none w-10 max-w-[40px] h-10 max-h-[40px] rounded-lg text-xs hover:text-red-500"
-                onClick={handleSubmit}
+                onClick={(e) => {
+                    e.preventDefault();
+                    setDisabled(true);
+                    setIsConfirmModalOpen(true);
+                }}
                 disabled={disabled}
             >
                 <Trash2 />
             </button>
+            <div>
+                <ConfirmModal
+                    isOpen={isConfirmModalOpen}
+                    onClose={() => {
+                        setDisabled(false);
+                        setIsConfirmModalOpen(false);
+                    }}
+                    onConfirm={async () => {
+                        deleteCourse();
+                    }}
+                    message="Are you sure you want to delete this course?"
+                />
+            </div>
         </div>
     );
 };

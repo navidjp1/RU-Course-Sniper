@@ -3,6 +3,7 @@ import { useAuth } from "../contexts/authContext/authContext";
 import { toast } from "sonner";
 import axios from "axios";
 import Modal from "./Modal";
+import ConfirmModal from "./ConfirmModal";
 
 const AddCourse = ({ updateRender }) => {
     const { currentUser } = useAuth();
@@ -11,6 +12,8 @@ const AddCourse = ({ updateRender }) => {
     const [campus, setCampus] = useState("New Brunswick");
     const [semester, setSemester] = useState("Spring");
     const [year, setYear] = useState("2024");
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const [isDupeModalOpen, setIsDupeModalOpen] = useState(false);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -20,9 +23,8 @@ const AddCourse = ({ updateRender }) => {
             return;
         }
 
-        let dropIDArray = [];
         if (dropIDs !== "") {
-            dropIDArray = dropIDs.split(",").map(function (id) {
+            const dropIDArray = dropIDs.split(",").map(function (id) {
                 return id.trim();
             });
             for (const dropID of dropIDArray) {
@@ -33,25 +35,30 @@ const AddCourse = ({ updateRender }) => {
             }
         }
 
-        const userConfirm = confirm("Are you sure you want to add this course?");
+        setIsConfirmModalOpen(true);
+    };
 
-        if (!userConfirm) return;
+    const checkIfDuplicate = async () => {
+        try {
+            const response = await axios.post("http://localhost:3000/api/check_course", {
+                courseID,
+            });
+            if (response.data === "Course not in DB") {
+                setIsDupeModalOpen(true);
+            } else {
+                addCourseToDB();
+            }
+        } catch (error) {
+            console.log(err);
+        }
+        setIsConfirmModalOpen(false);
+    };
 
-        let proceed = true;
-        await axios
-            .post("http://localhost:3000/api/check_course", { courseID })
-            .then((result) => {
-                if (result.data === "Course not in DB") {
-                    proceed = confirm(
-                        "This course was not found. Are you sure you entered in the right index number? Click 'OK' to add the course regardless."
-                    );
-                }
-            })
-            .catch((err) => console.log(err));
-
-        if (!proceed) return;
-
+    const addCourseToDB = async () => {
         const username = currentUser.displayName;
+        const dropIDArray = dropIDs.split(",").map(function (id) {
+            return id.trim();
+        });
         const userData = { username, courseID, dropIDArray, campus, semester, year };
 
         await axios
@@ -184,6 +191,27 @@ const AddCourse = ({ updateRender }) => {
                     </div>
                 </div>
             </Modal>
+            <div>
+                <ConfirmModal
+                    isOpen={isConfirmModalOpen}
+                    onClose={() => setIsConfirmModalOpen(false)}
+                    onConfirm={async () => {
+                        await checkIfDuplicate();
+                    }}
+                    message="Are you sure you want to add this course?"
+                />
+            </div>
+            <div>
+                <ConfirmModal
+                    isOpen={isDupeModalOpen}
+                    onClose={() => setIsDupeModalOpen(false)}
+                    onConfirm={() => {
+                        setIsDupeModalOpen(false);
+                        addCourseToDB();
+                    }}
+                    message="This course was not found. Are you sure you entered in the right index number? Click 'Confirm' to add the course regardless."
+                />
+            </div>
         </>
     );
 };

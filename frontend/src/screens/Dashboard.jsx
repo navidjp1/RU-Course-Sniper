@@ -98,15 +98,6 @@ export const Dashboard = () => {
             });
     };
 
-    const handleLogout = async (event) => {
-        event.preventDefault();
-        const userConfirm = confirm("Are you sure you want to logout?");
-        if (userConfirm) {
-            await doSignOut();
-            navigate("/");
-        }
-    };
-
     return (
         <main className="dashboard">
             {!loading && (
