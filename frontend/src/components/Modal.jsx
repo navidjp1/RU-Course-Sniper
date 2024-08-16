@@ -1,30 +1,27 @@
-import { X } from "react-feather";
+function PasswordModal({ isOpen, children }) {
+    if (!isOpen) return null;
 
-export default function Modal({ open, onClose, children }) {
+    const handleBackdropClick = () => {
+        onClose();
+    };
+
+    const handleModalContentClick = (event) => {
+        event.stopPropagation();
+    };
+
     return (
-        // backdrop
         <div
-            className={`
-                fixed inset-0 flex justify-center items-center transition-colors
-                ${open ? "visible bg-black/20" : "invisible"}
-            `}
+            className="fixed inset-0 flex justify-center pt-8 bg-black bg-opacity-50"
+            onClick={handleBackdropClick}
         >
-            {/* modal */}
             <div
-                onClick={(e) => e.stopPropagation()}
-                className={`
-                    bg-white rounded-xl shadow px-8 py-16 transition-all
-                    ${open ? "scale-100 opacity-100" : "scale-125 opacity-0"}
-                `}
+                className={`flex items-center justify-center flex-col bg-white p-6 h-fit w-1/3 rounded shadow-md fade-in`}
+                onClick={handleModalContentClick}
             >
-                <button
-                    onClick={onClose}
-                    className="absolute top-2 right-2 p-1 rounded-lg text-gray-400 bg-white hover:bg-gray-50 hover:text-gray-600"
-                >
-                    <X />
-                </button>
                 {children}
             </div>
         </div>
     );
 }
+
+export default PasswordModal;

@@ -1,11 +1,10 @@
 import React from "react";
-import CourseRow from "../components/CourseRow";
+import { CourseRow, CourseTitle } from "../components/CourseTable";
 import Header from "../components/Header";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AddCourse from "../components/AddCourse";
-import { doSignOut } from "../firebase/auth";
+import AddCourseModal from "../components/AddCourseModal";
 import { toast } from "sonner";
 import { useAuth } from "../contexts/authContext/authContext";
 
@@ -14,6 +13,7 @@ export const Dashboard = () => {
     const [courses, setCourses] = useState({});
     const [loading, setLoading] = useState(true);
     const [disabled, setDisabled] = useState(false);
+    const [isCourseModalOpen, setIsCourseModalOpen] = useState(false);
     const [update, setUpdate] = useState(false);
     const navigate = useNavigate();
 
@@ -116,7 +116,17 @@ export const Dashboard = () => {
                                     </p>
                                 </div>
                                 <div className="items-center w-1/4 p-4 place-content-center">
-                                    <AddCourse updateRender={updateRender} />
+                                    <button
+                                        className="w-48 h-12 p-1 font-sans text-xl font-bold text-center text-white bg-blue-500 border rounded-md border-blue-gray-50"
+                                        onClick={() => setIsCourseModalOpen(true)}
+                                    >
+                                        Add Course
+                                    </button>
+                                    <AddCourseModal
+                                        isOpen={isCourseModalOpen}
+                                        onClose={() => setIsCourseModalOpen(false)}
+                                        updateRender={updateRender}
+                                    />
                                 </div>
                             </div>
                             <div className="px-4 pt-2 pb-4 overflow-scroll border border-gray-200 rounded-lg shadow-md">
@@ -129,35 +139,30 @@ export const Dashboard = () => {
                                     <table className="w-full text-left border-separate table-auto min-w-max border-spacing-y-4">
                                         <thead>
                                             <tr>
-                                                <th className="w-1/2 px-4 py-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
-                                                    <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                                                        Course
-                                                    </p>
-                                                </th>
-                                                <th className="px-4 py-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
-                                                    <p className="block font-sans text-sm antialiased font-normal leading-none text-center text-blue-gray-900 opacity-70">
-                                                        Index
-                                                    </p>
-                                                </th>
-                                                <th className="px-4 py-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
-                                                    <p className="block font-sans text-sm antialiased font-normal leading-none text-center text-blue-gray-900 opacity-70">
-                                                        Section
-                                                    </p>
-                                                </th>
-                                                <th className="px-4 py-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
-                                                    <p className="block font-sans text-sm antialiased font-normal leading-none text-center text-blue-gray-900 opacity-70">
-                                                        Status
-                                                    </p>
-                                                </th>
-                                                <th className="px-4 py-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
-                                                    <p className="block font-sans text-sm antialiased font-normal leading-none text-center text-blue-gray-900 opacity-70">
-                                                        Action
-                                                    </p>
-                                                </th>
-
-                                                <th className="px-4 py-4 border-y border-blue-gray-100 bg-blue-gray-50/50">
-                                                    <p className="block font-sans text-sm antialiased font-normal leading-none text-center text-blue-gray-900 opacity-70"></p>
-                                                </th>
+                                                <CourseTitle
+                                                    title="Course"
+                                                    thStyles={"w-1/2"}
+                                                />
+                                                <CourseTitle
+                                                    title="Index"
+                                                    pStyles={"text-center"}
+                                                />
+                                                <CourseTitle
+                                                    title="Section"
+                                                    pStyles={"text-center"}
+                                                />
+                                                <CourseTitle
+                                                    title="Status"
+                                                    pStyles={"text-center"}
+                                                />
+                                                <CourseTitle
+                                                    title="Action"
+                                                    pStyles={"text-center"}
+                                                />
+                                                <CourseTitle
+                                                    title=""
+                                                    pStyles={"text-center"}
+                                                />
                                             </tr>
                                         </thead>
                                         {courses.map((course) => (

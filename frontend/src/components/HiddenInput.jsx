@@ -8,6 +8,7 @@ export default function HiddenInput({
     extraStyles,
     isEditable,
     inputRef,
+    handleKeyDown,
 }) {
     const [hide, setHide] = useState(true);
 
@@ -25,11 +26,12 @@ export default function HiddenInput({
                 id={type}
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
-                className="bg-transparent justify-start w-full outline-none"
+                className="justify-start w-full bg-transparent outline-none"
                 placeholder={placeholder}
                 required=""
                 readOnly={!isEditable}
                 ref={inputRef}
+                onKeyDown={handleKeyDown}
             />
             <button
                 className="justify-end hover:cursor-pointer"
@@ -66,7 +68,7 @@ export default function HiddenInput({
                         viewBox="0 0 24 24"
                         strokeWidth={1.5}
                         stroke="currentColor"
-                        className="size-6 text-red-500"
+                        className="text-red-500 size-6"
                     >
                         <path
                             strokeLinecap="round"

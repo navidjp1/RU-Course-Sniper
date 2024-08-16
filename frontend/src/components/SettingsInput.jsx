@@ -9,6 +9,7 @@ function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
     const { currentUser } = useAuth();
     const [isEditable, setIsEditable] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [userEnteredPassword, setUserEnteredPassword] = useState("");
     const inputRef = useRef(null);
     const containerRef = useRef(null);
 
@@ -27,18 +28,17 @@ function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
         }
     };
 
-    const handleClickOutside = (event) => {
-        if (containerRef.current && !containerRef.current.contains(event.target)) {
-            setIsEditable(false);
-        }
-    };
+    const handleConfirmPassword = async (e) => {
+        e.preventDefault();
+        if (!userEnteredPassword) return;
+        setUserEnteredPassword("");
 
-    const handleConfirmPassword = async (currentPassword) => {
-        const success = await reauthenticateUser(currentPassword);
+        const success = await reauthenticateUser(userEnteredPassword);
 
         if (success.message === "success") {
             setIsEditable(true);
             setIsModalOpen(false);
+            toast.success("You can edit your password now");
         } else if (success.message === "incorrect") {
             toast.error("The password is incorrect, try again");
         } else {
@@ -46,8 +46,32 @@ function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
         }
     };
 
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            handleConfirmPassword(e);
+        } else if (e.key === "Escape") {
+            setIsModalOpen(false);
+        }
+    };
+
+    useEffect(() => {
+        if (isModalOpen) {
+            document.addEventListener("keydown", handleKeyDown);
+        }
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [isModalOpen]);
+
+    const handleClickOutside = (event) => {
+        if (containerRef.current && !containerRef.current.contains(event.target)) {
+            setIsEditable(false);
+        }
+    };
+
     useEffect(() => {
         document.addEventListener("mousedown", handleClickOutside);
+
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
@@ -116,8 +140,14 @@ function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
             <div>
                 <PasswordModal
                     isOpen={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
-                    onConfirm={handleConfirmPassword}
+                    onClose={() => {
+                        setUserEnteredPassword("");
+                        setIsModalOpen(false);
+                    }}
+                    onConfirm={(e) => handleConfirmPassword(e)}
+                    value={userEnteredPassword}
+                    setValue={setUserEnteredPassword}
+                    handleKeyDown={handleKeyDown}
                 />
             </div>
         </div>

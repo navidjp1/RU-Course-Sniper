@@ -12,7 +12,7 @@ function Header({ pageNum }) {
 
     return (
         <div>
-            <header className="fixed top-0 w-full px-16 py-4 bg-white opacity-75">
+            <header className="sticky top-0 w-full px-16 py-4 bg-white opacity-75">
                 <div className="flex justify-between text-xl">
                     <div className="flex items-center justify-start">
                         <p className="text-xl">RU</p>

@@ -1,5 +1,5 @@
 import DeleteCourse from "./DeleteCourse";
-function CourseRow({ course, status, updateRender }) {
+export function CourseRow({ course, status, updateRender }) {
     const statusConfig = {
         1: {
             label: "Sniping",
@@ -24,28 +24,33 @@ function CourseRow({ course, status, updateRender }) {
     const { label, bgColor, textColor, buttonMsg } = statusConfig[status] || {};
 
     return (
-        <tr className="mx-auto mt-16 max-w-2xl rounded-3xl ring-1 ring-gray-200">
+        <tr className="max-w-2xl mx-auto mt-16 rounded-3xl ring-1 ring-gray-200">
             <td className="px-4 py-8 ">
                 <div className="flex flex-col items-start gap-1">
-                    <p className="block antialiased font-sans text-sm leading-normal text-blue-gray-900 font-bold">
+                    <p className="block font-sans text-sm antialiased font-bold leading-normal text-blue-gray-900">
                         {course.title
                             ? course.title.split(": ")[1]
                             : "NO COURSE TITLE FOUND"}
                     </p>
-                    <p className="block antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal opacity-70">
+                    <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900 opacity-70">
                         {course.title
                             ? course.title.split(": ")[0]
                             : "No Course Number Found"}
                     </p>
+                    <p className="block font-sans text-xs antialiased font-normal leading-normal text-blue-gray-900 opacity-70">
+                        {course.dropIDs
+                            ? `Courses to Drop: ${course.dropIDs}`
+                            : "Not Dropping Any Courses"}
+                    </p>
                 </div>
             </td>
             <td className="px-4 py-8">
-                <p className="block antialiased font-sans text-sm text-center leading-normal text-blue-gray-900 font-normal">
+                <p className="block font-sans text-sm antialiased font-normal leading-normal text-center text-blue-gray-900">
                     {course.id}
                 </p>
             </td>
             <td className="px-4 py-8">
-                <p className="block antialiased text-center font-sans text-sm leading-normal text-blue-gray-900 font-normal">
+                <p className="block font-sans text-sm antialiased font-normal leading-normal text-center text-blue-gray-900">
                     {course.section ? course.section : "N/A"}
                 </p>
             </td>
@@ -61,7 +66,7 @@ function CourseRow({ course, status, updateRender }) {
             </td>
             <td className="px-4 py-8">
                 <div className="flex items-center gap-3">
-                    <button className="h-9 w-full bg-blue-500			 rounded-md border text-center flex-center text-sm font-sans text-white border-blue-gray-50 p-1">
+                    <button className="w-full p-1 font-sans text-sm text-center text-white bg-blue-500 border rounded-md h-9 flex-center border-blue-gray-50">
                         {buttonMsg}
                     </button>
                 </div>
@@ -74,4 +79,16 @@ function CourseRow({ course, status, updateRender }) {
     );
 }
 
-export default CourseRow;
+export function CourseTitle({ title, thStyles, pStyles }) {
+    return (
+        <th
+            className={`${thStyles} px-4 py-4 border-y border-blue-gray-100 bg-blue-gray-50/50`}
+        >
+            <p
+                className={` ${pStyles} block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70`}
+            >
+                {title}
+            </p>
+        </th>
+    );
+}

@@ -1,16 +1,24 @@
-import { useState, useEffect } from "react";
-import HiddenInput from "./HiddenInput";
-function PasswordModal({ isOpen, onClose, onConfirm, message }) {
-    const [currentPassword, setCurrentPassword] = useState("");
-
+import { useEffect } from "react";
+function ConfirmModal({ isOpen, onClose, onConfirm, message }) {
     if (!isOpen) return null;
 
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-    //     if (!currentPassword) return;
-    //     onConfirm(currentPassword);
-    //     setCurrentPassword("");
-    // };
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === "Enter") {
+                onConfirm();
+            } else if (e.key === "Escape") {
+                onClose();
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener("keydown", handleKeyDown);
+        }
+
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, []);
 
     const handleBackdropClick = () => {
         onClose();
@@ -53,4 +61,4 @@ function PasswordModal({ isOpen, onClose, onConfirm, message }) {
     );
 }
 
-export default PasswordModal;
+export default ConfirmModal;

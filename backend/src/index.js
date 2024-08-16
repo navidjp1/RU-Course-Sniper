@@ -34,13 +34,15 @@ app.post("/api/get_courses", async (req, res) => {
         const courseDetails = await Promise.all(
             idObjects.map(async (obj) => {
                 const id = obj.add;
+                const dropIDs = obj.drop.length === 0 ? null : obj.drop.join(", ");
                 const idData = await courseModel.findOne({ index: id });
                 if (idData) {
                     const section = idData.section;
                     const title = idData.name;
-                    return { id, section, title };
+
+                    return { id, section, title, dropIDs };
                 } else {
-                    return { id, section: null, title: null };
+                    return { id, section: null, title: null, dropIDs };
                 }
             })
         );
@@ -71,7 +73,7 @@ app.post("/api/check_course", async (req, res) => {
 });
 
 app.post("/api/add", async (req, res) => {
-    const { username, courseID, dropIDArray } = req.body;
+    const { username, courseID, dropIDs } = req.body;
 
     userModel
         .findOne({ username: username })
@@ -82,7 +84,7 @@ app.post("/api/add", async (req, res) => {
                 res.json("Duplicate");
                 return;
             }
-            idObjects.push({ add: courseID, drop: dropIDArray });
+            idObjects.push({ add: courseID, drop: dropIDs });
             user.testedLogin = false;
             await user.save();
             res.json("Success");
