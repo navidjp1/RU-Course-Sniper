@@ -77,6 +77,7 @@ function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
                         placeholder={placeholder}
                         isEditable={isEditable}
                         inputRef={inputRef}
+                        onConfirm={toggleEdit}
                     ></HiddenInput>
                 ) : (
                     <input
@@ -94,6 +95,10 @@ function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
                         required=""
                         readOnly={!isEditable}
                         ref={inputRef}
+                        autoComplete="off"
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") toggleEdit();
+                        }}
                     ></input>
                 )}
 

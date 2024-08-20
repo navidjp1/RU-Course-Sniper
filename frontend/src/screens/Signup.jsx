@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signUp } from "../firebase/auth";
 import { toast } from "sonner";
+import { registerUsername } from "../api/registerData";
 import axios from "axios";
 
 export const Signup = () => {
@@ -36,24 +37,15 @@ export const Signup = () => {
             return;
         }
 
-        const userData = { username, email, password };
-
         if (!isSigningUp) {
             setIsSigningUp(true);
             const success = await signUp(username, email, password);
             if (success) {
-                await axios
-                    .post("http://localhost:3000/api/register_user_data", userData)
-                    .then((result) => {
-                        if (result.data === "Success") {
-                            toast.success("Successfully signed up!");
-                            navigate("/");
-                        } else {
-                            toast.warning("There was an error in the system. Try again.");
-                            console.log(result.data);
-                        }
-                    })
-                    .catch((err) => console.log("Error sending API request: " + err));
+                const response = await registerUsername(username);
+                if (response.status === 200) {
+                    toast.success("Successfully signed up!");
+                    navigate("/");
+                }
             } else {
                 toast.info("You already have an account. Please log in.");
             }

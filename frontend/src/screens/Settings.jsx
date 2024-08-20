@@ -3,25 +3,27 @@ import { useAuth } from "../contexts/authContext";
 import { toast } from "sonner";
 import Header from "../components/Header";
 import SettingsInput from "../components/SettingsInput";
-import { updateUserDetails } from "../firebase/auth";
+import { deleteAccount, updateUserDetails } from "../firebase/auth";
 import { fetchUserCreds } from "../api/fetchData";
+import { deleteCreds } from "../api/deleteData";
+import { updateCreds } from "../api/updateData";
+import ConfirmModal from "../components/ConfirmModal";
 
 export const Settings = () => {
     const { currentUser } = useAuth();
-    const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
+    const currentUsername = currentUser.displayName;
+    const currentEmail = currentUser.email;
+    const [username, setUsername] = useState(currentUsername);
+    const [email, setEmail] = useState(currentEmail);
     const [password, setPassword] = useState("");
     const [RUID, setRUID] = useState("");
     const [PAC, setPAC] = useState("");
     const [isSaving, setIsSaving] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [isDelAccModalOpen, setIsDelAccModalOpen] = useState(false);
+    const [isDelCredModalOpen, setIsDelCredModalOpen] = useState(false);
 
     const fetchUserData = async () => {
-        const username = currentUser.displayName;
-        const email = currentUser.email;
-        setUsername(username);
-        setEmail(email);
-
         const { RUID, PAC } = await fetchUserCreds(username);
         setRUID(RUID);
         setPAC(PAC);
@@ -33,17 +35,55 @@ export const Settings = () => {
         fetchUserData();
     }, []);
 
-    // useEffect(() => {
-    //     console.log("RUID OR PAC CHANGED");
-    // }, [RUID, PAC]);
+    const deleteCredentials = async (event) => {
+        const response = await deleteCreds(currentUsername);
 
-    const deleteCredentials = async (event) => {};
+        if (response.status === 200) {
+            toast.success("Successfully deleted your credentials!");
+        }
+        setIsDelCredModalOpen(false);
+        setIsSaving(false);
+    };
+
+    const deleteUserAccount = async (event) => {
+        try {
+            const response = await deleteAccount();
+            if (response.status !== 200) throw new Error(response.data);
+            toast.success("Successfully deleted your account!");
+        } catch (error) {
+            console.error(`Error deleting your account: ${error}`);
+            toast.error("There was an error in the system. Try again later.");
+            setIsDelAccModalOpen(false);
+            setIsSaving(false);
+        }
+    };
+
+    const handleCredentials = async (event) => {
+        event.preventDefault();
+
+        if (RUID === "" || PAC === "") {
+            toast.warning("Make sure to enter in both your RUID and PAC.");
+            return;
+        }
+
+        if (RUID.match(/^[/\d]{9}?$/) == null) {
+            toast.error("Please enter a valid 9-digit RUID.");
+            return;
+        }
+
+        if (PAC.match(/^[/\d]{4}?$/) == null) {
+            toast.error("Please enter a valid 4-digit PAC.");
+            return;
+        }
+        const response = await updateCreds(currentUsername, RUID, PAC);
+
+        if (response.status === 200) {
+            toast.success("Successfully updated your credentials!");
+        }
+    };
 
     const handleAccountDetails = async (event) => {
         event.preventDefault();
-
-        const currentUsername = currentUser.displayName;
-        const currentEmail = currentUser.email;
 
         if (username === currentUsername && email === currentEmail && password === "") {
             toast.error("No changes have been made");
@@ -53,32 +93,6 @@ export const Settings = () => {
         await updateUserDetails(username, email, password);
 
         toast.success("Successfully updated your account details!");
-
-        // const userData = {
-        //     username,
-        //     email,
-        //     password,
-        // };
-
-        // console.log(userData);
-
-        // if (RUID != "" && RUID.match(/^[/\d]{9}?$/) == null) {
-        //     toast.error("Please enter your 9-digit RUID.");
-        //     return;
-        // }
-
-        // await axios
-        //     .post("http://localhost:3000/settings", userData)
-        //     .then((result) => {
-        //         if (result.data === "Incorrect password") {
-        //             toast.error("Incorrect password, type in your correct current password");
-        //         }
-
-        //         if (result.data === "Success") {
-        //             toast.success("Successfully updated your info!");
-        //         }
-        //     })
-        //     .catch((err) => console.log(err));
     };
 
     return (
@@ -94,10 +108,7 @@ export const Settings = () => {
                                         Account Details
                                     </h1>
 
-                                    <form
-                                        className="space-y-4 md:space-y-6"
-                                        onSubmit={handleAccountDetails}
-                                    >
+                                    <div className="space-y-4 md:space-y-6">
                                         <SettingsInput
                                             label="Username"
                                             type="username"
@@ -123,16 +134,32 @@ export const Settings = () => {
                                             hidden={false}
                                         />
 
-                                        <div className="pt-4">
+                                        <div className="flex items-end w-2/5 ">
                                             <button
-                                                className="bg-gray-50 border font-bold border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 hover:text-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                                type="submit"
+                                                className="bg-gray-50 border text-sm border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-1.5 hover:bg-red-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                type="button"
                                                 disabled={isSaving}
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    setIsSaving(true);
+                                                    setIsDelAccModalOpen(true);
+                                                }}
                                             >
-                                                {isSaving ? "Saving..." : "Save"}
+                                                Delete Account
                                             </button>
                                         </div>
-                                    </form>
+
+                                        <div className="">
+                                            <button
+                                                className="bg-gray-50 border font-bold border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 hover:text-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                type="button"
+                                                onClick={handleAccountDetails}
+                                                disabled={isSaving}
+                                            >
+                                                Save
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -145,10 +172,7 @@ export const Settings = () => {
                                         Credentials
                                     </h1>
 
-                                    <form
-                                        className="space-y-4 md:space-y-6"
-                                        // onSubmit={handleSubmit}
-                                    >
+                                    <div className="space-y-4 md:space-y-6">
                                         <SettingsInput
                                             label="RUID"
                                             type="ruid"
@@ -169,32 +193,57 @@ export const Settings = () => {
                                         <div className="flex items-end w-2/5 ">
                                             <button
                                                 className="bg-gray-50 border text-sm border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-1.5 hover:bg-red-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                                type="submit"
+                                                type="button"
                                                 disabled={isSaving}
-                                                onClick={deleteCredentials}
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    setIsSaving(true);
+                                                    setIsDelCredModalOpen(true);
+                                                }}
                                             >
-                                                {isSaving
-                                                    ? "Deleting..."
-                                                    : "Delete Credentials"}
+                                                Delete Credentials
                                             </button>
                                         </div>
 
                                         <div className="">
                                             <button
                                                 className="bg-gray-50 border font-bold border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 hover:text-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                                type="submit"
+                                                type="button"
+                                                onClick={handleCredentials}
                                                 disabled={isSaving}
                                             >
-                                                {isSaving
-                                                    ? "Verifying..."
-                                                    : "Verify Login"}
+                                                Save
                                             </button>
                                         </div>
-                                    </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <ConfirmModal
+                        isOpen={isDelAccModalOpen}
+                        onClose={() => {
+                            setIsSaving(false);
+                            setIsDelAccModalOpen(false);
+                        }}
+                        onConfirm={async () => {
+                            deleteUserAccount();
+                        }}
+                        message="Are you sure you want to delete this course?"
+                    />
+
+                    <ConfirmModal
+                        isOpen={isDelCredModalOpen}
+                        onClose={() => {
+                            setIsSaving(false);
+                            setIsDelCredModalOpen(false);
+                        }}
+                        onConfirm={async () => {
+                            deleteCredentials();
+                        }}
+                        message="Are you sure you want to delete your credentials?"
+                    />
                 </div>
             )}
         </div>

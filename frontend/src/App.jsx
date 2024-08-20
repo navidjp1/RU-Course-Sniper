@@ -6,7 +6,6 @@ import { Dashboard } from "./screens/Dashboard";
 import { Signup } from "./screens/Signup";
 import { Settings } from "./screens/Settings";
 import { Purchase } from "./screens/Purchase";
-import { Test } from "./screens/Test";
 import { Toaster } from "sonner";
 import { MantineProvider } from "@mantine/core";
 import { AuthProvider } from "./contexts/authContext";
@@ -60,14 +59,6 @@ function App() {
                                     element={
                                         <ProtectedRoute>
                                             <Purchase />
-                                        </ProtectedRoute>
-                                    }
-                                />
-                                <Route
-                                    path="/test"
-                                    element={
-                                        <ProtectedRoute>
-                                            <Test />
                                         </ProtectedRoute>
                                     }
                                 />

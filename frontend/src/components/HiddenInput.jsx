@@ -35,15 +35,16 @@ export default function HiddenInput({
                 className="justify-start w-full bg-transparent outline-none"
                 placeholder={placeholder}
                 required=""
+                autoComplete="off"
                 readOnly={!isEditable}
                 ref={inputRef}
                 onKeyDown={handleKeyDown}
             />
             <button
-                className="justify-end hover:cursor-pointer"
+                className="justify-end outline-none hover:cursor-pointer"
                 onClick={(e) => {
                     e.preventDefault();
-                    setHide(!hide);
+                    if (isEditable || value !== "") setHide(!hide);
                 }}
                 type="button"
             >

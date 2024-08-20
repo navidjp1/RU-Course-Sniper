@@ -11,7 +11,7 @@ export async function fetchUserCreds(username) {
         const PAC = response.data.PAC;
         return { RUID, PAC };
     } catch (error) {
-        console.error(`Error fetching user creds: ${err}`);
+        console.error(`Error fetching user creds: ${error}`);
         toast.error("There was an error in the system. Try again later.");
         return { RUID: "", PAC: "" };
     }
@@ -27,7 +27,7 @@ export async function fetchUserData(username) {
         const userTokenBalance = response.data.userTokenBalance;
         return { courses, userTokenBalance };
     } catch (error) {
-        console.error(`Error fetching user data: ${err}`);
+        console.error(`Error fetching user data: ${error}`);
         toast.error("There was an error in the system. Try again later.");
         return { courses: "", userTokenBalance: "" };
     }
@@ -42,7 +42,7 @@ export async function fetchTokenBalance(username) {
         const userTokenBalance = response.data.userTokenBalance;
         return { userTokenBalance };
     } catch (error) {
-        console.error(`Error fetching user token balance: ${err}`);
+        console.error(`Error fetching user token balance: ${error}`);
         toast.error("There was an error in the system. Try again later.");
         return { userTokenBalance: "" };
     }

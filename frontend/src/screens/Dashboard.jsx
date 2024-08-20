@@ -22,6 +22,7 @@ export const Dashboard = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+            console.log(username);
             const { courses, userTokenBalance } = await fetchUserData(username);
             if (courses === "" || userTokenBalance === "") return;
             setCourses(courses);

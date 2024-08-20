@@ -188,69 +188,6 @@ app.post("/api/stop_sniper", async (req, res) => {
     success ? res.json("Success") : res.json("Error");
 });
 
-app.post("/settings", async (req, res) => {
-    const {
-        currentUsername,
-        newUsername,
-        newEmail,
-        currentPassword,
-        newPassword,
-        preferences,
-        newTime,
-        RUID,
-        PAC,
-    } = req.body;
-
-    userModel
-        .findOne({ username: currentUsername })
-        .then(async (user) => {
-            if (user.password != currentPassword) {
-                res.json("Incorrect password");
-                return;
-            }
-
-            if (newUsername != "") {
-                user.username = newUsername;
-            }
-            if (newEmail != "") {
-                user.email = newEmail;
-            }
-            if (newPassword != "") {
-                user.password = newPassword;
-            }
-
-            if (RUID != "") {
-                user.RUID = RUID;
-                user.testLogin = false;
-            }
-
-            if (PAC != "") {
-                user.PAC = PAC;
-                user.testLogin = false;
-            }
-
-            const currPref = user.preferences;
-
-            if (currPref.emailNotifications != preferences.emailNotifications) {
-                user.preferences.emailNotifications = preferences.emailNotifications;
-            }
-
-            if (currPref.smsNotifications != preferences.smsNotifications) {
-                user.preferences.smsNotifications = preferences.smsNotifications;
-            }
-
-            if (newTime != user.restartTime) {
-                user.restartTime = newTime;
-            }
-
-            await user.save();
-            res.json("Success");
-        })
-        .catch((err) => {
-            res.json(`Error updating settings: ${err}`);
-        });
-});
-
 app.post("/api/purchase_tokens", async (req, res) => {
     try {
         const { username, numTokens } = req.body;
@@ -281,11 +218,63 @@ app.post("/api/check_username", async (req, res) => {
     }
 });
 
-app.post("/api/register_user_data", async (req, res) => {
+app.post("/api/register_username", async (req, res) => {
+    const { username } = req.body;
     await userModel
-        .create(req.body)
-        .then(() => res.json("Success"))
-        .catch((err) => res.json(err));
+        .create({ username })
+        .then(() =>
+            res.status(200).json({ message: "Successfully registered username in DB" })
+        )
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json({
+                message: `Error processing request: ${err.message}`,
+            });
+        });
+});
+
+app.post("/api/update_creds", async (req, res) => {
+    try {
+        const { username, RUID, PAC } = req.body;
+        const user = await userModel.findOne({ username });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        user.RUID = RUID;
+        user.PAC = PAC;
+        user.testLogin = false;
+
+        await user.save();
+        res.status(200).json({ message: "Successfully updated credentials" });
+    } catch (err) {
+        console.log(`Error updating user token balance: ${err}`);
+        res.status(500).json({
+            message: `Error processing request: ${err.message}`,
+        });
+    }
+});
+
+app.post("/api/delete_creds", async (req, res) => {
+    try {
+        const { username } = req.body;
+        const user = await userModel.findOne({ username });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        user.RUID = "";
+        user.PAC = "";
+        await user.save();
+        res.status(200).json({ message: "Credentials deleted successfully" });
+    } catch (err) {
+        console.log(`Error deleting user credentials: ${err}`);
+        res.status(500).json({
+            message: `Error processing request: ${err.message}`,
+        });
+    }
 });
 
 app.listen(3000, () => {

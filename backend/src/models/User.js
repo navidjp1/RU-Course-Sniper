@@ -16,14 +16,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    email: {
-        type: String,
-        required: true,
-    },
-    password: {
-        type: String,
-        required: true,
-    },
     courseIDs: {
         type: [courseIDSchema],
         default: [],
@@ -41,10 +33,6 @@ const userSchema = new mongoose.Schema({
         default: "",
     },
     testedLogin: {
-        type: Boolean,
-        default: false,
-    },
-    verifyCreds: {
         type: Boolean,
         default: false,
     },

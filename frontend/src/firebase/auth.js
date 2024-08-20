@@ -8,6 +8,7 @@ import {
     updatePassword,
     EmailAuthProvider,
     reauthenticateWithCredential,
+    deleteUser,
 } from "firebase/auth";
 
 export const signUp = async (username, email, password) => {
@@ -21,6 +22,9 @@ export const signUp = async (username, email, password) => {
         updateProfile(auth.currentUser, { displayName: username }).catch((error) => {
             console.error("Could not update user display name: ", error);
         });
+
+        // await auth.signOut();
+
         return true;
     } catch (error) {
         console.error("Error signing up: ", error);
@@ -84,5 +88,16 @@ export const updateUserDetails = async (username, email, password) => {
     } catch (error) {
         console.error("Error updating user details: ", error);
         return { message: "error" };
+    }
+};
+
+export const deleteAccount = async () => {
+    const user = auth.currentUser;
+    try {
+        await deleteUser(user);
+        return { status: 200, message: "Successfully deleted user" };
+    } catch (error) {
+        console.error("Error deleting user: ", error);
+        return { status: 500, message: "Error deleting user" };
     }
 };
