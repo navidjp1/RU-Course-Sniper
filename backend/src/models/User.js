@@ -28,19 +28,9 @@ const userSchema = new mongoose.Schema({
         type: [courseIDSchema],
         default: [],
     },
-    preferences: {
-        emailNotifications: {
-            type: Boolean,
-            default: true,
-        },
-        smsNotifications: {
-            type: Boolean,
-            default: false,
-        },
-    },
-    restartTime: {
-        type: String,
-        default: "18:00",
+    tokenBalance: {
+        type: Number,
+        default: 0,
     },
     RUID: {
         type: String,
@@ -51,6 +41,10 @@ const userSchema = new mongoose.Schema({
         default: "",
     },
     testedLogin: {
+        type: Boolean,
+        default: false,
+    },
+    verifyCreds: {
         type: Boolean,
         default: false,
     },

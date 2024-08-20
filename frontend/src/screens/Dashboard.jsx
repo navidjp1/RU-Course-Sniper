@@ -1,36 +1,36 @@
 import React from "react";
-import { CourseRow, CourseTitle } from "../components/CourseTable";
-import Header from "../components/Header";
 import axios from "axios";
+import Header from "../components/Header";
+import AddCourseModal from "../components/AddCourseModal";
+import { CourseRow, CourseTitle } from "../components/CourseTable";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AddCourseModal from "../components/AddCourseModal";
 import { toast } from "sonner";
-import { useAuth } from "../contexts/authContext/authContext";
+import { useAuth } from "../contexts/authContext";
+import { fetchUserData } from "../api/fetchData";
 
 export const Dashboard = () => {
     const { currentUser } = useAuth();
+    const username = currentUser.displayName;
     const [courses, setCourses] = useState({});
+    const [tokenBalance, setTokenBalance] = useState(0);
     const [loading, setLoading] = useState(true);
     const [disabled, setDisabled] = useState(false);
     const [isCourseModalOpen, setIsCourseModalOpen] = useState(false);
     const [update, setUpdate] = useState(false);
     const navigate = useNavigate();
 
-    const fetchCourses = async () => {
-        const username = currentUser.displayName;
-        await axios
-            .post("http://localhost:3000/api/get_courses", { username })
-            .then((response) => {
-                setCourses(response.data);
-            })
-            .catch((err) => console.log(`Error fetching courses: ${err}`))
-            .finally(() => setLoading(false));
-    };
-
     useEffect(() => {
-        fetchCourses();
-        setUpdate(false);
+        const fetchData = async () => {
+            const { courses, userTokenBalance } = await fetchUserData(username);
+            if (courses === "" || userTokenBalance === "") return;
+            setCourses(courses);
+            setTokenBalance(userTokenBalance);
+            setLoading(false);
+            setUpdate(false);
+        };
+
+        fetchData();
     }, [update]);
 
     const updateRender = () => {
@@ -41,7 +41,6 @@ export const Dashboard = () => {
         event.preventDefault();
 
         setDisabled(true);
-        const username = currentUser.displayName;
 
         await axios
             .post("http://localhost:3000/api/start_sniper", { username })
@@ -112,7 +111,8 @@ export const Dashboard = () => {
                                     </h2>
                                     <p className="pb-8 mt-3 text-lg leading-8 text-gray-600">
                                         You currently have {courses.length} courses on
-                                        your list. Your account token balance is [...]
+                                        your list. Your account token balance is{" "}
+                                        {tokenBalance}.
                                     </p>
                                 </div>
                                 <div className="items-center w-1/4 p-4 place-content-center">
@@ -126,6 +126,7 @@ export const Dashboard = () => {
                                         isOpen={isCourseModalOpen}
                                         onClose={() => setIsCourseModalOpen(false)}
                                         updateRender={updateRender}
+                                        tokenBalance={tokenBalance}
                                     />
                                 </div>
                             </div>

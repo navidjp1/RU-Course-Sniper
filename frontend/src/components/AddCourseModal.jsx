@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { useAuth } from "../contexts/authContext/authContext";
+import { useAuth } from "../contexts/authContext";
 import { toast } from "sonner";
 import axios from "axios";
 import ConfirmModal from "./ConfirmModal";
 import MultipleInputs from "./MultipleInputs";
 
-function AddCourseModal({ isOpen, onClose, updateRender }) {
+function AddCourseModal({ isOpen, onClose, updateRender, tokenBalance }) {
     // if (!isOpen) return null;
 
     const { currentUser } = useAuth();
@@ -231,15 +231,20 @@ function AddCourseModal({ isOpen, onClose, updateRender }) {
                                 <button
                                     type="button"
                                     onClick={onClose}
-                                    className="justify-start px-4 py-2 text-white bg-gray-500 rounded hover:bg-red-500"
+                                    className="justify-start w-1/4 px-4 py-2 text-white bg-gray-500 rounded hover:bg-red-500"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="justify-end px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-800"
+                                    disabled={tokenBalance < 1}
+                                    className={`justify-end w-1/4 px-4 py-2 text-white bg-blue-500 rounded  ${
+                                        tokenBalance < 1
+                                            ? "hover:cursor-not-allowed hover:bg-red-500"
+                                            : "hover:bg-blue-800"
+                                    }`}
                                 >
-                                    Confirm
+                                    Add: 1 Token
                                 </button>
                             </div>
                         </form>

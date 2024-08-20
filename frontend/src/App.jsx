@@ -9,14 +9,12 @@ import { Purchase } from "./screens/Purchase";
 import { Test } from "./screens/Test";
 import { Toaster } from "sonner";
 import { MantineProvider } from "@mantine/core";
-import { AuthProvider } from "./contexts/authContext/authContext";
-import { ProtectedRoute } from "./components/ProtectedRoute";
+import { AuthProvider } from "./contexts/authContext";
+import { ProtectedRoute, AuthRoute } from "./components/RedirectRoute";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 
 function App() {
-    const [count, setCount] = useState(0);
-
     return (
         <AuthProvider>
             <MantineProvider>
@@ -25,8 +23,22 @@ function App() {
                     <div className="">
                         <BrowserRouter>
                             <Routes>
-                                <Route path="/" element={<Landing />} />
-                                <Route path="/signup" element={<Signup />} />
+                                <Route
+                                    path="/"
+                                    element={
+                                        <AuthRoute>
+                                            <Landing />
+                                        </AuthRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/signup"
+                                    element={
+                                        <AuthRoute>
+                                            <Signup />
+                                        </AuthRoute>
+                                    }
+                                />
                                 <Route
                                     path="/dashboard"
                                     element={

@@ -20,7 +20,7 @@ app.use(cors());
     }
 })();
 
-app.post("/api/get_courses", async (req, res) => {
+app.post("/api/get_data", async (req, res) => {
     try {
         const { username } = req.body;
         const user = await userModel.findOne({ username: username });
@@ -29,9 +29,10 @@ app.post("/api/get_courses", async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
+        const userTokenBalance = user.tokenBalance;
         const idObjects = user.courseIDs;
 
-        const courseDetails = await Promise.all(
+        const courses = await Promise.all(
             idObjects.map(async (obj) => {
                 const id = obj.add;
                 const dropIDs = obj.drop.length === 0 ? null : obj.drop.join(", ");
@@ -46,9 +47,49 @@ app.post("/api/get_courses", async (req, res) => {
                 }
             })
         );
-        res.json(courseDetails);
+        res.status(200).json({ courses, userTokenBalance });
     } catch (err) {
         console.log(`Error fetching course data: ${err}`);
+        res.status(500).json({
+            message: `Error processing request: ${err.message}`,
+        });
+    }
+});
+
+app.post("/api/get_balance", async (req, res) => {
+    try {
+        const { username } = req.body;
+        const user = await userModel.findOne({ username: username });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const userTokenBalance = user.tokenBalance;
+
+        res.status(200).json({ userTokenBalance });
+    } catch (err) {
+        console.log(`Error fetching course data: ${err}`);
+        res.status(500).json({
+            message: `Error processing request: ${err.message}`,
+        });
+    }
+});
+
+app.post("/api/get_creds", async (req, res) => {
+    try {
+        const { username } = req.body;
+        const user = await userModel.findOne({ username: username });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const RUID = user.RUID;
+        const PAC = user.PAC;
+        res.status(200).json({ RUID, PAC });
+    } catch (err) {
+        console.log(`Error fetching user creds: ${err}`);
         res.status(500).json({
             message: `Error processing request: ${err.message}`,
         });
@@ -86,6 +127,7 @@ app.post("/api/add", async (req, res) => {
             }
             idObjects.push({ add: courseID, drop: dropIDs });
             user.testedLogin = false;
+            user.tokenBalance -= 1;
             await user.save();
             res.json("Success");
         })
@@ -107,35 +149,6 @@ app.post("/api/delete", async (req, res) => {
         console.error("Error removing courseID:", err);
         res.json(`Error deleting course ${err}`);
     }
-
-    // userModel
-    //     .findOne({ username: username })
-    //     .then(async (user) => {
-    //         let idObjects = user.courseIDs;
-    //         const removedID = idObjects.filter((obj) => obj.add !== courseID.id);
-    //         console.log(removedID);
-    //         user.courseIDs = removedID;
-    //         await user.save();
-    //         res.json("Success");
-    //     })
-    //     .catch((err) => {
-    //         res.json(`Error deleting course ${err}`);
-    //     });
-});
-
-app.post("/api/get_data", async (req, res) => {
-    const { username } = req.body;
-
-    userModel
-        .findOne({ username: username })
-        .then(async (user) => {
-            const RUID = user.RUID;
-            const PAC = user.PAC;
-            res.json({ RUID, PAC });
-        })
-        .catch((err) => {
-            res.json(`Error fetching user data ${err}`);
-        });
 });
 
 app.post("/api/start_sniper", async (req, res) => {
@@ -236,6 +249,26 @@ app.post("/settings", async (req, res) => {
         .catch((err) => {
             res.json(`Error updating settings: ${err}`);
         });
+});
+
+app.post("/api/purchase_tokens", async (req, res) => {
+    try {
+        const { username, numTokens } = req.body;
+        const user = await userModel.findOne({ username: username });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        user.tokenBalance += numTokens;
+        await user.save();
+        res.status(200).json({ message: "Tokens added successfully" });
+    } catch (err) {
+        console.log(`Error updating user token balance: ${err}`);
+        res.status(500).json({
+            message: `Error processing request: ${err.message}`,
+        });
+    }
 });
 
 app.post("/api/check_username", async (req, res) => {

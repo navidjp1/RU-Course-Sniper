@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Trash2 } from "react-feather";
-import { useAuth } from "../contexts/authContext/authContext";
+import { useAuth } from "../contexts/authContext";
 import { useState, useEffect } from "react";
 import ConfirmModal from "./ConfirmModal";
 const DeleteCourse = ({ updateRender, courseID }) => {

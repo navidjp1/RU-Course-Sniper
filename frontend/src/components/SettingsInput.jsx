@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import PasswordModal from "./PasswordModal";
-import { useAuth } from "../contexts/authContext/authContext";
+import { useAuth } from "../contexts/authContext";
 import { reauthenticateUser } from "../firebase/auth";
 import { toast } from "sonner";
 import HiddenInput from "./HiddenInput";

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../contexts/authContext/authContext";
+import { useAuth } from "../contexts/authContext";
 import { toast } from "sonner";
 import Header from "../components/Header";
 import SettingsInput from "../components/SettingsInput";
 import { updateUserDetails } from "../firebase/auth";
-import { fetchUserCreds } from "../lib/fetchData";
+import { fetchUserCreds } from "../api/fetchData";
 
 export const Settings = () => {
     const { currentUser } = useAuth();
