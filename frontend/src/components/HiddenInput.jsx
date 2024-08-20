@@ -8,9 +8,15 @@ export default function HiddenInput({
     extraStyles,
     isEditable,
     inputRef,
-    handleKeyDown,
+    onConfirm,
 }) {
     const [hide, setHide] = useState(true);
+
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            onConfirm(e);
+        }
+    };
 
     return (
         <div

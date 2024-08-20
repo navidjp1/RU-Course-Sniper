@@ -1,12 +1,28 @@
 import axios from "axios";
 import { Trash2 } from "react-feather";
 import { useAuth } from "../contexts/authContext/authContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ConfirmModal from "./ConfirmModal";
 const DeleteCourse = ({ updateRender, courseID }) => {
     const { currentUser } = useAuth();
     const [disabled, setDisabled] = useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
+    useEffect(() => {
+        const handleKeyDown = async (e) => {
+            if (e.key === "Enter" && isConfirmModalOpen) {
+                deleteCourse();
+            }
+            if (e.key === "Escape" && isConfirmModalOpen) {
+                setDisabled(false);
+                setIsConfirmModalOpen(false);
+            }
+        };
+        document.addEventListener("keydown", handleKeyDown);
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [isConfirmModalOpen]);
 
     const deleteCourse = async () => {
         const username = currentUser.displayName;

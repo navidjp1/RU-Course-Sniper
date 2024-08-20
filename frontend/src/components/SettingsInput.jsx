@@ -46,23 +46,6 @@ function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
         }
     };
 
-    const handleKeyDown = (e) => {
-        if (e.key === "Enter") {
-            handleConfirmPassword(e);
-        } else if (e.key === "Escape") {
-            setIsModalOpen(false);
-        }
-    };
-
-    useEffect(() => {
-        if (isModalOpen) {
-            document.addEventListener("keydown", handleKeyDown);
-        }
-        return () => {
-            document.removeEventListener("keydown", handleKeyDown);
-        };
-    }, [isModalOpen]);
-
     const handleClickOutside = (event) => {
         if (containerRef.current && !containerRef.current.contains(event.target)) {
             setIsEditable(false);
@@ -115,7 +98,7 @@ function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
                 )}
 
                 <button
-                    className="justify-end pl-2 hover:cursor-pointer"
+                    className="justify-end pl-2 border-transparent outline-none hover:cursor-pointer"
                     onClick={toggleEdit}
                     type="button"
                 >
@@ -141,13 +124,12 @@ function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
                 <PasswordModal
                     isOpen={isModalOpen}
                     onClose={() => {
-                        setUserEnteredPassword("");
                         setIsModalOpen(false);
+                        setUserEnteredPassword("");
                     }}
                     onConfirm={(e) => handleConfirmPassword(e)}
                     value={userEnteredPassword}
                     setValue={setUserEnteredPassword}
-                    handleKeyDown={handleKeyDown}
                 />
             </div>
         </div>

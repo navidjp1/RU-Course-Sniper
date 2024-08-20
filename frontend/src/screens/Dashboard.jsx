@@ -117,7 +117,7 @@ export const Dashboard = () => {
                                 </div>
                                 <div className="items-center w-1/4 p-4 place-content-center">
                                     <button
-                                        className="w-48 h-12 p-1 font-sans text-xl font-bold text-center text-white bg-blue-500 border rounded-md border-blue-gray-50"
+                                        className="w-48 h-12 p-1 font-sans text-xl font-bold text-center text-white bg-blue-500 border rounded-md outline-none border-blue-gray-50"
                                         onClick={() => setIsCourseModalOpen(true)}
                                     >
                                         Add Course
