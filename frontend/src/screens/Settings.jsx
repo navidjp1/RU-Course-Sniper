@@ -11,6 +11,7 @@ import ConfirmModal from "../components/ConfirmModal";
 
 export const Settings = () => {
     const { currentUser } = useAuth();
+    const uid = currentUser.uid;
     const currentUsername = currentUser.displayName;
     const currentEmail = currentUser.email;
     const [username, setUsername] = useState(currentUsername);
@@ -24,7 +25,7 @@ export const Settings = () => {
     const [isDelCredModalOpen, setIsDelCredModalOpen] = useState(false);
 
     const fetchUserData = async () => {
-        const { RUID, PAC } = await fetchUserCreds(username);
+        const { RUID, PAC } = await fetchUserCreds(uid);
         setRUID(RUID);
         setPAC(PAC);
         setLoading(false);
@@ -36,7 +37,7 @@ export const Settings = () => {
     }, []);
 
     const deleteCredentials = async (event) => {
-        const response = await deleteCreds(currentUsername);
+        const response = await deleteCreds(uid);
 
         if (response.status === 200) {
             toast.success("Successfully deleted your credentials!");
@@ -45,7 +46,7 @@ export const Settings = () => {
         setIsSaving(false);
     };
 
-    const deleteUserAccount = async (event) => {
+    const deleteUserAccount = async () => {
         try {
             const response = await deleteAccount();
             if (response.status !== 200) throw new Error(response.data);
@@ -75,7 +76,7 @@ export const Settings = () => {
             toast.error("Please enter a valid 4-digit PAC.");
             return;
         }
-        const response = await updateCreds(currentUsername, RUID, PAC);
+        const response = await updateCreds(uid, RUID, PAC);
 
         if (response.status === 200) {
             toast.success("Successfully updated your credentials!");
@@ -230,7 +231,7 @@ export const Settings = () => {
                         onConfirm={async () => {
                             deleteUserAccount();
                         }}
-                        message="Are you sure you want to delete this course?"
+                        message="Are you sure you want to delete your account?"
                     />
 
                     <ConfirmModal

@@ -25,11 +25,11 @@ const DeleteCourse = ({ updateRender, courseID }) => {
     }, [isConfirmModalOpen]);
 
     const deleteCourse = async () => {
-        const username = currentUser.displayName;
-        const userData = { username, courseID };
+        const uid = currentUser.uid;
+        const userData = { uid, courseID };
 
         await axios
-            .post("http://localhost:3000/api/delete", userData)
+            .post("http://localhost:3000/api/delete_course", userData)
             .then((result) => {
                 if (result.data === "Success") {
                     updateRender();

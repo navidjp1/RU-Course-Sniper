@@ -22,8 +22,8 @@ app.use(cors());
 
 app.post("/api/get_data", async (req, res) => {
     try {
-        const { username } = req.body;
-        const user = await userModel.findOne({ username: username });
+        const { uid } = req.body;
+        const user = await userModel.findOne({ uid });
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
@@ -58,8 +58,8 @@ app.post("/api/get_data", async (req, res) => {
 
 app.post("/api/get_balance", async (req, res) => {
     try {
-        const { username } = req.body;
-        const user = await userModel.findOne({ username: username });
+        const { uid } = req.body;
+        const user = await userModel.findOne({ uid });
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
@@ -78,8 +78,8 @@ app.post("/api/get_balance", async (req, res) => {
 
 app.post("/api/get_creds", async (req, res) => {
     try {
-        const { username } = req.body;
-        const user = await userModel.findOne({ username: username });
+        const { uid } = req.body;
+        const user = await userModel.findOne({ uid });
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
@@ -97,51 +97,57 @@ app.post("/api/get_creds", async (req, res) => {
 });
 
 app.post("/api/check_course", async (req, res) => {
-    const { courseID } = req.body;
+    try {
+        const { courseID } = req.body;
+        const id = await courseModel.findOne({ index: courseID });
 
-    courseModel
-        .findOne({ index: courseID })
-        .then(async (id) => {
-            if (!id) {
-                res.json("Course not in DB");
-            } else {
-                res.json("Success");
-            }
-        })
-        .catch((err) => {
-            res.json(`Error checking course ${err}`);
+        if (!id) {
+            return res.status(404).json({ message: "Course not found in DB" });
+        }
+
+        res.status(200).json({ message: "Course was found" });
+    } catch (err) {
+        console.log(`Error checking for course: ${err}`);
+        res.status(500).json({
+            message: `Error processing request: ${err.message}`,
         });
+    }
 });
 
-app.post("/api/add", async (req, res) => {
-    const { username, courseID, dropIDs } = req.body;
+app.post("/api/add_course", async (req, res) => {
+    try {
+        const { uid, courseID, dropIDs } = req.body;
+        const user = await userModel.findOne({ uid });
 
-    userModel
-        .findOne({ username: username })
-        .then(async (user) => {
-            const idObjects = user.courseIDs;
-            const found = idObjects.some((obj) => obj.add === courseID);
-            if (found) {
-                res.json("Duplicate");
-                return;
-            }
-            idObjects.push({ add: courseID, drop: dropIDs });
-            user.testedLogin = false;
-            user.tokenBalance -= 1;
-            await user.save();
-            res.json("Success");
-        })
-        .catch((err) => {
-            res.json(`Error adding course ${err}`);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const idObjects = user.courseIDs;
+        const found = idObjects.some((obj) => obj.add === courseID);
+        if (found) {
+            return res.status(208).json("Course already in user's list");
+        }
+        idObjects.push({ add: courseID, drop: dropIDs });
+        user.testedLogin = false;
+        user.tokenBalance -= 1;
+        await user.save();
+
+        res.status(200).json({ message: "Successfully added course" });
+    } catch (err) {
+        console.log(`Error adding course: ${err}`);
+        res.status(500).json({
+            message: `Error processing request: ${err.message}`,
         });
+    }
 });
 
-app.post("/api/delete", async (req, res) => {
-    const { username, courseID } = req.body;
+app.post("/api/delete_course", async (req, res) => {
+    const { uid, courseID } = req.body;
 
     try {
         const result = await userModel.updateOne(
-            { username: username },
+            { uid },
             { $pull: { courseIDs: { add: courseID.id } } }
         );
         res.json("Success");
@@ -152,10 +158,10 @@ app.post("/api/delete", async (req, res) => {
 });
 
 app.post("/api/start_sniper", async (req, res) => {
-    const { username } = req.body;
+    const { uid } = req.body;
 
     userModel
-        .findOne({ username: username })
+        .findOne({ uid })
         .then(async (user) => {
             const RUID = user.RUID;
             const PAC = user.PAC;
@@ -190,8 +196,8 @@ app.post("/api/stop_sniper", async (req, res) => {
 
 app.post("/api/purchase_tokens", async (req, res) => {
     try {
-        const { username, numTokens } = req.body;
-        const user = await userModel.findOne({ username: username });
+        const { uid, numTokens } = req.body;
+        const user = await userModel.findOne({ uid });
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
@@ -208,22 +214,12 @@ app.post("/api/purchase_tokens", async (req, res) => {
     }
 });
 
-app.post("/api/check_username", async (req, res) => {
-    const { username } = req.body;
-    const user = await userModel.findOne({ username: username });
-    if (user != null) {
-        res.json("Duplicate username");
-    } else {
-        res.json("Success");
-    }
-});
-
-app.post("/api/register_username", async (req, res) => {
-    const { username } = req.body;
+app.post("/api/register_user", async (req, res) => {
+    const { uid } = req.body;
     await userModel
-        .create({ username })
+        .create({ uid })
         .then(() =>
-            res.status(200).json({ message: "Successfully registered username in DB" })
+            res.status(200).json({ message: "Successfully registered user in DB" })
         )
         .catch((err) => {
             console.log(err);
@@ -235,8 +231,8 @@ app.post("/api/register_username", async (req, res) => {
 
 app.post("/api/update_creds", async (req, res) => {
     try {
-        const { username, RUID, PAC } = req.body;
-        const user = await userModel.findOne({ username });
+        const { uid, RUID, PAC } = req.body;
+        const user = await userModel.findOne({ uid });
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
@@ -258,8 +254,8 @@ app.post("/api/update_creds", async (req, res) => {
 
 app.post("/api/delete_creds", async (req, res) => {
     try {
-        const { username } = req.body;
-        const user = await userModel.findOne({ username });
+        const { uid } = req.body;
+        const user = await userModel.findOne({ uid });
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });

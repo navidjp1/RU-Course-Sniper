@@ -6,14 +6,14 @@ import { fetchTokenBalance } from "../api/fetchData";
 import { toast } from "sonner";
 export const Purchase = () => {
     const { currentUser } = useAuth();
-    const username = currentUser.displayName;
+    const uid = currentUser.uid;
     const [isBuying, setIsBuying] = useState(false);
     const [tokenBalance, setTokenBalance] = useState(0);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
-            const { userTokenBalance } = await fetchTokenBalance(username);
+            const { userTokenBalance } = await fetchTokenBalance(uid);
             if (userTokenBalance === "") return;
             setTokenBalance(userTokenBalance);
             setLoading(false);
@@ -29,7 +29,7 @@ export const Purchase = () => {
         try {
             const response = await axios.post(
                 "http://localhost:3000/api/purchase_tokens",
-                { username, numTokens }
+                { uid, numTokens }
             );
             const msg = response.data.message;
             if (response.status !== 200) throw new Error(msg);

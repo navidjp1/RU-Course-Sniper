@@ -1,10 +1,10 @@
 import axios from "axios";
 import { toast } from "sonner";
 
-export async function deleteCreds(username) {
+export async function deleteCreds(uid) {
     try {
         const response = await axios.post("http://localhost:3000/api/delete_creds", {
-            username,
+            uid,
         });
         if (response.status !== 200) throw new Error(response.data);
         return { status: 200 };

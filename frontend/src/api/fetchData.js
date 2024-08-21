@@ -1,10 +1,10 @@
 import axios from "axios";
 import { toast } from "sonner";
 
-export async function fetchUserCreds(username) {
+export async function fetchUserCreds(uid) {
     try {
         const response = await axios.post("http://localhost:3000/api/get_creds", {
-            username,
+            uid,
         });
         if (response.status !== 200) throw new Error(response.data);
         const RUID = response.data.RUID;
@@ -17,10 +17,10 @@ export async function fetchUserCreds(username) {
     }
 }
 
-export async function fetchUserData(username) {
+export async function fetchUserData(uid) {
     try {
         const response = await axios.post("http://localhost:3000/api/get_data", {
-            username,
+            uid,
         });
         if (response.status !== 200) throw new Error(response.data);
         const courses = response.data.courses;
@@ -33,10 +33,10 @@ export async function fetchUserData(username) {
     }
 }
 
-export async function fetchTokenBalance(username) {
+export async function fetchTokenBalance(uid) {
     try {
         const response = await axios.post("http://localhost:3000/api/get_balance", {
-            username,
+            uid,
         });
         if (response.status !== 200) throw new Error(response.data);
         const userTokenBalance = response.data.userTokenBalance;

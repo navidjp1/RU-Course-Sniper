@@ -6,8 +6,6 @@ import ConfirmModal from "./ConfirmModal";
 import MultipleInputs from "./MultipleInputs";
 
 function AddCourseModal({ isOpen, onClose, updateRender, tokenBalance }) {
-    // if (!isOpen) return null;
-
     const { currentUser } = useAuth();
     const [courseID, setCourseID] = useState("");
     const [dropIDs, setDropIDs] = useState([]);
@@ -61,38 +59,51 @@ function AddCourseModal({ isOpen, onClose, updateRender, tokenBalance }) {
             const response = await axios.post("http://localhost:3000/api/check_course", {
                 courseID,
             });
-            if (response.data === "Course not in DB") {
+
+            if (response.status !== 200) throw new Error(response);
+
+            addCourseToDB();
+        } catch (error) {
+            if (error.response.status === 404) {
                 setIsDupeModalOpen(true);
             } else {
-                addCourseToDB();
+                console.error(
+                    `Error checking for course: ${error.response.data.message}`
+                );
+                toast.error("There was an error in the system. Try again later.");
             }
-        } catch (error) {
-            console.log(err);
         }
     };
 
     const addCourseToDB = async () => {
-        const username = currentUser.displayName;
-        const userData = { username, courseID, dropIDs, campus, semester, year };
+        const uid = currentUser.uid;
+        const userData = { uid, courseID, dropIDs, campus, semester, year };
 
-        await axios
-            .post("http://localhost:3000/api/add", userData)
-            .then((result) => {
-                if (result.data === "Success") {
-                    updateRender();
-                    toast.success("Successfully added course");
-                } else if (result.data === "Duplicate") {
-                    toast.error("You are already sniping this course");
-                } else {
-                    console.log("Error: " + result.data);
-                }
-                setCourseID("");
-                setDropIDs([]);
-                setCampus("New Brunswick");
-                setSemester("Spring");
-                setYear("2024");
-            })
-            .catch((err) => console.log(err));
+        try {
+            const response = await axios.post(
+                "http://localhost:3000/api/add_course",
+                userData
+            );
+
+            if (response.status === 500) throw new Error(response.data);
+
+            if (response.status === 208) {
+                toast.error("You are already sniping this course");
+                return;
+            }
+
+            updateRender();
+            toast.success("Successfully added course");
+
+            setCourseID("");
+            setDropIDs([]);
+            setCampus("New Brunswick");
+            setSemester("Spring");
+            setYear("2024");
+        } catch (error) {
+            console.error(`Error updating user creds: ${error}`);
+            toast.error("There was an error in the system. Try again later.");
+        }
 
         setIsConfirmModalOpen(false);
         setIsDupeModalOpen(false);

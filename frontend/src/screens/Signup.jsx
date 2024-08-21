@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signUp } from "../firebase/auth";
 import { toast } from "sonner";
-import { registerUsername } from "../api/registerData";
+import { registerUser } from "../api/registerData";
 import axios from "axios";
 
 export const Signup = () => {
@@ -24,28 +24,12 @@ export const Signup = () => {
             return;
         }
 
-        try {
-            const result = await axios.post("http://localhost:3000/api/check_username", {
-                username,
-            });
-            if (result.data === "Duplicate username") {
-                toast.warning("Username already taken. Try a different one.");
-                return;
-            }
-        } catch (error) {
-            console.log("Error sending API request: " + error);
-            return;
-        }
-
         if (!isSigningUp) {
             setIsSigningUp(true);
             const success = await signUp(username, email, password);
             if (success) {
-                const response = await registerUsername(username);
-                if (response.status === 200) {
-                    toast.success("Successfully signed up!");
-                    navigate("/");
-                }
+                toast.success("Successfully signed up!");
+                navigate("/");
             } else {
                 toast.info("You already have an account. Please log in.");
             }

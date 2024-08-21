@@ -11,7 +11,7 @@ import { fetchUserData } from "../api/fetchData";
 
 export const Dashboard = () => {
     const { currentUser } = useAuth();
-    const username = currentUser.displayName;
+    const uid = currentUser.uid;
     const [courses, setCourses] = useState({});
     const [tokenBalance, setTokenBalance] = useState(0);
     const [loading, setLoading] = useState(true);
@@ -22,8 +22,7 @@ export const Dashboard = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            console.log(username);
-            const { courses, userTokenBalance } = await fetchUserData(username);
+            const { courses, userTokenBalance } = await fetchUserData(uid);
             if (courses === "" || userTokenBalance === "") return;
             setCourses(courses);
             setTokenBalance(userTokenBalance);
@@ -44,7 +43,7 @@ export const Dashboard = () => {
         setDisabled(true);
 
         await axios
-            .post("http://localhost:3000/api/start_sniper", { username })
+            .post("http://localhost:3000/api/start_sniper", { uid })
             .then((response) => {
                 const msg = response.data;
                 if (msg === "Success") {
@@ -118,7 +117,7 @@ export const Dashboard = () => {
                                 </div>
                                 <div className="items-center w-1/4 p-4 place-content-center">
                                     <button
-                                        className="w-48 h-12 p-1 font-sans text-xl font-bold text-center text-white bg-blue-500 border rounded-md outline-none border-blue-gray-50"
+                                        className="w-48 h-12 p-1 font-sans text-xl font-bold text-center text-white bg-blue-500 border rounded-md outline-none hover:bg-blue-800 border-blue-gray-50"
                                         onClick={() => setIsCourseModalOpen(true)}
                                     >
                                         Add Course

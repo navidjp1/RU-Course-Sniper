@@ -66,7 +66,7 @@ export function CourseRow({ course, status, updateRender }) {
             </td>
             <td className="px-4 py-8">
                 <div className="flex items-center gap-3">
-                    <button className="w-full p-1 font-sans text-sm text-center text-white bg-blue-500 border rounded-md h-9 flex-center border-blue-gray-50">
+                    <button className="w-full p-1 font-sans text-sm text-center text-white bg-blue-500 border rounded-md hover:bg-blue-800 h-9 flex-center border-blue-gray-50">
                         {buttonMsg}
                     </button>
                 </div>

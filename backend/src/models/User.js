@@ -12,7 +12,7 @@ const courseIDSchema = new mongoose.Schema({
 });
 
 const userSchema = new mongoose.Schema({
-    username: {
+    uid: {
         type: String,
         required: true,
     },

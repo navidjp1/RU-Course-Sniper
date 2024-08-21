@@ -10,6 +10,7 @@ import {
     reauthenticateWithCredential,
     deleteUser,
 } from "firebase/auth";
+import { registerUser } from "../api/registerData";
 
 export const signUp = async (username, email, password) => {
     try {
@@ -22,6 +23,9 @@ export const signUp = async (username, email, password) => {
         updateProfile(auth.currentUser, { displayName: username }).catch((error) => {
             console.error("Could not update user display name: ", error);
         });
+
+        const response = await registerUser(auth.currentUser.uid);
+        if (response.status !== 200) throw new Error("Error registering user in DB");
 
         // await auth.signOut();
 
