@@ -10,6 +10,18 @@ function ConfirmModal({ isOpen, onClose, onConfirm, message }) {
         event.stopPropagation();
     };
 
+    useEffect(() => {
+        const handleKeyDown = async (e) => {
+            if (e.key === "Escape" && isOpen) {
+                onClose();
+            }
+        };
+        document.addEventListener("keydown", handleKeyDown);
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [isOpen]);
+
     return (
         <main className="confirm-modal">
             {isOpen && (

@@ -38,22 +38,6 @@ export const Settings = () => {
         fetchUserData();
     }, []);
 
-    // useEffect(() => {
-    //     const handleKeyDown = async (e) => {
-    //         if (e.key === "Escape") {
-    //             if (isDelAccModalOpen) {
-    //                 await setIsDelAccModalOpen(false);
-    //             } else if (isDelCredModalOpen) {
-    //                 await setIsDelCredModalOpen(false);
-    //             }
-    //         }
-    //     };
-    //     document.addEventListener("keydown", handleKeyDown);
-    //     return () => {
-    //         document.removeEventListener("keydown", handleKeyDown);
-    //     };
-    // }, [isDelAccModalOpen, isDelCredModalOpen]);
-
     const deleteCredentials = async (event) => {
         const response = await deleteCreds(uid);
 
@@ -118,10 +102,10 @@ export const Settings = () => {
         <div className="w-screen min-h-screen bg-white">
             <Header pageNum={3} />
             {!loading && (
-                <div className="flex justify-center px-12 py-20 gap-x-4">
-                    <div className="w-2/5 pt-2 pb-4 overflow-scroll bg-white border border-gray-200 rounded-lg shadow-md">
-                        <div className="flex flex-col items-center p-4 ">
-                            <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                <div className="flex justify-center px-12 py-20 gap-x-6">
+                    <div className="w-1/3 pt-2 pb-4 overflow-scroll bg-gray-800 border border-gray-700 rounded-lg shadow-xl">
+                        <div className="flex flex-col items-center">
+                            <div className="w-full rounded-lg md:mt-0 sm:max-w-md xl:p-0 ">
                                 <div className="space-y-4 md:space-y-6 sm:p-8">
                                     <h1 className="pb-4 text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                                         Account Details
@@ -183,9 +167,9 @@ export const Settings = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="w-2/5 pt-2 pb-4 overflow-scroll bg-white border border-gray-200 rounded-lg shadow-md">
-                        <div className="flex flex-col items-center p-4">
-                            <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                    <div className="w-1/3 pt-2 pb-4 overflow-scroll bg-gray-800 border border-gray-700 rounded-lg shadow-md">
+                        <div className="flex flex-col items-center">
+                            <div className="w-full rounded-lg md:mt-0 sm:max-w-md xl:p-0 ">
                                 <div className="space-y-4 md:space-y-6 sm:p-8">
                                     <h1 className="pb-4 text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                                         Credentials

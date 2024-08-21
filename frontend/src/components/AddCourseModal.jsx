@@ -22,18 +22,14 @@ function AddCourseModal({ isOpen, onClose, updateRender, tokenBalance }) {
                     await checkIfDuplicate();
                     setIsConfirmModalOpen(false);
                 } else if (isDupeModalOpen) {
-                    setIsDupeModalOpen(false);
                     await addCourseToDB();
+                    setIsDupeModalOpen(false);
                 }
             }
             if (e.key === "Escape") {
                 if (isOpen && !isConfirmModalOpen && !isDupeModalOpen) {
                     await onClose();
-                }
-                if (isConfirmModalOpen) {
-                    await setIsConfirmModalOpen(false);
-                } else if (isDupeModalOpen) {
-                    await setIsDupeModalOpen(false);
+                    resetFormValues();
                 }
             }
         };
@@ -75,6 +71,14 @@ function AddCourseModal({ isOpen, onClose, updateRender, tokenBalance }) {
         }
     };
 
+    const resetFormValues = () => {
+        setCourseID("");
+        setDropIDs([]);
+        setCampus("New Brunswick");
+        setSemester("Spring");
+        setYear("2024");
+    };
+
     const addCourseToDB = async () => {
         const uid = currentUser.uid;
         const userData = { uid, courseID, dropIDs, campus, semester, year };
@@ -94,12 +98,7 @@ function AddCourseModal({ isOpen, onClose, updateRender, tokenBalance }) {
 
             updateRender();
             toast.success("Successfully added course");
-
-            setCourseID("");
-            setDropIDs([]);
-            setCampus("New Brunswick");
-            setSemester("Spring");
-            setYear("2024");
+            resetFormValues();
         } catch (error) {
             console.error(`Error updating user creds: ${error}`);
             toast.error("There was an error in the system. Try again later.");
