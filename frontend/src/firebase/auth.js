@@ -102,9 +102,15 @@ export const updateUserDetails = async (username, email, password) => {
     const user = auth.currentUser;
 
     try {
-        await updateProfile(user, { displayName: username });
-        await updateEmail(user, email);
-        await updatePassword(user, password);
+        if (username !== user.displayName) {
+            await updateProfile(user, { displayName: username });
+        }
+        if (email !== user.email) {
+            await updateEmail(user, email);
+        }
+        if (password !== "") {
+            await updatePassword(user, password);
+        }
         return { status: 200, message: "Successfully updated user details" };
     } catch (error) {
         console.error("Error updating user details: ", error);

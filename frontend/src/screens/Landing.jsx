@@ -4,6 +4,7 @@ import { signIn } from "../firebase/auth";
 import { toast } from "sonner";
 import { signInWithGoogle } from "../firebase/auth";
 import HiddenInput from "../components/HiddenInput";
+import googleIcon from "../assets/google.svg";
 
 export const Landing = () => {
     const [email, setEmail] = useState("");
@@ -50,13 +51,19 @@ export const Landing = () => {
                                 <h1 className="pb-4 text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                                     Sign in to your account
                                 </h1>
-
                                 <button
                                     className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 hover:text-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white font-semibold dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     type="button"
                                     onClick={async () => await signInWithGoogle()}
                                 >
-                                    Sign in with Google
+                                    <div className="flex flex-row items-center justify-center gap-x-3">
+                                        <img
+                                            src={googleIcon}
+                                            alt="Google Icon"
+                                            className="size-4"
+                                        />
+                                        <span class="">Sign in with Google</span>{" "}
+                                    </div>
                                 </button>
                                 <div className="flex items-center my-6">
                                     <div

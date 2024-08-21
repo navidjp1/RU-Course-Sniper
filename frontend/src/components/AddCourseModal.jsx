@@ -42,6 +42,11 @@ function AddCourseModal({ isOpen, onClose, updateRender, tokenBalance }) {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        if (tokenBalance < 1) {
+            toast.error("You do not have enough tokens to add a course.");
+            return;
+        }
+
         if (courseID.match(/^[/\d]{5}?$/) == null) {
             toast.error("Please enter a valid 5-digit course index.");
             return;
@@ -247,7 +252,6 @@ function AddCourseModal({ isOpen, onClose, updateRender, tokenBalance }) {
                                 </button>
                                 <button
                                     type="submit"
-                                    disabled={tokenBalance < 1}
                                     className={`justify-end w-1/4 px-4 py-2 text-white bg-blue-500 rounded  ${
                                         tokenBalance < 1
                                             ? "hover:cursor-not-allowed hover:bg-red-500"

@@ -127,7 +127,7 @@ export const Settings = () => {
 
         if (response.status === 200)
             toast.success("Successfully updated your account details!");
-        else toast.success("There was an error in the system. Try again later");
+        else toast.error("There was an error in the system. Try again later");
     };
 
     return (

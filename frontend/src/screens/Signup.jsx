@@ -4,6 +4,7 @@ import { signUp } from "../firebase/auth";
 import { toast } from "sonner";
 import HiddenInput from "../components/HiddenInput";
 import { signInWithGoogle } from "../firebase/auth";
+import googleIcon from "../assets/google.svg";
 
 export const Signup = () => {
     const [username, setUsername] = useState("");
@@ -53,7 +54,14 @@ export const Signup = () => {
                                     type="button"
                                     onClick={async () => await signInWithGoogle()}
                                 >
-                                    Sign up with Google
+                                    <div className="flex flex-row items-center justify-center gap-x-3">
+                                        <img
+                                            src={googleIcon}
+                                            alt="Google Icon"
+                                            className="size-4"
+                                        />
+                                        <span class="">Sign up with Google</span>{" "}
+                                    </div>
                                 </button>
                                 <div className="flex items-center my-6">
                                     <div

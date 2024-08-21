@@ -17,24 +17,22 @@ export const Dashboard = () => {
     const [loading, setLoading] = useState(true);
     const [disabled, setDisabled] = useState(false);
     const [isCourseModalOpen, setIsCourseModalOpen] = useState(false);
-    const [update, setUpdate] = useState(false);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const { courses, userTokenBalance } = await fetchUserData(uid);
-            if (courses === "" || userTokenBalance === "") return;
-            setCourses(courses);
-            setTokenBalance(userTokenBalance);
-            setLoading(false);
-            setUpdate(false);
-        };
+    const fetchData = async () => {
+        const { courses, userTokenBalance } = await fetchUserData(uid);
+        if (courses === "" || userTokenBalance === "") return;
+        setCourses(courses);
+        setTokenBalance(userTokenBalance);
+        setLoading(false);
+    };
 
+    useEffect(() => {
         fetchData();
-    }, [update]);
+    }, []);
 
     const updateRender = () => {
-        setUpdate(true); // Trigger useEffect to refetch courses
+        fetchData(); // Trigger useEffect to refetch courses
     };
 
     const handleStart = async (event) => {
@@ -98,7 +96,7 @@ export const Dashboard = () => {
     };
 
     return (
-        <main className="dashboard">
+        <main className="bg-white">
             {!loading && (
                 <div className="bg-white ">
                     <Header pageNum={1} />

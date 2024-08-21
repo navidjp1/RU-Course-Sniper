@@ -43,7 +43,7 @@ export const Purchase = () => {
     };
 
     return (
-        <main className="purchase">
+        <main className="bg-white">
             {!loading && (
                 <div className="w-screen min-h-screen bg-white">
                     <Header pageNum={2} />
