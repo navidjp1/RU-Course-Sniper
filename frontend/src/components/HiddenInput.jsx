@@ -20,10 +20,10 @@ export default function HiddenInput({
 
     return (
         <div
-            className={`flex flex-row justify-start rounded-lg w-full p-2.5 ${
+            className={`flex flex-row justify-start border rounded-lg w-full p-2.5 ${
                 isEditable
-                    ? "bg-gray-700 border-gray-600"
-                    : "bg-transparent border-transparent "
+                    ? ` bg-gray-700 ${inputRef ? "border-blue-500" : "border-gray-600"}`
+                    : "bg-transparent border-gray-700"
             } outline-none  placeholder-gray-400 text-white ${extraStyles} `}
         >
             <input

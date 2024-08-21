@@ -1,7 +1,11 @@
 import HiddenInput from "./HiddenInput";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { reauthenticateUser } from "../firebase/auth";
+import { toast } from "sonner";
 
-function PasswordModal({ isOpen, onClose, onConfirm, value, setValue }) {
+function PasswordModal({ isOpen, onClose, ifSuccess }) {
+    const [userEnteredPassword, setUserEnteredPassword] = useState("");
+
     const handleBackdropClick = () => {
         onClose();
     };
@@ -12,9 +16,10 @@ function PasswordModal({ isOpen, onClose, onConfirm, value, setValue }) {
 
     const handleKeyDown = (e) => {
         if (e.key === "Enter") {
-            onConfirm(e);
+            handleConfirmPassword(e);
         } else if (e.key === "Escape") {
             onClose();
+            setUserEnteredPassword("");
         }
     };
 
@@ -26,6 +31,22 @@ function PasswordModal({ isOpen, onClose, onConfirm, value, setValue }) {
             document.removeEventListener("keydown", handleKeyDown);
         };
     }, [isOpen]);
+
+    const handleConfirmPassword = async (e) => {
+        e.preventDefault();
+        if (!userEnteredPassword) return;
+
+        const success = await reauthenticateUser(userEnteredPassword);
+
+        if (success.message === "success") {
+            ifSuccess();
+        } else if (success.message === "incorrect") {
+            toast.error("The password is incorrect, try again");
+        } else {
+            toast.warning("Error in the system, try again later");
+        }
+        setUserEnteredPassword("");
+    };
 
     return (
         <main className="password-modal">
@@ -44,12 +65,12 @@ function PasswordModal({ isOpen, onClose, onConfirm, value, setValue }) {
                         <div className="w-full">
                             <HiddenInput
                                 type="password"
-                                value={value}
-                                setValue={setValue}
+                                value={userEnteredPassword}
+                                setValue={setUserEnteredPassword}
                                 placeholder="Current Password"
                                 extraStyles="mb-6"
                                 isEditable={true}
-                                onConfirm={onConfirm}
+                                onConfirm={(e) => handleConfirmPassword(e)}
                             ></HiddenInput>
 
                             <div className="flex justify-between w-full">
@@ -63,7 +84,7 @@ function PasswordModal({ isOpen, onClose, onConfirm, value, setValue }) {
                                 <button
                                     type="button"
                                     className="justify-end px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-800"
-                                    onClick={onConfirm}
+                                    onClick={(e) => handleConfirmPassword(e)}
                                 >
                                     Confirm
                                 </button>

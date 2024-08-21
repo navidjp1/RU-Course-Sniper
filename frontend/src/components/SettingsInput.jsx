@@ -1,15 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import PasswordModal from "./PasswordModal";
-import { useAuth } from "../contexts/authContext";
-import { reauthenticateUser } from "../firebase/auth";
 import { toast } from "sonner";
 import HiddenInput from "./HiddenInput";
 
 function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
-    const { currentUser } = useAuth();
     const [isEditable, setIsEditable] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [userEnteredPassword, setUserEnteredPassword] = useState("");
+    const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
     const inputRef = useRef(null);
     const containerRef = useRef(null);
 
@@ -19,30 +15,12 @@ function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
                 setIsEditable(false);
                 return;
             }
-            setIsModalOpen(true);
+            setIsPasswordModalOpen(true);
             return;
         }
         setIsEditable((prev) => !prev);
         if (inputRef.current) {
             inputRef.current.focus();
-        }
-    };
-
-    const handleConfirmPassword = async (e) => {
-        e.preventDefault();
-        if (!userEnteredPassword) return;
-        setUserEnteredPassword("");
-
-        const success = await reauthenticateUser(userEnteredPassword);
-
-        if (success.message === "success") {
-            setIsEditable(true);
-            setIsModalOpen(false);
-            toast.success("You can edit your password now");
-        } else if (success.message === "incorrect") {
-            toast.error("The password is incorrect, try again");
-        } else {
-            toast.warning("Error in the system, try again later");
         }
     };
 
@@ -87,10 +65,10 @@ function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
                         value={value}
                         onChange={(e) => setValue(e.target.value)}
                         placeholder={placeholder}
-                        className={`justify-start rounded-lg w-full p-2.5 ${
+                        className={`justify-start border  rounded-lg w-full p-2.5 ${
                             isEditable
-                                ? "bg-gray-700 border-gray-600"
-                                : "bg-transparent border-transparent "
+                                ? "bg-gray-700 border-blue-500"
+                                : "bg-transparent border-gray-700"
                         } outline-none  placeholder-gray-400 text-white `}
                         required=""
                         readOnly={!isEditable}
@@ -127,14 +105,15 @@ function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
             </div>
             <div>
                 <PasswordModal
-                    isOpen={isModalOpen}
+                    isOpen={isPasswordModalOpen}
                     onClose={() => {
-                        setIsModalOpen(false);
-                        setUserEnteredPassword("");
+                        setIsPasswordModalOpen(false);
                     }}
-                    onConfirm={(e) => handleConfirmPassword(e)}
-                    value={userEnteredPassword}
-                    setValue={setUserEnteredPassword}
+                    ifSuccess={() => {
+                        setIsEditable(true);
+                        setIsPasswordModalOpen(false);
+                        toast.success("You can edit your password now");
+                    }}
                 />
             </div>
         </div>

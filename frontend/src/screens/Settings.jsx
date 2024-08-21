@@ -8,6 +8,7 @@ import { fetchUserCreds } from "../api/fetchData";
 import { deleteCreds } from "../api/deleteData";
 import { updateCreds } from "../api/updateData";
 import ConfirmModal from "../components/ConfirmModal";
+import PasswordModal from "../components/PasswordModal";
 
 export const Settings = () => {
     const { currentUser } = useAuth();
@@ -23,6 +24,7 @@ export const Settings = () => {
     const [loading, setLoading] = useState(true);
     const [isDelAccModalOpen, setIsDelAccModalOpen] = useState(false);
     const [isDelCredModalOpen, setIsDelCredModalOpen] = useState(false);
+    const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
     const fetchUserData = async () => {
         const { RUID, PAC } = await fetchUserCreds(uid);
@@ -35,6 +37,22 @@ export const Settings = () => {
         setLoading(true);
         fetchUserData();
     }, []);
+
+    // useEffect(() => {
+    //     const handleKeyDown = async (e) => {
+    //         if (e.key === "Escape") {
+    //             if (isDelAccModalOpen) {
+    //                 await setIsDelAccModalOpen(false);
+    //             } else if (isDelCredModalOpen) {
+    //                 await setIsDelCredModalOpen(false);
+    //             }
+    //         }
+    //     };
+    //     document.addEventListener("keydown", handleKeyDown);
+    //     return () => {
+    //         document.removeEventListener("keydown", handleKeyDown);
+    //     };
+    // }, [isDelAccModalOpen, isDelCredModalOpen]);
 
     const deleteCredentials = async (event) => {
         const response = await deleteCreds(uid);
@@ -228,8 +246,8 @@ export const Settings = () => {
                             setIsSaving(false);
                             setIsDelAccModalOpen(false);
                         }}
-                        onConfirm={async () => {
-                            deleteUserAccount();
+                        onConfirm={() => {
+                            setIsPasswordModalOpen(true);
                         }}
                         message="Are you sure you want to delete your account?"
                     />
@@ -240,10 +258,18 @@ export const Settings = () => {
                             setIsSaving(false);
                             setIsDelCredModalOpen(false);
                         }}
-                        onConfirm={async () => {
+                        onConfirm={() => {
                             deleteCredentials();
                         }}
                         message="Are you sure you want to delete your credentials?"
+                    />
+
+                    <PasswordModal
+                        isOpen={isPasswordModalOpen}
+                        onClose={() => {
+                            setIsPasswordModalOpen(false);
+                        }}
+                        ifSuccess={() => deleteUserAccount()}
                     />
                 </div>
             )}

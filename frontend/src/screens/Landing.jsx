@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signIn } from "../firebase/auth";
 import { toast } from "sonner";
+import HiddenInput from "../components/HiddenInput";
 
 export const Landing = () => {
     const [email, setEmail] = useState("");
@@ -82,7 +83,7 @@ export const Landing = () => {
                                             id="email"
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
-                                            className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            className="outline-none border rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white"
                                             placeholder="example@gmail.com"
                                             required=""
                                         ></input>
@@ -94,16 +95,13 @@ export const Landing = () => {
                                         >
                                             Password
                                         </label>
-                                        <input
+                                        <HiddenInput
                                             type="password"
-                                            name="password"
-                                            id="password"
                                             value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            placeholder="••••••••"
-                                            className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            required=""
-                                        ></input>
+                                            setValue={setPassword}
+                                            placeholder="••••••••••••"
+                                            isEditable={true}
+                                        />
                                     </div>
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-start">

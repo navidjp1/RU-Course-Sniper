@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signUp } from "../firebase/auth";
 import { toast } from "sonner";
+import HiddenInput from "../components/HiddenInput";
 import { registerUser } from "../api/registerData";
 import axios from "axios";
 
@@ -81,8 +82,9 @@ export const Signup = () => {
                                             id="username"
                                             value={username}
                                             onChange={(e) => setUsername(e.target.value)}
-                                            className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            className="outline-none border rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white"
                                             placeholder="Enter a username"
+                                            autoComplete="off"
                                             required=""
                                         ></input>
                                     </div>
@@ -99,7 +101,7 @@ export const Signup = () => {
                                             id="email"
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
-                                            className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            className="outline-none border rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white"
                                             placeholder="example@gmail.com"
                                             required=""
                                         ></input>
@@ -111,16 +113,13 @@ export const Signup = () => {
                                         >
                                             Password
                                         </label>
-                                        <input
+                                        <HiddenInput
                                             type="password"
-                                            name="password"
-                                            id="password"
                                             value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
+                                            setValue={setPassword}
                                             placeholder="Enter a password (at least 8 characters)"
-                                            className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            required=""
-                                        ></input>
+                                            isEditable={true}
+                                        />
                                     </div>
 
                                     <div className="flex items-center my-6">
