@@ -32,21 +32,22 @@ const MultipleInputs = ({ inputs, setInputs }) => {
     return (
         <div className="rounded-lg">
             <div className="flex flex-wrap gap-2">
-                {inputs.map((input, index) => (
-                    <div
-                        key={index}
-                        className="flex items-center px-3 py-1 mb-2 text-white bg-gray-500 rounded-full"
-                    >
-                        <span className="mr-2">{input}</span>
-                        <button
-                            onClick={() => removeInput(index)}
-                            className="text-sm font-bold"
-                            type="button"
+                {inputs.length > 0 &&
+                    inputs.map((input, index) => (
+                        <div
+                            key={index}
+                            className="flex items-center px-3 py-1 mb-2 text-white bg-gray-500 rounded-full"
                         >
-                            &times;
-                        </button>
-                    </div>
-                ))}
+                            <span className="mr-2">{input}</span>
+                            <button
+                                onClick={() => removeInput(index)}
+                                className="text-sm font-bold"
+                                type="button"
+                            >
+                                &times;
+                            </button>
+                        </div>
+                    ))}
             </div>
             <div className="">
                 <input

@@ -1,4 +1,5 @@
 import DeleteCourse from "./DeleteCourse";
+import EditCoursesToDrop from "./EditCoursesToDrop";
 export function CourseRow({ course, status, updateRender }) {
     const statusConfig = {
         1: {
@@ -37,11 +38,20 @@ export function CourseRow({ course, status, updateRender }) {
                             ? course.title.split(": ")[0]
                             : "No Course Number Found"}
                     </p>
-                    <p className="block font-sans text-xs antialiased font-normal leading-normal text-blue-gray-900 opacity-70">
+                    {/* <EditCoursesToDrop
+                        currentDropIDs={course.dropIDs}
+                    ></EditCoursesToDrop> */}
+
+                    <EditCoursesToDrop
+                        courseID={course.id}
+                        currentDropIDs={course.dropIDs}
+                    ></EditCoursesToDrop>
+
+                    {/* <p className="block font-sans text-xs antialiased font-normal leading-normal text-blue-gray-900 opacity-70">
                         {course.dropIDs
                             ? `Courses to Drop: ${course.dropIDs}`
-                            : "Not Dropping Any Courses"}
-                    </p>
+                            : "Courses to Drop: N/A"}
+                    </p> */}
                 </div>
             </td>
             <td className="px-4 py-8">

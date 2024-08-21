@@ -35,7 +35,7 @@ app.post("/api/get_data", async (req, res) => {
         const courses = await Promise.all(
             idObjects.map(async (obj) => {
                 const id = obj.add;
-                const dropIDs = obj.drop.length === 0 ? null : obj.drop.join(", ");
+                const dropIDs = obj.drop;
                 const idData = await courseModel.findOne({ index: id });
                 if (idData) {
                     const section = idData.section;
@@ -250,6 +250,48 @@ app.post("/api/update_creds", async (req, res) => {
             message: `Error processing request: ${err.message}`,
         });
     }
+});
+
+app.post("/api/update_drop_ids", async (req, res) => {
+    const { uid, courseID, newDropIDs } = req.body;
+
+    try {
+        const user = await userModel.findOne({ uid });
+
+        if (!user) {
+            res.status(404).json({ message: "User not found" });
+        }
+
+        const courseToUpdate = user.courseIDs.find((course) => course.add === courseID);
+        courseToUpdate.drop = newDropIDs;
+        await user.save();
+        res.status(200).json({
+            message: "Successfully updated drop IDs for course index " + courseID,
+        });
+    } catch (err) {
+        console.log(`Error updating drop IDs for course index: ${courseID}: ${err}`);
+        res.status(500).json({ message: `Error updating drop IDs: ${err}` });
+    }
+
+    // try {
+    //     const result = await userModel.updateOne(
+    //         { uid, "courseIDs.add": courseID }, // Match the user and the specific courseID
+    //         { $set: { "courseIDs.$.drop": updatedDropIds } } // Update the drop array of the matched courseID
+    //     );
+
+    //     console.log(result);
+
+    //     if (result.nModified === 0) {
+    //         res.status(404).json("Course index not found");
+    //     } else {
+    //         res.status(200).json(
+    //             "Successfully updated drop IDs for course index " + courseID
+    //         );
+    //     }
+    // } catch (err) {
+    //     console.log(`Error updating drop IDs for course index: ${courseID}: ${err}`);
+    //     res.status(500).json(`Error updating drop IDs: ${err}`);
+    // }
 });
 
 app.post("/api/delete_creds", async (req, res) => {

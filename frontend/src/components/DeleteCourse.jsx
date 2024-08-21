@@ -65,7 +65,7 @@ const DeleteCourse = ({ updateRender, courseID }) => {
                     onConfirm={async () => {
                         deleteCourse();
                     }}
-                    message="Are you sure you want to delete this course?"
+                    message="Are you sure you want to delete this course? This action cannot be undone, but you will get refunded 1 token."
                 />
             </div>
         </div>

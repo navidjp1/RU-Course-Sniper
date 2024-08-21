@@ -26,7 +26,7 @@ function ConfirmModal({ isOpen, onClose, onConfirm, message }) {
         <main className="confirm-modal">
             {isOpen && (
                 <div
-                    className={`fixed inset-0 flex justify-center pt-8 bg-black bg-opacity-50`}
+                    className={`fixed inset-0 flex z-50 justify-center pt-8 bg-black bg-opacity-50`}
                     onClick={handleBackdropClick}
                 >
                     <div
