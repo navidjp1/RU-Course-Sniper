@@ -4,7 +4,7 @@ import { updateDropIDs } from "../api/updateData";
 import { toast } from "sonner";
 import { useAuth } from "../contexts/authContext";
 
-function EditCoursesToDrop({ courseID, currentDropIDs }) {
+function EditCoursesToDrop({ status, courseID, currentDropIDs }) {
     const { currentUser } = useAuth();
     const uid = currentUser.uid;
     const [editing, setEditing] = useState(false);
@@ -13,6 +13,12 @@ function EditCoursesToDrop({ courseID, currentDropIDs }) {
     const [newDropIDs, setNewDropIDs] = useState(currentDropIDs);
 
     const toggleEditOn = () => {
+        if (status === 1) {
+            toast.error(
+                "Cannot edit courses to drop while sniping. \nClick 'Stop Sniping' in order to edit."
+            );
+            return;
+        }
         setEditing(true);
         setIsModalOpen(true);
     };

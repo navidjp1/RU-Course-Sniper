@@ -1,5 +1,4 @@
 import { auth } from "./firebase";
-import { updateProfile } from "firebase/auth";
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
@@ -9,8 +8,13 @@ import {
     EmailAuthProvider,
     reauthenticateWithCredential,
     deleteUser,
+    updateProfile,
+    GoogleAuthProvider,
+    signInWithPopup,
+    linkWithCredential,
 } from "firebase/auth";
 import { registerUser } from "../api/registerData";
+import { toast } from "sonner";
 
 export const signUp = async (username, email, password) => {
     try {
@@ -27,8 +31,6 @@ export const signUp = async (username, email, password) => {
         const response = await registerUser(auth.currentUser.uid);
         if (response.status !== 200) throw new Error("Error registering user in DB");
 
-        // await auth.signOut();
-
         return true;
     } catch (error) {
         console.error("Error signing up: ", error);
@@ -36,8 +38,29 @@ export const signUp = async (username, email, password) => {
     }
 };
 
-export const signIn = (email, password) => {
-    return signInWithEmailAndPassword(auth, email, password);
+export const signIn = async (email, password) => {
+    try {
+        return signInWithEmailAndPassword(auth, email, password);
+    } catch (error) {
+        console.log("Error signing in: ", error);
+        toast.error("There was an error in the system. Try again later.");
+    }
+};
+
+export const signInWithGoogle = async () => {
+    try {
+        const provider = await new GoogleAuthProvider();
+        const userCredential = await signInWithPopup(auth, provider);
+        const user = userCredential.user;
+
+        if (user.metadata.creationTime === user.metadata.lastSignInTime) {
+            const response = await registerUser(auth.currentUser.uid);
+            if (response.status !== 200) throw new Error("Error registering user in DB");
+        }
+    } catch (error) {
+        console.log("Error signing in with Google: ", error);
+        toast.error("There was an error in the system. Try again later.");
+    }
 };
 
 export const doSignOut = () => {
@@ -79,19 +102,29 @@ export const updateUserDetails = async (username, email, password) => {
     const user = auth.currentUser;
 
     try {
-        if (username !== user.displayName) {
-            await updateProfile(user, { displayName: username });
-        }
-        if (email !== user.email) {
-            await updateEmail(user, email);
-        }
-        if (password !== "") {
-            await updatePassword(user, password);
-        }
-        return { message: "success" };
+        await updateProfile(user, { displayName: username });
+        await updateEmail(user, email);
+        await updatePassword(user, password);
+        return { status: 200, message: "Successfully updated user details" };
     } catch (error) {
         console.error("Error updating user details: ", error);
-        return { message: "error" };
+        return { status: 500, message: "Error updating user details" };
+    }
+};
+
+export const linkGoogleWithEmail = async (username, email, password) => {
+    const user = auth.currentUser;
+    try {
+        if (user.displayName !== username)
+            await updateProfile(user, { displayName: username });
+
+        const credential = EmailAuthProvider.credential(email, password);
+        await linkWithCredential(user, credential);
+
+        return { status: 200, message: "Successfully updated user details" };
+    } catch (error) {
+        console.error("Error deleting user: ", error);
+        return { status: 500, message: "Error updating user details" };
     }
 };
 

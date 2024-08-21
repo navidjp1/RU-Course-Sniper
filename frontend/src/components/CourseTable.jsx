@@ -38,20 +38,12 @@ export function CourseRow({ course, status, updateRender }) {
                             ? course.title.split(": ")[0]
                             : "No Course Number Found"}
                     </p>
-                    {/* <EditCoursesToDrop
-                        currentDropIDs={course.dropIDs}
-                    ></EditCoursesToDrop> */}
 
                     <EditCoursesToDrop
+                        status={status}
                         courseID={course.id}
                         currentDropIDs={course.dropIDs}
                     ></EditCoursesToDrop>
-
-                    {/* <p className="block font-sans text-xs antialiased font-normal leading-normal text-blue-gray-900 opacity-70">
-                        {course.dropIDs
-                            ? `Courses to Drop: ${course.dropIDs}`
-                            : "Courses to Drop: N/A"}
-                    </p> */}
                 </div>
             </td>
             <td className="px-4 py-8">

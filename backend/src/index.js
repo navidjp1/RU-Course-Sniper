@@ -272,26 +272,6 @@ app.post("/api/update_drop_ids", async (req, res) => {
         console.log(`Error updating drop IDs for course index: ${courseID}: ${err}`);
         res.status(500).json({ message: `Error updating drop IDs: ${err}` });
     }
-
-    // try {
-    //     const result = await userModel.updateOne(
-    //         { uid, "courseIDs.add": courseID }, // Match the user and the specific courseID
-    //         { $set: { "courseIDs.$.drop": updatedDropIds } } // Update the drop array of the matched courseID
-    //     );
-
-    //     console.log(result);
-
-    //     if (result.nModified === 0) {
-    //         res.status(404).json("Course index not found");
-    //     } else {
-    //         res.status(200).json(
-    //             "Successfully updated drop IDs for course index " + courseID
-    //         );
-    //     }
-    // } catch (err) {
-    //     console.log(`Error updating drop IDs for course index: ${courseID}: ${err}`);
-    //     res.status(500).json(`Error updating drop IDs: ${err}`);
-    // }
 });
 
 app.post("/api/delete_creds", async (req, res) => {
@@ -307,6 +287,24 @@ app.post("/api/delete_creds", async (req, res) => {
         user.PAC = "";
         await user.save();
         res.status(200).json({ message: "Credentials deleted successfully" });
+    } catch (err) {
+        console.log(`Error deleting user credentials: ${err}`);
+        res.status(500).json({
+            message: `Error processing request: ${err.message}`,
+        });
+    }
+});
+
+app.post("/api/delete_account", async (req, res) => {
+    try {
+        const { uid } = req.body;
+        const user = await userModel.deleteOne({ uid });
+
+        if (user.acknowledged === true && user.deletedCount === 1) {
+            res.status(200).json({ message: "Credentials deleted successfully" });
+        } else {
+            res.status(404).json({ message: "User not found" });
+        }
     } catch (err) {
         console.log(`Error deleting user credentials: ${err}`);
         res.status(500).json({

@@ -7,7 +7,6 @@ function Header({ pageNum }) {
 
     const handleLogout = async () => {
         await doSignOut();
-        navigate("/");
     };
 
     return (

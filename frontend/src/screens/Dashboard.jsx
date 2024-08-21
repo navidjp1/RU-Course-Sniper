@@ -170,7 +170,7 @@ export const Dashboard = () => {
                                             <tbody key={course.id}>
                                                 <CourseRow
                                                     course={course}
-                                                    status="1"
+                                                    status={1}
                                                     updateRender={updateRender}
                                                 />
                                             </tbody>

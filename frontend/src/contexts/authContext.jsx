@@ -12,6 +12,7 @@ export function AuthProvider({ children }) {
     const [currentUser, setCurrentUser] = useState(null);
     const [userLoggedIn, setUserLoggedIn] = useState(false);
     const [isEmailUser, setIsEmailUser] = useState(false);
+    const [isGoogleUser, setIsGoogleUser] = useState(false);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -29,6 +30,11 @@ export function AuthProvider({ children }) {
             );
             setIsEmailUser(isEmail);
 
+            const isGoogle = user.providerData.some(
+                (provider) => provider.providerId === "google.com"
+            );
+            setIsGoogleUser(isGoogle);
+
             setUserLoggedIn(true);
         } else {
             setCurrentUser(null);
@@ -41,6 +47,7 @@ export function AuthProvider({ children }) {
     const value = {
         userLoggedIn,
         isEmailUser,
+        isGoogleUser,
         currentUser,
         setCurrentUser,
     };

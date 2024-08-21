@@ -3,15 +3,15 @@ import { useAuth } from "../contexts/authContext";
 import { toast } from "sonner";
 import Header from "../components/Header";
 import SettingsInput from "../components/SettingsInput";
-import { deleteAccount, updateUserDetails } from "../firebase/auth";
+import { deleteAccount, updateUserDetails, linkGoogleWithEmail } from "../firebase/auth";
 import { fetchUserCreds } from "../api/fetchData";
-import { deleteCreds } from "../api/deleteData";
+import { deleteCreds, deleteAccountFromDB } from "../api/deleteData";
 import { updateCreds } from "../api/updateData";
 import ConfirmModal from "../components/ConfirmModal";
 import PasswordModal from "../components/PasswordModal";
 
 export const Settings = () => {
-    const { currentUser } = useAuth();
+    const { currentUser, isEmailUser, isGoogleUser } = useAuth();
     const uid = currentUser.uid;
     const currentUsername = currentUser.displayName;
     const currentEmail = currentUser.email;
@@ -52,6 +52,10 @@ export const Settings = () => {
         try {
             const response = await deleteAccount();
             if (response.status !== 200) throw new Error(response.data);
+
+            const serverRes = await deleteAccountFromDB(uid);
+            if (serverRes.status !== 200) throw new Error(serverRes.data);
+
             toast.success("Successfully deleted your account!");
         } catch (error) {
             console.error(`Error deleting your account: ${error}`);
@@ -93,9 +97,37 @@ export const Settings = () => {
             return;
         }
 
-        await updateUserDetails(username, email, password);
+        if (username === "" || email === "") {
+            toast.warning("Your username or email cannot be empty");
+            return;
+        }
 
-        toast.success("Successfully updated your account details!");
+        if (isGoogleUser && email !== currentEmail) {
+            toast.error(
+                "You cannot change your email since you have already linked your Google account."
+            );
+            return;
+        }
+
+        const shouldLinkEmail = isGoogleUser && !isEmailUser && password !== "";
+
+        if (
+            shouldLinkEmail &&
+            password.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/) == null
+        ) {
+            toast.warning(
+                "Make sure your password has minimum eight characters, at least one letter and one number."
+            );
+            return;
+        }
+
+        const response = shouldLinkEmail
+            ? await linkGoogleWithEmail(username, email, password)
+            : await updateUserDetails(username, email, password);
+
+        if (response.status === 200)
+            toast.success("Successfully updated your account details!");
+        else toast.success("There was an error in the system. Try again later");
     };
 
     return (
@@ -133,8 +165,8 @@ export const Settings = () => {
                                             type="password"
                                             value={password}
                                             setValue={setPassword}
-                                            placeholder="Enter new password (at least 8 characters)"
-                                            hidden={false}
+                                            placeholder="Enter new password (min. 8 characters)"
+                                            hidden={true}
                                         />
 
                                         <div className="flex items-end w-2/5 ">
@@ -231,7 +263,9 @@ export const Settings = () => {
                             setIsDelAccModalOpen(false);
                         }}
                         onConfirm={() => {
-                            setIsPasswordModalOpen(true);
+                            isEmailUser
+                                ? setIsPasswordModalOpen(true)
+                                : deleteUserAccount(); // may cause error if user hasn't recently logged in
                         }}
                         message="Are you sure you want to delete your account?"
                     />

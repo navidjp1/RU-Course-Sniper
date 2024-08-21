@@ -13,7 +13,7 @@ export default function HiddenInput({
     const [hide, setHide] = useState(true);
 
     const handleKeyDown = (e) => {
-        if (e.key === "Enter") {
+        if (e.key === "Enter" && inputRef) {
             onConfirm(e);
         }
     };

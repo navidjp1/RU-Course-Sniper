@@ -52,7 +52,7 @@ function PasswordModal({ isOpen, onClose, ifSuccess }) {
         <main className="password-modal">
             {isOpen && (
                 <div
-                    className="fixed inset-0 flex justify-center pt-8 bg-black bg-opacity-50"
+                    className="fixed inset-0 z-50 flex justify-center pt-8 bg-black bg-opacity-50"
                     onClick={handleBackdropClick}
                 >
                     <div

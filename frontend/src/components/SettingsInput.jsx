@@ -2,15 +2,17 @@ import { useState, useRef, useEffect } from "react";
 import PasswordModal from "./PasswordModal";
 import { toast } from "sonner";
 import HiddenInput from "./HiddenInput";
+import { useAuth } from "../contexts/authContext";
 
 function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
+    const { isEmailUser } = useAuth();
     const [isEditable, setIsEditable] = useState(false);
     const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
     const inputRef = useRef(null);
     const containerRef = useRef(null);
 
     const toggleEdit = () => {
-        if (type === "password") {
+        if (type === "password" && isEmailUser) {
             if (isEditable) {
                 setIsEditable(false);
                 return;
