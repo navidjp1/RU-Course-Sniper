@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
-var courseDataSchema = new mongoose.Schema(
+const courseDataSchema = new mongoose.Schema(
     {
         index: { type: String },
         section: { type: String },
@@ -9,6 +9,6 @@ var courseDataSchema = new mongoose.Schema(
     { collection: "schedule_of_classes" }
 );
 
-var CourseData = mongoose.model("CourseData", courseDataSchema);
+const CourseData = mongoose.model("CourseData", courseDataSchema);
 
-module.exports = CourseData;
+export default CourseData;

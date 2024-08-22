@@ -1,11 +1,11 @@
-require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const mongoose = require("mongoose");
-const userModel = require("./models/User");
-const courseModel = require("./models/CourseData");
-const { testLogin } = require("./sniper_paclogin/testLogin");
-const { runSniper } = require("./sniper_paclogin/sniperPAC");
+import "dotenv/config";
+import express from "express";
+import cors from "cors";
+import mongoose from "mongoose";
+import userModel from "./models/User.js";
+import courseModel from "./models/CourseData.js";
+import runSniper from "./sniper/pacLogin/sniperPAC.js";
+import { testLogin } from "./sniper/pacLogin/testLogin.js";
 
 const app = express();
 app.use(express.json());

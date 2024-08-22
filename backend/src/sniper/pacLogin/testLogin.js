@@ -1,21 +1,19 @@
-import { getUserCurrentCourses } from "./utils";
-const pt = require("puppeteer");
+import { getUserCurrentCourses } from "./utils.js";
+import pt from "puppeteer";
+
 const url = "https://sims.rutgers.edu/webreg/pacLogin.htm";
 
-const RUID = "222001450";
-const PAC = "0321";
-const dropIDs = ["10285"];
-async function testLogin() {
+export async function testLogin(RUID, PAC, idObjects) {
     console.log("Testing login credentials...");
-    const browser = await pt.launch({ headless: false });
+    const browser = await pt.launch({ headless: true });
 
     try {
         let page = await browser.newPage();
 
         await page.goto(url);
 
-        const usernameInput = await page.waitForSelector("#j_username");
-        await usernameInput.type(RUID, { delay: 100 });
+        await page.waitForSelector("#j_username");
+        await page.type("#j_username", RUID, { delay: 100 });
 
         await page.waitForSelector("#j_password");
         await page.type("#j_password", PAC, { delay: 100 });
@@ -36,11 +34,12 @@ async function testLogin() {
         await submit.click();
 
         await page.waitForSelector(".courses");
-        const userCurrentCourses = await traverseUserCurrentCourses(page);
-
-        console.log(userCurrentCourses);
+        const userCurrentCourses = await getUserCurrentCourses(page);
+        const msg = await checkValidDropIDs(idObjects, userCurrentCourses);
 
         await browser.close();
+
+        return msg;
     } catch (err) {
         // To do: provide more accurate error
         await browser.close();
@@ -48,4 +47,12 @@ async function testLogin() {
     }
 }
 
-// testLogin();
+async function checkValidDropIDs(idObjects, userCurrentCourses) {
+    for (const obj of idObjects) {
+        const dropIDArray = obj.drop;
+        const valid = dropIDArray.every((id) => userCurrentCourses.includes(id));
+
+        if (!valid) return "Invalid drop IDs";
+    }
+    return "Success";
+}

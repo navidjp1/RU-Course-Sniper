@@ -1,4 +1,4 @@
-async function getUserCurrentCourses(page) {
+export async function getUserCurrentCourses(page) {
     const indexStrings = await page.evaluate(() => {
         const courseElements = document.querySelectorAll(".courses dt span");
 
@@ -19,7 +19,3 @@ async function getUserCurrentCourses(page) {
 
     return indexStrings;
 }
-
-module.exports = {
-    getUserCurrentCourses,
-};

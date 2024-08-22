@@ -1,6 +1,6 @@
-const pt = require("puppeteer");
-const { getUserCurrentCourses } = require("./utils");
-var axios = require("axios").default;
+import pt from "puppeteer";
+import axios from "axios";
+import { getUserCurrentCourses } from "./utils.js";
 
 const url = "https://sims.rutgers.edu/webreg/pacLogin.htm";
 
@@ -367,4 +367,4 @@ async function add(id) {
     await bypassLoadingScrn();
 }
 
-module.exports = { runSniper };
+export default runSniper;

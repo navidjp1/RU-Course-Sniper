@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const courseIDSchema = new mongoose.Schema({
     add: {
@@ -40,4 +40,4 @@ const userSchema = new mongoose.Schema({
 
 const userModel = mongoose.model("users", userSchema);
 
-module.exports = userModel;
+export default userModel;
