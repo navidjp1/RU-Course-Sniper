@@ -57,9 +57,9 @@ function AddCourseModal({ isOpen, onClose, updateRender, tokenBalance }) {
 
     const checkIfDuplicate = async () => {
         try {
-            const response = await axios.post("http://localhost:3000/api/check_course", {
-                courseID,
-            });
+            const response = await axios.get(
+                `http://localhost:3000/api/courses/${courseID}`
+            );
 
             if (response.status !== 200) throw new Error(response);
 
@@ -86,11 +86,13 @@ function AddCourseModal({ isOpen, onClose, updateRender, tokenBalance }) {
 
     const addCourseToDB = async () => {
         const uid = currentUser.uid;
-        const userData = { uid, courseID, dropIDs, campus, semester, year };
+        // const userData = { uid, courseID, dropIDs, campus, semester, year };
+
+        const userData = { uid, dropIDs };
 
         try {
             const response = await axios.post(
-                "http://localhost:3000/api/add_course",
+                `http://localhost:3000/api/courses/add/${courseID}`,
                 userData
             );
 
@@ -102,7 +104,7 @@ function AddCourseModal({ isOpen, onClose, updateRender, tokenBalance }) {
             }
 
             updateRender();
-            toast.success("Successfully added course");
+            toast.success("Successfully added course!");
             resetFormValues();
         } catch (error) {
             console.error(`Error updating user creds: ${error}`);

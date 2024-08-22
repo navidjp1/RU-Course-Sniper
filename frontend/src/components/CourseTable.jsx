@@ -75,7 +75,7 @@ export function CourseRow({ course, status, updateRender }) {
             </td>
 
             <td className="py-8 pl-2 pr-4">
-                <DeleteCourse updateRender={updateRender} courseID={course} />
+                <DeleteCourse updateRender={updateRender} course={course} />
             </td>
         </tr>
     );

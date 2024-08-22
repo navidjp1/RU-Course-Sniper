@@ -3,9 +3,7 @@ import { toast } from "sonner";
 
 export async function registerUser(uid) {
     try {
-        const response = await axios.post("http://localhost:3000/api/register_user", {
-            uid,
-        });
+        const response = await axios.put(`http://localhost:3000/api/users/${uid}`);
         if (response.status !== 200) throw new Error(response.data);
         return { status: 200 };
     } catch (error) {

@@ -1,13 +1,11 @@
 import React from "react";
-import axios from "axios";
 import Header from "../components/Header";
 import AddCourseModal from "../components/AddCourseModal";
 import { CourseRow, CourseTitle } from "../components/CourseTable";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 import { useAuth } from "../contexts/authContext";
 import { fetchUserData } from "../api/fetchData";
+import { callStartSniper, callStopSniper } from "../api/handleSniper";
 
 export const Dashboard = () => {
     const { currentUser } = useAuth();
@@ -17,7 +15,6 @@ export const Dashboard = () => {
     const [loading, setLoading] = useState(true);
     const [disabled, setDisabled] = useState(false);
     const [isCourseModalOpen, setIsCourseModalOpen] = useState(false);
-    const navigate = useNavigate();
 
     const fetchData = async () => {
         const { courses, userTokenBalance } = await fetchUserData(uid);
@@ -40,36 +37,9 @@ export const Dashboard = () => {
 
         setDisabled(true);
 
-        await axios
-            .post("http://localhost:3000/api/start_sniper", { uid })
-            .then((response) => {
-                const msg = response.data;
-                if (msg === "Success") {
-                    toast.success("Successfully started sniping your courses!");
-                    return;
-                }
-                if (msg === "No cred") {
-                    toast.warning(
-                        "You have not entered in your required credentials in order to start sniping. Please do so at the settings page."
-                    );
-                } else if (msg === "Invalid login credentials") {
-                    toast.error(
-                        "Your login credentials did not work. Make sure you entered in your correct RUID and birthday in the settings page."
-                    );
-                } else if (msg === "Invalid drop IDs") {
-                    toast.error(
-                        "One or more of the courses you intend to drop are courses that you are not currently enrolled in. Please update them and try again."
-                    );
-                } else {
-                    console.log(msg);
-                    toast.warning("There was an error in the system. Try again later.");
-                }
-                setDisabled(false);
-            })
-            .catch((err) => {
-                console.log(`Error sending api request: ${err}`);
-                setDisabled(false);
-            });
+        const res = await callStartSniper(uid);
+
+        setDisabled(false);
     };
 
     const handleStop = async (event) => {
@@ -77,22 +47,9 @@ export const Dashboard = () => {
 
         setDisabled(false);
 
-        await axios
-            .post("http://localhost:3000/api/stop_sniper", {})
-            .then((response) => {
-                const msg = response.data;
-                if (msg === "Success") {
-                    toast.success("Successfully stopped sniping your courses!");
-                } else {
-                    console.log(msg);
-                    toast.warning("There was an error in the system. Try again later.");
-                    setDisabled(true);
-                }
-            })
-            .catch((err) => {
-                console.log(`Error starting sniper: ${err}`);
-                setDisabled(true);
-            });
+        const res = await callStopSniper();
+
+        if (res.status !== 200) setDisabled(true);
     };
 
     return (

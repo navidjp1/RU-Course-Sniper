@@ -2,8 +2,9 @@ import axios from "axios";
 import { Trash2 } from "react-feather";
 import { useAuth } from "../contexts/authContext";
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 import ConfirmModal from "./ConfirmModal";
-const DeleteCourse = ({ updateRender, courseID }) => {
+const DeleteCourse = ({ updateRender, course }) => {
     const { currentUser } = useAuth();
     const [disabled, setDisabled] = useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -26,18 +27,20 @@ const DeleteCourse = ({ updateRender, courseID }) => {
 
     const deleteCourse = async () => {
         const uid = currentUser.uid;
-        const userData = { uid, courseID };
 
-        await axios
-            .post("http://localhost:3000/api/delete_course", userData)
-            .then((result) => {
-                if (result.data === "Success") {
-                    updateRender();
-                } else {
-                    console.log(result.data);
-                }
-            })
-            .catch((err) => console.log(err));
+        try {
+            const response = await axios.post(
+                "http://localhost:3000/api/courses/remove/",
+                { uid, course }
+            );
+
+            if (response.status !== 200) throw new Error(response.data);
+            updateRender();
+            toast.success("Successfully removed course!");
+        } catch (error) {
+            console.error(`Error removing course: ${error}`);
+            toast.error("There was an error in the system. Try again later.");
+        }
 
         setIsConfirmModalOpen(false);
     };

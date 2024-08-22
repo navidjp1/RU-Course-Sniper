@@ -28,8 +28,8 @@ export const Purchase = () => {
 
         try {
             const response = await axios.post(
-                "http://localhost:3000/api/purchase_tokens",
-                { uid, numTokens }
+                `http://localhost:3000/api/users/balance/${uid}`,
+                { numTokens }
             );
             const msg = response.data.message;
             if (response.status !== 200) throw new Error(msg);

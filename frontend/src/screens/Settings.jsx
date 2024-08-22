@@ -43,6 +43,8 @@ export const Settings = () => {
 
         if (response.status === 200) {
             toast.success("Successfully deleted your credentials!");
+            setRUID("");
+            setPAC("");
         }
         setIsDelCredModalOpen(false);
         setIsSaving(false);
