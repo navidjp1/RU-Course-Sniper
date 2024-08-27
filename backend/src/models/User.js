@@ -9,6 +9,10 @@ const courseIDSchema = new mongoose.Schema({
         type: [String], // Array of strings
         default: [], // Optional field
     },
+    status: {
+        type: String,
+        default: "INACTIVE",
+    },
 });
 
 const userSchema = new mongoose.Schema({

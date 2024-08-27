@@ -19,3 +19,9 @@ export async function getUserCurrentCourses(page) {
 
     return indexStrings;
 }
+
+export async function delay(time) {
+    return new Promise(function (resolve) {
+        setTimeout(resolve, time);
+    });
+}
