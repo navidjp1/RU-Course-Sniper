@@ -3,7 +3,7 @@ import { toast } from "sonner";
 
 export async function callStartSniper(uid) {
     try {
-        const response = await axios.get(`http://localhost:3000/api/sniper/${uid}`);
+        const response = await axios.get(`http://localhost:3000/api/sniper/start/${uid}`);
         if (response.status !== 200) throw new Error(response);
 
         toast.success("Successfully started sniping your courses!");
@@ -11,9 +11,15 @@ export async function callStartSniper(uid) {
         return { status: 200 };
     } catch (error) {
         const msg = error.response.data.message;
-        if (msg === "No cred") {
+        if (msg === "Already sniping") {
+            toast.warning("You are already sniping courses.");
+        } else if (msg === "No credentials") {
             toast.warning(
                 "You have not entered in your required credentials in order to start sniping. Please do so at the settings page."
+            );
+        } else if (msg === "No courses") {
+            toast.warning(
+                "You have not added a course yet. Please add a course to start sniping."
             );
         } else if (msg === "Invalid login credentials") {
             toast.error(
@@ -31,9 +37,9 @@ export async function callStartSniper(uid) {
     }
 }
 
-export async function callStopSniper() {
+export async function callStopSniper(uid) {
     try {
-        const response = await axios.get("http://localhost:3000/api/sniper/stop", {});
+        const response = await axios.get(`http://localhost:3000/api/sniper/stop/${uid}`);
         if (response.status !== 200) throw new Error(response);
 
         toast.success("Successfully stopped sniping your courses!");

@@ -11,24 +11,26 @@ export const getCoursesAndBalance = async (req, res) => {
         }
 
         const userTokenBalance = user.tokenBalance;
+        const isSniping = user.isSniping;
         const idObjects = user.courseIDs;
 
         const courses = await Promise.all(
             idObjects.map(async (obj) => {
                 const id = obj.add;
                 const dropIDs = obj.drop;
+                const status = obj.status;
                 const idData = await courseModel.findOne({ index: id });
                 if (idData) {
                     const section = idData.section;
                     const title = idData.name;
 
-                    return { id, section, title, dropIDs };
+                    return { id, section, title, dropIDs, status };
                 } else {
-                    return { id, section: null, title: null, dropIDs };
+                    return { id, section: null, title: null, dropIDs, status };
                 }
             })
         );
-        res.status(200).json({ courses, userTokenBalance });
+        res.status(200).json({ courses, userTokenBalance, isSniping });
     } catch (err) {
         console.log(`Error fetching course data: ${err}`);
         res.status(500).json({

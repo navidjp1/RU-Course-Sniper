@@ -26,17 +26,21 @@ function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
         }
     };
 
-    const handleClickOutside = (event) => {
+    const handleClicks = (event) => {
         if (containerRef.current && !containerRef.current.contains(event.target)) {
             setIsEditable(false);
+        }
+
+        if (type !== "password" && inputRef.current.contains(event.target)) {
+            setIsEditable(true);
         }
     };
 
     useEffect(() => {
-        document.addEventListener("mousedown", handleClickOutside);
+        document.addEventListener("mousedown", handleClicks);
 
         return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
+            document.removeEventListener("mousedown", handleClicks);
         };
     }, []);
 

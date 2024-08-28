@@ -9,9 +9,6 @@ function AddCourseModal({ isOpen, onClose, updateRender, tokenBalance }) {
     const { currentUser } = useAuth();
     const [courseID, setCourseID] = useState("");
     const [dropIDs, setDropIDs] = useState([]);
-    const [campus, setCampus] = useState("New Brunswick");
-    const [semester, setSemester] = useState("Spring");
-    const [year, setYear] = useState("2024");
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const [isDupeModalOpen, setIsDupeModalOpen] = useState(false);
 
@@ -79,14 +76,10 @@ function AddCourseModal({ isOpen, onClose, updateRender, tokenBalance }) {
     const resetFormValues = () => {
         setCourseID("");
         setDropIDs([]);
-        setCampus("New Brunswick");
-        setSemester("Spring");
-        setYear("2024");
     };
 
     const addCourseToDB = async () => {
         const uid = currentUser.uid;
-        // const userData = { uid, courseID, dropIDs, campus, semester, year };
 
         const userData = { uid, dropIDs };
 
@@ -179,70 +172,6 @@ function AddCourseModal({ isOpen, onClose, updateRender, tokenBalance }) {
                                     Courses to Drop (optional)
                                 </label>
                                 <MultipleInputs inputs={dropIDs} setInputs={setDropIDs} />
-
-                                <div className="flex flex-row justify-between gap-x-2">
-                                    <div className="flex flex-col items-center justify-center w-1/3">
-                                        <label
-                                            htmlFor="semester"
-                                            className="mb-2 text-sm font-medium text-white "
-                                        >
-                                            Semester
-                                        </label>
-
-                                        <select
-                                            name="semester"
-                                            id={semester}
-                                            value={semester}
-                                            onChange={(e) => setSemester(e.target.value)}
-                                            className={`justify-start rounded-lg w-full p-2.5 appearance-none text-center "bg-gray-700 border-gray-600 outline-none mb-6 placeholder-gray-400 text-white `}
-                                        >
-                                            <option>Spring</option>
-                                            <option>Summer</option>
-                                            <option>Fall</option>
-                                            <option>Winter</option>
-                                        </select>
-                                    </div>
-
-                                    <div className="flex flex-col items-center justify-center w-1/3">
-                                        <label
-                                            htmlFor="year"
-                                            className="mb-2 text-sm font-medium text-white "
-                                        >
-                                            Year
-                                        </label>
-
-                                        <select
-                                            name="year"
-                                            id={year}
-                                            value={year}
-                                            onChange={(e) => setYear(e.target.value)}
-                                            className={`justify-start rounded-lg w-full p-2.5 text-center appearance-none "bg-gray-700 border-gray-600 outline-none mb-6 placeholder-gray-400 text-white `}
-                                        >
-                                            <option>2024</option>
-                                            <option>2025</option>
-                                        </select>
-                                    </div>
-
-                                    <div className="flex flex-col items-center justify-center w-1/3">
-                                        <label
-                                            htmlFor="campus"
-                                            className="mb-2 text-sm font-medium text-white "
-                                        >
-                                            Campus
-                                        </label>
-                                        <select
-                                            name="campus"
-                                            id={campus}
-                                            value={campus}
-                                            onChange={(e) => setCampus(e.target.value)}
-                                            className={`justify-start rounded-lg w-full p-2.5 text-center appearance-none "bg-gray-700 border-gray-600 outline-none mb-6 placeholder-gray-400 text-white `}
-                                        >
-                                            <option>New Brunswick</option>
-                                            <option>Newark</option>
-                                            <option>Camden</option>
-                                        </select>
-                                    </div>
-                                </div>
                             </div>
                             <div className="flex justify-between mt-4">
                                 <button

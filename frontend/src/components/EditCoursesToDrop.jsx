@@ -4,7 +4,7 @@ import { updateDropIDs } from "../api/updateData";
 import { toast } from "sonner";
 import { useAuth } from "../contexts/authContext";
 
-function EditCoursesToDrop({ status, courseID, currentDropIDs }) {
+function EditCoursesToDrop({ courseID, currentDropIDs, isSniperRunning }) {
     const { currentUser } = useAuth();
     const uid = currentUser.uid;
     const [editing, setEditing] = useState(false);
@@ -13,14 +13,12 @@ function EditCoursesToDrop({ status, courseID, currentDropIDs }) {
     const [newDropIDs, setNewDropIDs] = useState(currentDropIDs);
 
     const toggleEditOn = () => {
-        if (status === 1) {
-            toast.error(
-                "Cannot edit courses to drop while sniping. \nClick 'Stop Sniping' in order to edit."
-            );
-            return;
+        if (isSniperRunning) {
+            toast.error("Cannot edit courses to drop while sniping.");
+        } else {
+            setEditing(true);
+            setIsModalOpen(true);
         }
-        setEditing(true);
-        setIsModalOpen(true);
     };
 
     const toggleEditOff = () => {
@@ -92,7 +90,11 @@ function EditCoursesToDrop({ status, courseID, currentDropIDs }) {
                         strokeWidth={1.5}
                         stroke="currentColor"
                         className={`size-4  ${
-                            editing ? "text-blue-600" : "text-black hover:text-blue-600"
+                            editing
+                                ? "text-blue-600"
+                                : isSniperRunning
+                                ? "hover:cursor-not-allowed"
+                                : "hover:text-blue-600"
                         }`}
                     >
                         <path

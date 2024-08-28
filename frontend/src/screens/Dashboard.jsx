@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../contexts/authContext";
 import { fetchUserData } from "../api/fetchData";
 import { callStartSniper, callStopSniper } from "../api/handleSniper";
+import { toast } from "sonner";
 
 export const Dashboard = () => {
     const { currentUser } = useAuth();
@@ -13,14 +14,22 @@ export const Dashboard = () => {
     const [courses, setCourses] = useState({});
     const [tokenBalance, setTokenBalance] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [isSniperRunning, setIsSniperRunning] = useState(false);
     const [disabled, setDisabled] = useState(false);
     const [isCourseModalOpen, setIsCourseModalOpen] = useState(false);
 
     const fetchData = async () => {
-        const { courses, userTokenBalance } = await fetchUserData(uid);
-        if (courses === "" || userTokenBalance === "") return;
+        const { courses, userTokenBalance, isSniping } = await fetchUserData(uid);
+        if (courses === "") return;
+
         setCourses(courses);
         setTokenBalance(userTokenBalance);
+        setIsSniperRunning(isSniping);
+
+        if (courses.length === 0 && userTokenBalance === 0) {
+            setDisabled(true);
+        }
+
         setLoading(false);
     };
 
@@ -32,24 +41,22 @@ export const Dashboard = () => {
         fetchData(); // Trigger useEffect to refetch courses
     };
 
-    const handleStart = async (event) => {
+    const handleSniper = async (event) => {
         event.preventDefault();
 
         setDisabled(true);
 
-        const res = await callStartSniper(uid);
+        if (isSniperRunning) {
+            const res = await callStopSniper(uid);
+            if (res.status === 200) setIsSniperRunning(false);
+        } else {
+            const res = await callStartSniper(uid);
+            if (res.status === 200) setIsSniperRunning(true);
+        }
+
+        updateRender();
 
         setDisabled(false);
-    };
-
-    const handleStop = async (event) => {
-        event.preventDefault();
-
-        setDisabled(false);
-
-        const res = await callStopSniper();
-
-        if (res.status !== 200) setDisabled(true);
     };
 
     return (
@@ -60,7 +67,7 @@ export const Dashboard = () => {
                     <div className="flex flex-col items-center w-screen min-h-screen p-2 pt-24">
                         <div className="w-3/4">
                             <div className="flex flex-row w-full gap-x-12">
-                                <div className="justify-start w-3/4 text-left">
+                                <div className="justify-start w-3/5 text-left">
                                     <h2 className="text-3xl font-bold tracking-tight text-gray-900 ">
                                         Your Courses
                                     </h2>
@@ -70,10 +77,35 @@ export const Dashboard = () => {
                                         {tokenBalance}.
                                     </p>
                                 </div>
-                                <div className="items-center w-1/4 p-4 place-content-center">
+                                <div className="flex flex-row items-center w-2/5 p-4 place-content-center gap-x-4">
                                     <button
-                                        className="w-48 h-12 p-1 font-sans text-xl font-bold text-center text-white bg-blue-500 border rounded-md outline-none hover:bg-blue-800 border-blue-gray-50"
-                                        onClick={() => setIsCourseModalOpen(true)}
+                                        className={`w-48 h-12 p-1 font-sans text-xl font-bold text-center text-white border rounded-md outline-none border-blue-gray-50 ${
+                                            disabled
+                                                ? "hover:cursor-not-allowed hover:bg-red-500"
+                                                : isSniperRunning
+                                                ? "bg-red-500 hover:bg-red-800"
+                                                : "bg-blue-500 hover:bg-blue-800"
+                                        }`}
+                                        onClick={(e) => handleSniper(e)}
+                                        type="button"
+                                        disabled={disabled}
+                                    >
+                                        {!isSniperRunning ? "Start" : "Stop"} Sniping
+                                    </button>
+                                    <button
+                                        className={`w-48 h-12 p-1 font-sans text-xl font-bold text-center text-white bg-blue-500 border rounded-md outline-none hover:bg-blue-800 border-blue-gray-50 ${
+                                            isSniperRunning
+                                                ? "hover:cursor-not-allowed hover:bg-red-500"
+                                                : "hover:bg-blue-800"
+                                        }`}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            if (isSniperRunning) {
+                                                toast.error(
+                                                    "Cannot add course while sniping"
+                                                );
+                                            } else setIsCourseModalOpen(true);
+                                        }}
                                     >
                                         Add Course
                                     </button>
@@ -97,7 +129,7 @@ export const Dashboard = () => {
                                             <tr>
                                                 <CourseTitle
                                                     title="Course"
-                                                    thStyles={"w-1/2"}
+                                                    thStyles={"w-3/5"}
                                                 />
                                                 <CourseTitle
                                                     title="Index"
@@ -125,8 +157,8 @@ export const Dashboard = () => {
                                             <tbody key={course.id}>
                                                 <CourseRow
                                                     course={course}
-                                                    status={1}
                                                     updateRender={updateRender}
+                                                    isSniperRunning={isSniperRunning}
                                                 />
                                             </tbody>
                                         ))}

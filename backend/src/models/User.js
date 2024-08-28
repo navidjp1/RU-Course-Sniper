@@ -40,6 +40,10 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    isSniping: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const userModel = mongoose.model("users", userSchema);

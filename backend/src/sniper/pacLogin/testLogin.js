@@ -1,11 +1,10 @@
-import { getUserCurrentCourses } from "./utils.js";
 import pt from "puppeteer";
 
 const url = "https://sims.rutgers.edu/webreg/pacLogin.htm";
 
 export async function testLogin(RUID, PAC, idObjects) {
     console.log("Testing login credentials...");
-    const browser = await pt.launch({ headless: true });
+    const browser = await pt.launch({ headless: false });
 
     try {
         let page = await browser.newPage();
@@ -45,6 +44,28 @@ export async function testLogin(RUID, PAC, idObjects) {
         await browser.close();
         return "Puppeteer error: " + err;
     }
+}
+
+async function getUserCurrentCourses(page) {
+    const indexStrings = await page.evaluate(() => {
+        const courseElements = document.querySelectorAll(".courses dt span");
+
+        console.log(courseElements);
+
+        return Array.from(courseElements).map((courseElement) => {
+            const courseText = courseElement.innerText.split("\n");
+
+            const indexString = courseText.find(
+                (line) => line.includes("[") && line.includes("]")
+            );
+
+            const index = indexString.match(/\[(.*?)\]/)[1];
+
+            return index;
+        });
+    });
+
+    return indexStrings;
 }
 
 async function checkValidDropIDs(idObjects, userCurrentCourses) {

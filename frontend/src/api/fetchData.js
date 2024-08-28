@@ -7,11 +7,13 @@ export async function fetchUserData(uid) {
         if (response.status !== 200) throw new Error(response.data);
         const courses = response.data.courses;
         const userTokenBalance = response.data.userTokenBalance;
-        return { courses, userTokenBalance };
+        const isSniping = response.data.isSniping;
+
+        return { courses, userTokenBalance, isSniping };
     } catch (error) {
         console.error(`Error fetching user data: ${error}`);
         toast.error("There was an error in the system. Try again later.");
-        return { courses: "", userTokenBalance: "" };
+        return { courses: "", userTokenBalance: "", isSniping: false };
     }
 }
 

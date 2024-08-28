@@ -3,8 +3,8 @@ import { startSniper, stopSniper } from "../controllers/sniper.js";
 
 const router = express.Router();
 
-router.get("/:uid", startSniper);
+router.get("/start/:uid", startSniper);
 
-router.get("/stop", stopSniper);
+router.get("/stop/:uid", stopSniper);
 
 export default router;

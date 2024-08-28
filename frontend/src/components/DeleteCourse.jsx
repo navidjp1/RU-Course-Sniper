@@ -4,7 +4,7 @@ import { useAuth } from "../contexts/authContext";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import ConfirmModal from "./ConfirmModal";
-const DeleteCourse = ({ updateRender, course }) => {
+const DeleteCourse = ({ updateRender, course, isSniperRunning }) => {
     const { currentUser } = useAuth();
     const [disabled, setDisabled] = useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -48,11 +48,17 @@ const DeleteCourse = ({ updateRender, course }) => {
     return (
         <div className="relative font-sans font-medium text-center align-middle transition-all select-none place-content-center ">
             <button
-                className="disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none w-10 max-w-[40px] h-10 max-h-[40px] rounded-lg text-xs hover:text-red-500"
+                className={`disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none w-10 max-w-[40px] h-10 max-h-[40px] rounded-lg text-xs ${
+                    isSniperRunning ? "hover:cursor-not-allowed" : "hover:text-red-500"
+                }`}
                 onClick={(e) => {
                     e.preventDefault();
-                    setDisabled(true);
-                    setIsConfirmModalOpen(true);
+                    if (isSniperRunning) {
+                        toast.error("Cannot delete courses while sniping.");
+                    } else {
+                        setDisabled(true);
+                        setIsConfirmModalOpen(true);
+                    }
                 }}
                 disabled={disabled}
             >
