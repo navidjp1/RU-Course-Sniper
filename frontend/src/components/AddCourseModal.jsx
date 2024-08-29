@@ -97,7 +97,7 @@ function AddCourseModal({ isOpen, onClose, updateRender, tokenBalance }) {
             }
 
             updateRender();
-            toast.success("Successfully added course!");
+            toast.success(response.data.message);
             resetFormValues();
         } catch (error) {
             console.error(`Error updating user creds: ${error}`);

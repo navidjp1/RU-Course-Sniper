@@ -1,8 +1,9 @@
 import pt from "puppeteer";
 import axios from "axios";
-import { delay } from "./utils.js";
 import userModel from "../../models/User.js";
+import { delay } from "./utils.js";
 import { login, relogin } from "./login.js";
+import { updateUserPositions } from "../../controllers/courses.js";
 
 const url = "https://sims.rutgers.edu/webreg/pacLogin.htm";
 
@@ -44,10 +45,14 @@ async function handleAfterRegister(uid, id) {
     try {
         const user = await userModel.findOne({ uid });
         const idObjects = user.courseIDs;
-        const idObj = idObjects.find((obj) => obj.add === id);
-        idObj.status = "REGISTERED";
-        await idObj.save();
+        const id = idObjects.find((obj) => obj.add === id);
+        const oldPosition = id.position;
+        id.status = "REGISTERED";
+        id.position = -1;
+        await user.save();
         ids = ids.filter((obj) => obj.add !== id);
+
+        await updateUserPositions(id, oldPosition);
     } catch (error) {
         console.error(`Could not update course status for id ${id}: ${error}`);
     }
@@ -56,6 +61,7 @@ async function handleAfterRegister(uid, id) {
 export const handleSniper = async (shouldRun, RUID, PAC, idObjects, uid) => {
     if (shouldRun && !isRunning) {
         isRunning = true;
+
         console.log("Launching browser...");
         const browser = await pt.launch({ headless: false });
         context = await browser.createBrowserContext();
@@ -95,7 +101,7 @@ export const handleSniper = async (shouldRun, RUID, PAC, idObjects, uid) => {
         console.log("Auto-sniper stopped.");
     }
 
-    if (shouldRestart && restartCount < 3) {
+    if (shouldRestart && restartCount <= 3) {
         console.log("Auto-sniper restarting...");
         isRunning = false;
         shouldRestart = false;

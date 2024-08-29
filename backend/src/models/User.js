@@ -11,7 +11,11 @@ const courseIDSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        default: "INACTIVE",
+        required: true,
+    },
+    position: {
+        type: Number,
+        required: true,
     },
 });
 

@@ -48,7 +48,7 @@ export const updateCreds = async (req, res) => {
 
         user.RUID = RUID;
         user.PAC = PAC;
-        user.testLogin = false;
+        user.testedLogin = false;
 
         await user.save();
         res.status(200).json({ message: "Successfully updated credentials" });
@@ -73,6 +73,8 @@ export const updateDropIDs = async (req, res) => {
 
         const courseToUpdate = user.courseIDs.find((course) => course.add === courseID);
         courseToUpdate.drop = newDropIDs;
+        user.testedLogin = false;
+
         await user.save();
         res.status(200).json({
             message: "Successfully updated drop IDs for course index " + courseID,

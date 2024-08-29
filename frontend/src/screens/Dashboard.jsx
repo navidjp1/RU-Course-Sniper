@@ -16,6 +16,7 @@ export const Dashboard = () => {
     const [loading, setLoading] = useState(true);
     const [isSniperRunning, setIsSniperRunning] = useState(false);
     const [disabled, setDisabled] = useState(false);
+    const [hidden, setHidden] = useState(false);
     const [isCourseModalOpen, setIsCourseModalOpen] = useState(false);
 
     const fetchData = async () => {
@@ -27,7 +28,7 @@ export const Dashboard = () => {
         setIsSniperRunning(isSniping);
 
         if (courses.length === 0 && userTokenBalance === 0) {
-            setDisabled(true);
+            setHidden(true);
         }
 
         setLoading(false);
@@ -80,8 +81,8 @@ export const Dashboard = () => {
                                 <div className="flex flex-row items-center w-2/5 p-4 place-content-center gap-x-4">
                                     <button
                                         className={`w-48 h-12 p-1 font-sans text-xl font-bold text-center text-white border rounded-md outline-none border-blue-gray-50 ${
-                                            disabled
-                                                ? "hover:cursor-not-allowed hover:bg-red-500"
+                                            hidden
+                                                ? "bg-transparent border-transparent"
                                                 : isSniperRunning
                                                 ? "bg-red-500 hover:bg-red-800"
                                                 : "bg-blue-500 hover:bg-blue-800"
@@ -89,6 +90,7 @@ export const Dashboard = () => {
                                         onClick={(e) => handleSniper(e)}
                                         type="button"
                                         disabled={disabled}
+                                        hidden={hidden}
                                     >
                                         {!isSniperRunning ? "Start" : "Stop"} Sniping
                                     </button>

@@ -28,9 +28,10 @@ export const Signup = () => {
         if (!isSigningUp) {
             setIsSigningUp(true);
             const success = await signUp(username, email, password);
+            // await new Promise((resolve) => setTimeout(resolve, 4000));
             if (success) {
                 toast.success("Successfully signed up!");
-                navigate("/");
+                // navigate("/");
             } else {
                 toast.info("You already have an account. Please log in.");
             }
@@ -60,7 +61,7 @@ export const Signup = () => {
                                             alt="Google Icon"
                                             className="size-4"
                                         />
-                                        <span class="">Sign up with Google</span>{" "}
+                                        <span className="">Sign up with Google</span>{" "}
                                     </div>
                                 </button>
                                 <div className="flex items-center my-6">
