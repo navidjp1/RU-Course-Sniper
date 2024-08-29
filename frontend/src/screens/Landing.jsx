@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { signIn } from "../firebase/auth";
+import { signIn, sendPasswordReset, signInWithGoogle } from "../firebase/auth";
 import { toast } from "sonner";
-import { signInWithGoogle } from "../firebase/auth";
 import HiddenInput from "../components/HiddenInput";
 import googleIcon from "../assets/google.svg";
 
@@ -11,6 +10,7 @@ export const Landing = () => {
     const [password, setPassword] = useState("");
     const [remember, setRemember] = useState(false);
     const [isSigningIn, setIsSigningIn] = useState(false);
+    const [disabled, setDisabled] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
@@ -29,6 +29,27 @@ export const Landing = () => {
                 toast.error("Invalid username/password. Try again.");
             }
         }
+    };
+
+    const handleForgotPassword = async (event) => {
+        event.preventDefault();
+        setDisabled(true);
+        if (!email) {
+            toast.error(
+                "Enter your email in the email field to send a password reset email."
+            );
+            setDisabled(false);
+            return;
+        }
+        try {
+            const { status, message } = await sendPasswordReset(email);
+            if (status !== 200) throw new Error(message);
+            toast.success("Password reset email sent.");
+        } catch (error) {
+            console.log(error.message);
+            toast.error("There was an error in the system. Try again later.");
+        }
+        setDisabled(false);
     };
 
     return (
@@ -62,7 +83,7 @@ export const Landing = () => {
                                             alt="Google Icon"
                                             className="size-4"
                                         />
-                                        <span class="">Sign in with Google</span>{" "}
+                                        <span className="">Sign in with Google</span>{" "}
                                     </div>
                                 </button>
                                 <div className="flex items-center my-6">
@@ -137,12 +158,14 @@ export const Landing = () => {
                                                 </label>
                                             </div>
                                         </div>
-                                        <a
-                                            href="#"
-                                            className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500"
+                                        <button
+                                            className="text-sm font-medium text-white text-primary-600 hover:underline dark:text-primary-500"
+                                            onClick={(e) => handleForgotPassword(e)}
+                                            type="button"
+                                            disabled={disabled}
                                         >
                                             Forgot password?
-                                        </a>
+                                        </button>
                                     </div>
 
                                     <button

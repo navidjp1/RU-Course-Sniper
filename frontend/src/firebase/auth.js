@@ -58,6 +58,7 @@ export const signInWithGoogle = async () => {
             if (response.status !== 200) throw new Error("Error registering user in DB");
         }
     } catch (error) {
+        if (error.code === "auth/popup-closed-by-user") return;
         console.log("Error signing in with Google: ", error);
         toast.error("There was an error in the system. Try again later.");
     }
@@ -142,5 +143,17 @@ export const deleteAccount = async () => {
     } catch (error) {
         console.error("Error deleting user: ", error);
         return { status: 500, message: "Error deleting user" };
+    }
+};
+
+export const sendPasswordReset = async (email) => {
+    const user = auth.currentUser;
+
+    try {
+        await sendPasswordResetEmail(auth, email);
+        return { status: 200, message: "Successfully sent password reset email" };
+    } catch (error) {
+        console.error("Error sending password email: ", error);
+        return { status: 500, message: error.code };
     }
 };
