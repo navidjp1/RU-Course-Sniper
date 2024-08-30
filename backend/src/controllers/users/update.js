@@ -1,4 +1,5 @@
 import userModel from "../../models/User.js";
+import { encrypt } from "../../utils.js";
 
 export const registerUser = async (req, res) => {
     const uid = req.params.uid;
@@ -46,8 +47,8 @@ export const updateCreds = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        user.RUID = RUID;
-        user.PAC = PAC;
+        user.RUID = RUID ? await encrypt(RUID) : "";
+        user.PAC = PAC ? await encrypt(PAC) : "";
         user.testedLogin = false;
 
         await user.save();

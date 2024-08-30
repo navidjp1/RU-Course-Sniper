@@ -1,6 +1,8 @@
 import userModel from "../models/User.js";
 import { testLogin } from "../sniper/pacLogin/testLogin.js";
 import { handleSniper } from "../sniper/pacLogin/handler.js";
+import { decrypt } from "../utils.js";
+
 export const startSniper = async (req, res) => {
     try {
         const uid = req.params.uid;
@@ -10,8 +12,8 @@ export const startSniper = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        const RUID = user.RUID;
-        const PAC = user.PAC;
+        const RUID = user.RUID ? await decrypt(user.RUID) : "";
+        const PAC = user.PAC ? await decrypt(user.PAC) : "";
         const testedLogin = user.testedLogin;
         const isSniping = user.isSniping;
         const idObjects = user.courseIDs.filter((obj) => obj.status === "INACTIVE");

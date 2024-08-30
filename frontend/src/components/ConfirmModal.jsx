@@ -1,7 +1,5 @@
 import { useEffect, useRef } from "react";
 function ConfirmModal({ isOpen, onClose, onConfirm, message }) {
-    const listenerAdded = useRef(false);
-
     const handleBackdropClick = () => {
         onClose();
     };

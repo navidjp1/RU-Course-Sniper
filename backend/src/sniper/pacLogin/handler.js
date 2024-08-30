@@ -1,7 +1,7 @@
 import pt from "puppeteer";
 import axios from "axios";
 import userModel from "../../models/User.js";
-import { delay } from "./utils.js";
+import { delay } from "../../utils.js";
 import { login, relogin } from "./login.js";
 import { updateUserPositions } from "../../controllers/courses.js";
 

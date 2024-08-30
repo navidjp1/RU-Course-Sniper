@@ -1,5 +1,6 @@
 import courseModel from "../../models/CourseData.js";
 import userModel from "../../models/User.js";
+import { decrypt } from "../../utils.js";
 
 export const getCoursesAndBalance = async (req, res) => {
     try {
@@ -48,8 +49,8 @@ export const getCreds = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        const RUID = user.RUID;
-        const PAC = user.PAC;
+        const RUID = user.RUID ? await decrypt(user.RUID) : "";
+        const PAC = user.PAC ? await decrypt(user.PAC) : "";
         res.status(200).json({ RUID, PAC });
     } catch (err) {
         console.log(`Error fetching user creds: ${err}`);
