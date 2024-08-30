@@ -11,42 +11,35 @@ function Header({ pageNum }) {
 
     return (
         <div>
-            <header className="sticky top-0 w-full px-16 py-4 bg-white opacity-75">
-                <div className="flex justify-between text-xl">
+            <header className="sticky top-0 w-full px-16 py-4 bg-white opacity-100">
+                <div className="flex items-center justify-between text-xl">
                     <div className="flex items-center justify-start">
-                        <p className="pr-16 text-xl">RU</p>
+                        <p className="text-xl">RU</p>
                     </div>
-                    <nav className="items-center justify-center" aria-label="Global">
-                        <div className="hidden lg:flex lg:gap-x-12">
-                            <a
-                                href={pageNum !== 2 ? "/purchase" : "#"}
-                                className={`font-sans leading-6 font-semibold  ${
-                                    pageNum === 2 ? "" : "text-gray-900 "
-                                } cursor-default `}
-                            >
-                                Purchase
-                            </a>
-                            <span className="text-gray-300">|</span> {/* Separator */}
+                    <nav
+                        className="flex items-center justify-center flex-1"
+                        aria-label="Global"
+                    >
+                        <div className="flex">
                             <a
                                 href={pageNum !== 1 ? "/dashboard" : "#"}
-                                className={`font-sans leading-6 font-semibold  ${
-                                    pageNum === 1 ? "" : "text-gray-900 "
-                                } cursor-default `}
+                                className={`pl-10 font-sans font-semibold border-r-2 border-gray-600 pr-8 ${
+                                    pageNum === 1 ? "" : "text-gray-900"
+                                } cursor-default`}
                             >
                                 Dashboard
                             </a>
-                            <span className="text-gray-300">|</span> {/* Separator */}
                             <a
                                 href={pageNum !== 3 ? "/settings" : "#"}
-                                className={`font-sans leading-6 font-semibold  ${
-                                    pageNum === 3 ? "" : "text-gray-900 "
-                                } cursor-default `}
+                                className={`font-sans font-semibold pl-8 ${
+                                    pageNum === 3 ? "" : "text-gray-900"
+                                } cursor-default`}
                             >
                                 Settings
                             </a>
                         </div>
                     </nav>
-                    <div className="justify-end">
+                    <div className="flex items-center justify-end">
                         <button
                             onClick={(e) => {
                                 e.preventDefault();
@@ -74,3 +67,14 @@ function Header({ pageNum }) {
 }
 
 export default Header;
+
+{
+    /* <a
+        href={pageNum !== 2 ? "/purchase" : "#"}
+        className={`font-sans leading-6 font-semibold  ${
+            pageNum === 2 ? "" : "text-gray-900 "
+        } cursor-default `}
+    >
+        Purchase
+    </a> */
+}

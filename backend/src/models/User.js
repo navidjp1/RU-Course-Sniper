@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
     },
     tokenBalance: {
         type: Number,
-        default: 0,
+        default: 1,
     },
     RUID: {
         type: String,

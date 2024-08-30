@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import HiddenInput from "./HiddenInput";
 import PasswordModal from "./PasswordModal";
-import InfoIcon from "./InfoIcon";
 import { Tooltip } from "@mantine/core";
 import { useAuth } from "../contexts/authContext";
 import { toast } from "sonner";

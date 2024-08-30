@@ -54,14 +54,14 @@ function App() {
                                         </ProtectedRoute>
                                     }
                                 />
-                                <Route
+                                {/* <Route
                                     path="/purchase"
                                     element={
                                         <ProtectedRoute>
                                             <Purchase />
                                         </ProtectedRoute>
                                     }
-                                />
+                                /> */}
                             </Routes>
                         </BrowserRouter>
                     </div>
