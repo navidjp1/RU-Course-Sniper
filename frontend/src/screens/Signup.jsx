@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { signUp } from "../firebase/auth";
 import { toast } from "sonner";
 import HiddenInput from "../components/HiddenInput";

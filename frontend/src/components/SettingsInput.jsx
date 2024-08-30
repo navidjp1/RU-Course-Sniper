@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-import PasswordModal from "./PasswordModal";
-import { toast } from "sonner";
 import HiddenInput from "./HiddenInput";
+import PasswordModal from "./PasswordModal";
+import InfoIcon from "./InfoIcon";
+import { Tooltip } from "@mantine/core";
 import { useAuth } from "../contexts/authContext";
+import { toast } from "sonner";
 
 function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
     const { isEmailUser } = useAuth();
@@ -48,10 +50,38 @@ function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
         <div ref={containerRef}>
             <label
                 htmlFor={type}
-                className="flex justify-start mb-2 text-sm font-medium text-left text-white"
+                className="flex justify-start mb-2 text-sm font-medium text-left text-white gap-x-2"
             >
                 {label}
+                {type == "pac" && (
+                    <Tooltip
+                        className="text-white bg-gray-500"
+                        multiline
+                        w={200}
+                        position="right"
+                        transitionProps={{ transition: "pop", duration: 200 }}
+                        label="Your PAC is usually your birthday in MMDD format (eg. 0312 for March 12th), unless you've manually changed it."
+                    >
+                        <div className="relative flex items-center ">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth="1.5"
+                                stroke="currentColor"
+                                className="relative text-white cursor-pointer size-4"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+                                />
+                            </svg>
+                        </div>
+                    </Tooltip>
+                )}
             </label>
+
             <div className="flex flex-row justify-between">
                 {hidden ? (
                     <HiddenInput
