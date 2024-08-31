@@ -53,13 +53,13 @@ export const Landing = () => {
     };
 
     return (
-        <div className="w-screen bg-white">
+        <div className="w-screen bg-rich-black">
             <div className="flex items-center justify-center min-h-screen px-24 py-12 ">
-                <div className="w-3/5 p-6 text-center">
-                    <h2 className="text-3xl font-bold tracking-tight text-gray-900 ">
+                <div className="w-3/5 p-6 text-center text-platinum">
+                    <h2 className="text-3xl font-bold tracking-tight ">
                         RU Course Sniper
                     </h2>
-                    <p className="mt-6 text-lg leading-8 text-gray-600">
+                    <p className="mt-6 text-lg leading-8 ">
                         Distinctio et nulla eum soluta et neque labore quibusdam. Saepe et
                         quasi iusto modi velit ut non voluptas in. Explicabo id ut
                         laborum.

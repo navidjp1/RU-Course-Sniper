@@ -1,15 +1,15 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
     font-weight: 400;
 
     color-scheme: light dark;
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #242424;
+    /* color: rgba(255, 255, 255, 0.87); */
+    background-color: #0d1f22;
 
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -19,12 +19,31 @@
 
 a {
     font-weight: 500;
-    color: #646cff;
+    color: #388594;
     text-decoration: inherit;
 }
 a:hover {
-    color: #535bf2;
+    color: #388594;
     cursor: pointer;
+}
+
+tbody {
+    background-color: #0d1f22;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+td {
+    border: solid 1px transparent;
+}
+tr td:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-right: none;
+}
+tr td:last-child {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-left: none;
 }
 
 @keyframes fadeIn {

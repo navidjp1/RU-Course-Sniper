@@ -36,7 +36,7 @@ const MultipleInputs = ({ inputs, setInputs }) => {
                     inputs.map((input, index) => (
                         <div
                             key={index}
-                            className="flex items-center px-3 py-1 mb-2 text-white bg-gray-500 rounded-full"
+                            className="flex items-center px-3 py-1 mb-2 rounded-full placeholder-midnight-green text-rich-black bg-platinum"
                         >
                             <span className="mr-2">{input}</span>
                             <button
@@ -56,7 +56,7 @@ const MultipleInputs = ({ inputs, setInputs }) => {
                     onChange={(e) => setCurrentInput(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder="Enter course indices to drop, seperated by commas or spaces (max 5)"
-                    className="justify-start shadow-md rounded-lg w-full p-2.5 border-gray-600 outline-none mb-2 placeholder-gray-400 text-white "
+                    className="justify-start shadow-md rounded-lg w-full p-2.5 border-gray-600 outline-none mb-2 placeholder-midnight-green text-rich-black bg-platinum  "
                 />
                 <p
                     className={`mb-4 text-sm ${

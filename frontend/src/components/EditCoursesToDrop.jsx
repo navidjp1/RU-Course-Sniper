@@ -72,7 +72,7 @@ function EditCoursesToDrop({ courseID, currentDropIDs, isSniperRunning }) {
     return (
         <div>
             <div className="flex flex-row justify-between">
-                <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900 opacity-70">
+                <p className="block text-sm antialiased font-normal leading-normal text-blue-gray-900 opacity-70">
                     {dropIDs.length !== 0
                         ? `Courses to Drop: ${dropIDs.join(", ")}`
                         : "Courses to Drop: N/A"}

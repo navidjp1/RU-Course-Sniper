@@ -49,12 +49,12 @@ function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
         <div ref={containerRef}>
             <label
                 htmlFor={type}
-                className="flex justify-start mb-2 text-sm font-medium text-left text-white gap-x-2"
+                className="flex justify-start mb-2 text-sm font-medium text-left text-rich-black gap-x-2"
             >
                 {label}
                 {type == "pac" && (
                     <Tooltip
-                        className="text-white bg-gray-500"
+                        className="bg-rich-black text-platinum "
                         multiline
                         w={200}
                         position="right"
@@ -68,7 +68,7 @@ function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
                                 viewBox="0 0 24 24"
                                 strokeWidth="1.5"
                                 stroke="currentColor"
-                                className="relative text-white cursor-pointer size-4"
+                                className="relative cursor-pointer text-rich-black size-4"
                             >
                                 <path
                                     strokeLinecap="round"
@@ -102,13 +102,14 @@ function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
                         placeholder={placeholder}
                         className={`justify-start border  rounded-lg w-full p-2.5 ${
                             isEditable
-                                ? "bg-gray-700 border-blue-500"
-                                : "bg-transparent border-gray-700"
-                        } outline-none  placeholder-gray-400 text-white `}
+                                ? "bg-rich-black text-platinum "
+                                : "bg-transparent border-gray-700 text-rich-black"
+                        } outline-none  placeholder-gray-800  `}
                         required=""
                         readOnly={!isEditable}
                         ref={inputRef}
                         autoComplete="off"
+                        spellCheck="false"
                         onKeyDown={(e) => {
                             if (e.key === "Enter") toggleEdit();
                         }}
@@ -127,7 +128,7 @@ function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
                         strokeWidth={1.5}
                         stroke="currentColor"
                         className={`size-5  ${
-                            isEditable ? "text-blue-500" : "text-white"
+                            isEditable ? "text-slate-gray" : "text-rich-black"
                         }`}
                     >
                         <path

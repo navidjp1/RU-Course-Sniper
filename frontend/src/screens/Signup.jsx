@@ -38,7 +38,7 @@ export const Signup = () => {
     };
 
     return (
-        <div className="w-screen bg-white">
+        <div className="w-screen bg-rich-black">
             <div className="flex items-center justify-center min-h-screen px-24 py-12">
                 <div className="w-2/5 pt-2 pb-4 overflow-scroll bg-white border border-gray-200 rounded-lg shadow-md">
                     <div className="flex flex-col items-center justify-center p-4">

@@ -133,15 +133,15 @@ export const Settings = () => {
     };
 
     return (
-        <div className="w-screen min-h-screen bg-white">
+        <div className="w-screen min-h-screen bg-rich-black text-rich-black">
             <Header pageNum={3} />
             {!loading && (
-                <div className="flex justify-center px-12 py-20 gap-x-6">
-                    <div className="w-1/3 pt-2 pb-4 overflow-scroll bg-gray-800 border border-gray-700 rounded-lg shadow-xl">
+                <div className="flex justify-center px-12 py-20 gap-x-6 ">
+                    <div className="w-1/3 pt-2 pb-4 overflow-scroll border border-gray-700 rounded-lg shadow-xl bg-platinum">
                         <div className="flex flex-col items-center">
                             <div className="w-full rounded-lg md:mt-0 sm:max-w-md xl:p-0 ">
                                 <div className="space-y-4 md:space-y-6 sm:p-8">
-                                    <h1 className="pb-4 text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                                    <h1 className="pb-4 text-xl font-bold leading-tight tracking-tight md:text-2xl">
                                         Account Details
                                     </h1>
 
@@ -173,7 +173,7 @@ export const Settings = () => {
 
                                         <div className="flex items-end w-2/5 ">
                                             <button
-                                                className="bg-gray-50 border text-sm border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-1.5 hover:bg-red-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                className="bg-rich-black  border text-sm border-platinum  rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-1.5 hover:bg-red-500 text-platinum "
                                                 type="button"
                                                 disabled={isSaving}
                                                 onClick={(e) => {
@@ -188,7 +188,7 @@ export const Settings = () => {
 
                                         <div className="">
                                             <button
-                                                className="bg-gray-50 border font-bold border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 hover:text-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                className="bg-rich-black border font-bold border-platinum rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 hover:bg-midnight-green text-platinum"
                                                 type="button"
                                                 onClick={handleAccountDetails}
                                                 disabled={isSaving}
@@ -201,11 +201,11 @@ export const Settings = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="w-1/3 pt-2 pb-4 overflow-scroll bg-gray-800 border border-gray-700 rounded-lg shadow-md">
+                    <div className="w-1/3 pt-2 pb-4 border-gray-700 rounded-lg shadow-md overflow-scrollborder bg-platinum">
                         <div className="flex flex-col items-center">
                             <div className="w-full rounded-lg md:mt-0 sm:max-w-md xl:p-0 ">
                                 <div className="space-y-4 md:space-y-6 sm:p-8">
-                                    <h1 className="pb-4 text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                                    <h1 className="pb-4 text-xl font-bold leading-tight tracking-tight md:text-2xl ">
                                         Credentials
                                     </h1>
 
@@ -229,7 +229,7 @@ export const Settings = () => {
 
                                         <div className="flex items-end w-2/5 ">
                                             <button
-                                                className="bg-gray-50 border text-sm border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-1.5 hover:bg-red-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                className="bg-rich-black  border text-sm border-platinum  rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-1.5 hover:bg-red-500 text-platinum "
                                                 type="button"
                                                 disabled={isSaving}
                                                 onClick={(e) => {
@@ -244,7 +244,7 @@ export const Settings = () => {
 
                                         <div className="">
                                             <button
-                                                className="bg-gray-50 border font-bold border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 hover:text-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                className="bg-rich-black border font-bold border-platinum rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 hover:bg-midnight-green text-platinum"
                                                 type="button"
                                                 onClick={handleCredentials}
                                                 disabled={isSaving}
@@ -256,41 +256,40 @@ export const Settings = () => {
                                 </div>
                             </div>
                         </div>
+                        <ConfirmModal
+                            isOpen={isDelAccModalOpen}
+                            onClose={() => {
+                                setIsSaving(false);
+                                setIsDelAccModalOpen(false);
+                            }}
+                            onConfirm={() => {
+                                isEmailUser
+                                    ? setIsPasswordModalOpen(true)
+                                    : deleteUserAccount(); // may cause error if user hasn't recently logged in
+                            }}
+                            message="Are you sure you want to delete your account?"
+                        />
+
+                        <ConfirmModal
+                            isOpen={isDelCredModalOpen}
+                            onClose={() => {
+                                setIsSaving(false);
+                                setIsDelCredModalOpen(false);
+                            }}
+                            onConfirm={() => {
+                                deleteCredentials();
+                            }}
+                            message="Are you sure you want to delete your credentials?"
+                        />
+
+                        <PasswordModal
+                            isOpen={isPasswordModalOpen}
+                            onClose={() => {
+                                setIsPasswordModalOpen(false);
+                            }}
+                            ifSuccess={() => deleteUserAccount()}
+                        />
                     </div>
-
-                    <ConfirmModal
-                        isOpen={isDelAccModalOpen}
-                        onClose={() => {
-                            setIsSaving(false);
-                            setIsDelAccModalOpen(false);
-                        }}
-                        onConfirm={() => {
-                            isEmailUser
-                                ? setIsPasswordModalOpen(true)
-                                : deleteUserAccount(); // may cause error if user hasn't recently logged in
-                        }}
-                        message="Are you sure you want to delete your account?"
-                    />
-
-                    <ConfirmModal
-                        isOpen={isDelCredModalOpen}
-                        onClose={() => {
-                            setIsSaving(false);
-                            setIsDelCredModalOpen(false);
-                        }}
-                        onConfirm={() => {
-                            deleteCredentials();
-                        }}
-                        message="Are you sure you want to delete your credentials?"
-                    />
-
-                    <PasswordModal
-                        isOpen={isPasswordModalOpen}
-                        onClose={() => {
-                            setIsPasswordModalOpen(false);
-                        }}
-                        ifSuccess={() => deleteUserAccount()}
-                    />
                 </div>
             )}
         </div>

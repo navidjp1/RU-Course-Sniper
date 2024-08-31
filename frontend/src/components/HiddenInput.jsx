@@ -22,9 +22,11 @@ export default function HiddenInput({
         <div
             className={`flex flex-row justify-start border rounded-lg w-full p-2.5 ${
                 isEditable
-                    ? ` bg-gray-700 ${inputRef ? "border-blue-500" : "border-gray-600"}`
-                    : "bg-transparent border-gray-700"
-            } outline-none  placeholder-gray-400 text-white ${extraStyles} `}
+                    ? ` bg-rich-black text-platinum ${
+                          inputRef ? "border-rich-black" : "border-gray-600"
+                      }`
+                    : "bg-transparent border-gray-700  text-rich-black "
+            } outline-none ${extraStyles} `}
         >
             <input
                 type={hide ? "password" : "text"}
@@ -32,7 +34,7 @@ export default function HiddenInput({
                 id={type}
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
-                className="justify-start w-full bg-transparent outline-none"
+                className="justify-start w-full placeholder-gray-500 bg-transparent outline-none"
                 placeholder={placeholder}
                 required=""
                 autoComplete="off"

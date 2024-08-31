@@ -1,4 +1,3 @@
-import { useState } from "react";
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Landing } from "./screens/Landing";
@@ -17,9 +16,15 @@ function App() {
     return (
         <AuthProvider>
             <MantineProvider>
-                <Toaster richColors position="top-left" />
+                <Toaster
+                    richColors
+                    position="top-left"
+                    toastOptions={{
+                        className: "font-body",
+                    }}
+                />
                 {
-                    <div className="">
+                    <div className="font-body">
                         <BrowserRouter>
                             <Routes>
                                 <Route

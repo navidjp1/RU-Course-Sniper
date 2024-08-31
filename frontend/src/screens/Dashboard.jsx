@@ -61,18 +61,18 @@ export const Dashboard = () => {
     };
 
     return (
-        <main className="bg-white">
+        <main className="bg-rich-black text-platinum">
+            <Header pageNum={1} />
             {!loading && (
-                <div className="bg-white ">
-                    <Header pageNum={1} />
+                <div className="bg-rich-black">
                     <div className="flex flex-col items-center w-screen min-h-screen p-2 pt-24">
                         <div className="w-3/4">
                             <div className="flex flex-row w-full gap-x-12">
-                                <div className="justify-start w-3/5 text-left">
-                                    <h2 className="text-3xl font-bold tracking-tight text-gray-900 ">
+                                <div className="justify-start w-3/5 text-left text-platinum">
+                                    <h2 className="text-3xl font-bold tracking-tight ">
                                         Your Courses
                                     </h2>
-                                    <p className="pb-8 mt-3 text-lg leading-8 text-gray-600">
+                                    <p className="pb-8 mt-3 text-lg leading-8">
                                         You currently have {courses.length} courses on
                                         your list. Your account token balance is{" "}
                                         {tokenBalance}.
@@ -80,12 +80,12 @@ export const Dashboard = () => {
                                 </div>
                                 <div className="flex flex-row items-center w-2/5 p-4 place-content-center gap-x-4">
                                     <button
-                                        className={`w-48 h-12 p-1 font-sans text-xl font-bold text-center text-white border rounded-md outline-none border-blue-gray-50 ${
+                                        className={`w-48 h-12 p-1 text-xl font-bold text-center text-rich-black  rounded-md outline-none ${
                                             hidden
                                                 ? "bg-transparent border-transparent"
                                                 : isSniperRunning
                                                 ? "bg-red-500 hover:bg-red-800"
-                                                : "bg-blue-500 hover:bg-blue-800"
+                                                : "bg-platinum hover:bg-midnight-green hover:text-platinum"
                                         }`}
                                         onClick={(e) => handleSniper(e)}
                                         type="button"
@@ -95,10 +95,10 @@ export const Dashboard = () => {
                                         {!isSniperRunning ? "Start" : "Stop"} Sniping
                                     </button>
                                     <button
-                                        className={`w-48 h-12 p-1 font-sans text-xl font-bold text-center text-white bg-blue-500 border rounded-md outline-none hover:bg-blue-800 border-blue-gray-50 ${
+                                        className={`w-48 h-12 p-1  text-xl font-bold text-center text-rich-black rounded-md outline-none bg-platinum  ${
                                             isSniperRunning
                                                 ? "hover:cursor-not-allowed hover:bg-red-500"
-                                                : "hover:bg-blue-800"
+                                                : "hover:bg-midnight-green hover:text-platinum"
                                         }`}
                                         onClick={(e) => {
                                             e.preventDefault();
@@ -119,15 +119,15 @@ export const Dashboard = () => {
                                     />
                                 </div>
                             </div>
-                            <div className="px-4 pt-2 pb-4 overflow-scroll border border-gray-200 rounded-lg shadow-md">
+                            <div className="px-4 pt-2 pb-4 overflow-scroll border border-gray-200 rounded shadow-md bg-platinum">
                                 {courses.length === 0 ? (
-                                    <p className="p-32 text-xl">
+                                    <p className="p-32 text-xl font-semibold text-rich-black">
                                         There are no courses on your snipe list. Add a
                                         course to get started!
                                     </p>
                                 ) : (
                                     <table className="w-full text-left border-separate table-auto min-w-max border-spacing-y-4">
-                                        <thead>
+                                        <thead className="">
                                             <tr>
                                                 <CourseTitle
                                                     title="Course"
@@ -149,14 +149,10 @@ export const Dashboard = () => {
                                                     title="Action"
                                                     pStyles={"text-center"}
                                                 />
-                                                <CourseTitle
-                                                    title=""
-                                                    pStyles={"text-center"}
-                                                />
                                             </tr>
                                         </thead>
                                         {courses.map((course) => (
-                                            <tbody key={course.id}>
+                                            <tbody key={course.id} className="">
                                                 <CourseRow
                                                     course={course}
                                                     updateRender={updateRender}

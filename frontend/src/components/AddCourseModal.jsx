@@ -118,20 +118,18 @@ function AddCourseModal({ isOpen, onClose, updateRender, tokenBalance }) {
     };
 
     return (
-        <main className="add-course-modal">
+        <main className="add-course-modal text-platinum">
             {isOpen && (
                 <div
                     className="fixed inset-0 z-50 flex justify-center pt-16 bg-black bg-opacity-50"
                     onClick={handleBackdropClick}
                 >
                     <div
-                        className={`flex items-center justify-center flex-col bg-gray-800 p-6 h-fit w-2/5 rounded shadow-md fade-in`}
+                        className={`flex items-center justify-center flex-col bg-rich-black p-6 h-fit w-2/5 rounded shadow-md fade-in`}
                         onClick={handleModalContentClick}
                     >
-                        <h2 className="mb-2 text-xl font-semibold text-white ">
-                            Add Course
-                        </h2>
-                        <p className="mb-6 text-white text-md">
+                        <h2 className="mb-2 text-xl font-semibold ">Add Course</h2>
+                        <p className="mb-6 text-md">
                             Enter the details for the course you want to snipe.
                         </p>
 
@@ -139,7 +137,7 @@ function AddCourseModal({ isOpen, onClose, updateRender, tokenBalance }) {
                             <div className="flex flex-col justify-between">
                                 <label
                                     htmlFor="courseID"
-                                    className="flex justify-center mb-2 text-sm font-medium text-white"
+                                    className="flex justify-center mb-2 text-sm font-medium "
                                 >
                                     Course Index
                                 </label>
@@ -151,7 +149,7 @@ function AddCourseModal({ isOpen, onClose, updateRender, tokenBalance }) {
                                         value={courseID}
                                         onChange={(e) => setCourseID(e.target.value)}
                                         placeholder="Enter course index (5 digits)"
-                                        className={`justify-center items-center text-center rounded-lg w-2/5 p-2.5 "bg-gray-700 border-gray-600 outline-none mb-2 placeholder-gray-400 text-white`}
+                                        className={`justify-center items-center text-center rounded-lg w-2/5 p-2.5  border-gray-600 outline-none mb-2 placeholder-midnight-green text-rich-black bg-platinum`}
                                         autoComplete="off"
                                         required=""
                                     ></input>
@@ -167,7 +165,7 @@ function AddCourseModal({ isOpen, onClose, updateRender, tokenBalance }) {
                                 </p>
                                 <label
                                     htmlFor="dropIDs"
-                                    className="flex justify-start mb-2 text-sm font-medium text-left text-white"
+                                    className="flex justify-start mb-2 text-sm font-medium text-left "
                                 >
                                     Courses to Drop (optional)
                                 </label>
@@ -177,16 +175,16 @@ function AddCourseModal({ isOpen, onClose, updateRender, tokenBalance }) {
                                 <button
                                     type="button"
                                     onClick={onClose}
-                                    className="justify-start w-1/4 px-4 py-2 text-white bg-gray-500 rounded hover:bg-red-500"
+                                    className="justify-start w-1/4 px-4 py-2 bg-gray-500 rounded hover:bg-red-500"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className={`justify-end w-1/4 px-4 py-2 text-white bg-blue-500 rounded  ${
+                                    className={`justify-end w-1/4 px-4 py-2  bg-platinum text-rich-black rounded  ${
                                         tokenBalance < 1
                                             ? "hover:cursor-not-allowed hover:bg-red-500"
-                                            : "hover:bg-blue-800"
+                                            : "hover:bg-midnight-green hover:text-platinum"
                                     }`}
                                 >
                                     Add: 1 Token

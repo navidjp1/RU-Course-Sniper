@@ -11,10 +11,10 @@ function Header({ pageNum }) {
 
     return (
         <div>
-            <header className="sticky top-0 w-full px-16 py-4 bg-white opacity-100">
+            <header className="sticky top-0 w-full px-16 py-4 opacity-100 bg-rich-black">
                 <div className="flex items-center justify-between text-xl">
                     <div className="flex items-center justify-start">
-                        <p className="text-xl">RU</p>
+                        <p className="text-xl text-platinum">RU</p>
                     </div>
                     <nav
                         className="flex items-center justify-center flex-1"
@@ -23,16 +23,16 @@ function Header({ pageNum }) {
                         <div className="flex">
                             <a
                                 href={pageNum !== 1 ? "/dashboard" : "#"}
-                                className={`pl-10 font-sans font-semibold border-r-2 border-gray-600 pr-8 ${
-                                    pageNum === 1 ? "" : "text-gray-900"
+                                className={`pl-10  font-semibold border-r-2 border-gray-600 pr-8 ${
+                                    pageNum === 1 ? "" : "text-platinum"
                                 } cursor-default`}
                             >
                                 Dashboard
                             </a>
                             <a
                                 href={pageNum !== 3 ? "/settings" : "#"}
-                                className={`font-sans font-semibold pl-8 ${
-                                    pageNum === 3 ? "" : "text-gray-900"
+                                className={` font-semibold pl-8 ${
+                                    pageNum === 3 ? "" : "text-platinum"
                                 } cursor-default`}
                             >
                                 Settings
@@ -45,7 +45,7 @@ function Header({ pageNum }) {
                                 e.preventDefault();
                                 setIsConfirmModalOpen(true);
                             }}
-                            className="font-semibold leading-6 text-gray-900 hover:text-red-500"
+                            className="font-semibold leading-6 text-platinum hover:text-red-500"
                         >
                             Log out <span aria-hidden="true">&rarr;</span>
                         </button>
@@ -71,7 +71,7 @@ export default Header;
 {
     /* <a
         href={pageNum !== 2 ? "/purchase" : "#"}
-        className={`font-sans leading-6 font-semibold  ${
+        className={` leading-6 font-semibold  ${
             pageNum === 2 ? "" : "text-gray-900 "
         } cursor-default `}
     >

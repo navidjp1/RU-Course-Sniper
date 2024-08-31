@@ -28,22 +28,24 @@ function ConfirmModal({ isOpen, onClose, onConfirm, message }) {
                     onClick={handleBackdropClick}
                 >
                     <div
-                        className={`flex items-center justify-center flex-col bg-white p-6 h-fit w-1/3 rounded shadow-md fade-in`}
+                        className={`flex items-center justify-center flex-col bg-platinum p-6 h-fit w-1/3 rounded shadow-md fade-in`}
                         onClick={handleModalContentClick}
                     >
-                        <h2 className="mb-6 text-lg font-semibold">{message}</h2>
+                        <h2 className="mb-6 text-lg font-semibold text-rich-black">
+                            {message}
+                        </h2>
                         <div className="w-full">
                             <div className="flex justify-between w-full">
                                 <button
                                     type="button"
                                     onClick={onClose}
-                                    className="justify-start px-4 py-2 text-white bg-gray-500 rounded hover:bg-red-500"
+                                    className="justify-start px-4 py-2 rounded text-platinum bg-slate-gray hover:bg-red-500"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="button"
-                                    className="justify-end px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-800"
+                                    className="justify-end px-4 py-2 rounded bg-rich-black text-platinum hover:bg-midnight-green"
                                     onClick={onConfirm}
                                 >
                                     Confirm
