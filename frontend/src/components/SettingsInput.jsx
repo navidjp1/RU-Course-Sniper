@@ -49,12 +49,12 @@ function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
         <div ref={containerRef}>
             <label
                 htmlFor={type}
-                className="flex justify-start mb-2 text-sm font-medium text-left text-rich-black gap-x-2"
+                className="flex justify-start mb-2 text-sm font-medium text-left text-platinum gap-x-2"
             >
                 {label}
                 {type == "pac" && (
                     <Tooltip
-                        className="bg-rich-black text-platinum "
+                        className="bg-rich-black text-platinum font-body "
                         multiline
                         w={200}
                         position="right"
@@ -100,11 +100,11 @@ function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
                         value={value}
                         onChange={(e) => setValue(e.target.value)}
                         placeholder={placeholder}
-                        className={`justify-start border  rounded-lg w-full p-2.5 ${
+                        className={`justify-start border border-opacity-25 border-platinum rounded-lg w-full p-2.5 hover:cursor-pointer hover:border-blue-munsell ${
                             isEditable
-                                ? "bg-rich-black text-platinum "
-                                : "bg-transparent border-gray-700 text-rich-black"
-                        } outline-none  placeholder-gray-800  `}
+                                ? "bg-platinum text-rich-black"
+                                : "bg-transparent border-platinum text-platinum"
+                        } outline-none placeholder-blue-munsell  `}
                         required=""
                         readOnly={!isEditable}
                         ref={inputRef}
@@ -128,7 +128,9 @@ function SettingsInput({ label, type, value, setValue, placeholder, hidden }) {
                         strokeWidth={1.5}
                         stroke="currentColor"
                         className={`size-5  ${
-                            isEditable ? "text-slate-gray" : "text-rich-black"
+                            isEditable
+                                ? "text-blue-munsell"
+                                : "hover:text-blue-munsell text-platinum"
                         }`}
                     >
                         <path

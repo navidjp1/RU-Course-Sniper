@@ -38,18 +38,18 @@ export const Signup = () => {
     };
 
     return (
-        <div className="w-screen bg-rich-black">
+        <div className="w-screen bg-rich-black text-platinum">
             <div className="flex items-center justify-center min-h-screen px-24 py-12">
-                <div className="w-2/5 pt-2 pb-4 overflow-scroll bg-white border border-gray-200 rounded-lg shadow-md">
+                <div className="w-2/5 pt-2 pb-4 rounded-lg shadow-md bg-platinum">
                     <div className="flex flex-col items-center justify-center p-4">
-                        <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                        <div className="w-full rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 bg-rich-black text-platinum">
                             <div className="space-y-4 md:space-y-6 sm:p-8">
-                                <h1 className="pb-4 text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                                <h1 className="pb-4 text-2xl font-bold leading-tight tracking-tight">
                                     Sign Up
                                 </h1>
 
                                 <button
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 hover:text-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white font-semibold dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    className="bg-platinum text-rich-black border hover:text-blue-munsell font-semibold border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                                     type="button"
                                     onClick={async () => await signInWithGoogle()}
                                 >
@@ -64,14 +64,12 @@ export const Signup = () => {
                                 </button>
                                 <div className="flex items-center my-6">
                                     <div
-                                        className="mr-3 border-t border-gray-400 border-solid grow"
+                                        className="mr-3 border-t border-solid border-platinum grow"
                                         aria-hidden="true"
                                     ></div>
-                                    <div className="text-gray-400">
-                                        Or, sign up with your email
-                                    </div>
+                                    <div className="">Or, sign up with your email</div>
                                     <div
-                                        className="ml-3 border-t border-gray-400 border-solid grow"
+                                        className="ml-3 border-t border-solid border-platinum grow"
                                         aria-hidden="true"
                                     ></div>
                                 </div>
@@ -82,7 +80,7 @@ export const Signup = () => {
                                     <div>
                                         <label
                                             htmlFor="username"
-                                            className="block mb-2 text-sm font-medium text-left text-gray-900 dark:text-white"
+                                            className="block mb-2 text-sm font-medium text-left "
                                         >
                                             Username
                                         </label>
@@ -92,7 +90,7 @@ export const Signup = () => {
                                             id="username"
                                             value={username}
                                             onChange={(e) => setUsername(e.target.value)}
-                                            className="outline-none border rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white"
+                                            className="outline-none border border-opacity-25 border-platinum rounded-lg block w-full p-2.5 bg-rich-black placeholder:text-blue-munsell hover:cursor-pointer hover:border-blue-munsell"
                                             placeholder="Enter a username"
                                             autoComplete="off"
                                             required=""
@@ -101,7 +99,7 @@ export const Signup = () => {
                                     <div>
                                         <label
                                             htmlFor="email"
-                                            className="block mb-2 text-sm font-medium text-left text-gray-900 dark:text-white"
+                                            className="block mb-2 text-sm font-medium text-left "
                                         >
                                             Email
                                         </label>
@@ -111,7 +109,7 @@ export const Signup = () => {
                                             id="email"
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
-                                            className="outline-none border rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white"
+                                            className="outline-none border border-opacity-25 border-platinum rounded-lg block w-full p-2.5 bg-rich-black placeholder:text-blue-munsell hover:cursor-pointer hover:border-blue-munsell"
                                             placeholder="example@gmail.com"
                                             required=""
                                         ></input>
@@ -119,7 +117,7 @@ export const Signup = () => {
                                     <div>
                                         <label
                                             htmlFor="password"
-                                            className="block mb-2 text-sm font-medium text-left text-gray-900 dark:text-white"
+                                            className="block mb-2 text-sm font-medium text-left "
                                         >
                                             Password
                                         </label>
@@ -134,20 +132,20 @@ export const Signup = () => {
 
                                     <div className="flex items-center my-6">
                                         <div
-                                            className="mr-3 border-t border-gray-400 border-solid grow"
+                                            className="mr-3 border-t border-solid border-platinum grow"
                                             aria-hidden="true"
                                         ></div>
                                     </div>
 
                                     <button
-                                        className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 hover:text-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        className="bg-midnight-green hover:text-blue-munsell font-semibold  rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                                         type="submit"
                                         disabled={isSigningUp}
                                     >
                                         {isSigningUp ? "Signing Up..." : "Sign Up"}
                                     </button>
 
-                                    <p className="font-light text-gray-500 text-md dark:text-gray-400">
+                                    <p className="font-light text-md">
                                         Already have an account?{" "}
                                         <a
                                             href="/"

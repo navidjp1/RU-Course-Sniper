@@ -8,7 +8,6 @@ import googleIcon from "../assets/google.svg";
 export const Landing = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [remember, setRemember] = useState(false);
     const [isSigningIn, setIsSigningIn] = useState(false);
     const [disabled, setDisabled] = useState(false);
     const navigate = useNavigate();
@@ -65,15 +64,15 @@ export const Landing = () => {
                         laborum.
                     </p>
                 </div>
-                <div className="w-2/5 pt-2 pb-4 overflow-scroll bg-white border border-gray-200 rounded-lg shadow-md">
+                <div className="w-2/5 pt-2 pb-4 border border-gray-200 rounded-lg shadow-md bg-platinum">
                     <div className="flex flex-col items-center justify-center p-4">
-                        <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                        <div className="w-full rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 bg-rich-black text-platinum">
                             <div className="space-y-4 md:space-y-6 sm:p-8">
-                                <h1 className="pb-4 text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                                <h1 className="pb-4 text-2xl font-bold leading-tight tracking-tight">
                                     Sign in to your account
                                 </h1>
                                 <button
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 hover:text-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white font-semibold dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    className="bg-platinum text-rich-black border hover:text-blue-munsell font-semibold border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                                     type="button"
                                     onClick={async () => await signInWithGoogle()}
                                 >
@@ -88,14 +87,12 @@ export const Landing = () => {
                                 </button>
                                 <div className="flex items-center my-6">
                                     <div
-                                        className="mr-3 border-t border-gray-400 border-solid grow"
+                                        className="mr-3 border-t border-solid border-platinum grow"
                                         aria-hidden="true"
                                     ></div>
-                                    <div className="text-gray-400">
-                                        Or, sign in with your email
-                                    </div>
+                                    <div className="">Or, sign in with your email</div>
                                     <div
-                                        className="ml-3 border-t border-gray-400 border-solid grow"
+                                        className="ml-3 border-t border-solid border-platinum grow"
                                         aria-hidden="true"
                                     ></div>
                                 </div>
@@ -106,7 +103,7 @@ export const Landing = () => {
                                     <div>
                                         <label
                                             htmlFor="email"
-                                            className="block mb-2 text-sm font-medium text-left text-gray-900 dark:text-white"
+                                            className="block mb-2 text-sm font-medium text-left "
                                         >
                                             Email
                                         </label>
@@ -116,7 +113,7 @@ export const Landing = () => {
                                             id="email"
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
-                                            className="outline-none border rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white"
+                                            className="outline-none border border-opacity-25 border-platinum rounded-lg block w-full p-2.5 bg-rich-black placeholder:text-blue-munsell hover:cursor-pointer hover:border-blue-munsell"
                                             placeholder="example@gmail.com"
                                             required=""
                                         ></input>
@@ -124,7 +121,7 @@ export const Landing = () => {
                                     <div>
                                         <label
                                             htmlFor="password"
-                                            className="block mb-2 text-sm font-medium text-left text-gray-900 dark:text-white"
+                                            className="block mb-2 text-sm font-medium text-left "
                                         >
                                             Password
                                         </label>
@@ -136,30 +133,9 @@ export const Landing = () => {
                                             isEditable={true}
                                         />
                                     </div>
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-start">
-                                            <div className="flex items-center justify-start text-sm">
-                                                <input
-                                                    type="checkbox"
-                                                    name="remember"
-                                                    id="remember"
-                                                    value={remember}
-                                                    onChange={(e) =>
-                                                        setRemember(e.target.checked)
-                                                    }
-                                                    className="hover:cursor-pointer peer h-4 w-4 shrink-0 border border-gray-600/50 text-white-main focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-primary-600/50 data-[state=checked]:bg-primary-800 rounded"
-                                                    required=""
-                                                ></input>
-                                                <label
-                                                    htmlFor="remember"
-                                                    className="pl-2 text-gray-500 hover:cursor-pointer dark:text-gray-300"
-                                                >
-                                                    Remember me
-                                                </label>
-                                            </div>
-                                        </div>
+                                    <div className="flex items-center justify-end">
                                         <button
-                                            className="text-sm font-medium text-white text-primary-600 hover:underline dark:text-primary-500"
+                                            className="text-sm font-medium hover:underline dark:text-primary-500"
                                             onClick={(e) => handleForgotPassword(e)}
                                             type="button"
                                             disabled={disabled}
@@ -169,14 +145,14 @@ export const Landing = () => {
                                     </div>
 
                                     <button
-                                        className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 hover:text-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        className="bg-midnight-green hover:text-blue-munsell font-semibold  rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                                         type="submit"
                                         disabled={isSigningIn}
                                     >
                                         {isSigningIn ? "Signing In..." : "Sign In"}
                                     </button>
 
-                                    <p className="font-light text-gray-500 text-md dark:text-gray-400">
+                                    <p className="font-light text-md ">
                                         Don’t have an account yet?{" "}
                                         <a
                                             href="/signup"

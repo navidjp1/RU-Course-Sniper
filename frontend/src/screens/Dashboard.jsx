@@ -73,7 +73,9 @@ export const Dashboard = () => {
                                         Your Courses
                                     </h2>
                                     <p className="pb-8 mt-3 text-lg leading-8">
-                                        You currently have {courses.length} courses on
+                                        You currently have{" "}
+                                        {courses.length == 0 ? "no" : courses.length}{" "}
+                                        {courses.length == 1 ? "course" : "courses"} on
                                         your list. Your account token balance is{" "}
                                         {tokenBalance}.
                                     </p>
@@ -119,7 +121,7 @@ export const Dashboard = () => {
                                     />
                                 </div>
                             </div>
-                            <div className="px-4 pt-2 pb-4 overflow-scroll border border-gray-200 rounded shadow-md bg-platinum">
+                            <div className="px-4 pt-2 pb-4 border border-gray-200 rounded shadow-md bg-platinum">
                                 {courses.length === 0 ? (
                                     <p className="p-32 text-xl font-semibold text-rich-black">
                                         There are no courses on your snipe list. Add a

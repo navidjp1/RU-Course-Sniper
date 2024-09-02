@@ -20,12 +20,10 @@ export default function HiddenInput({
 
     return (
         <div
-            className={`flex flex-row justify-start border rounded-lg w-full p-2.5 ${
-                isEditable
-                    ? ` bg-rich-black text-platinum ${
-                          inputRef ? "border-rich-black" : "border-gray-600"
-                      }`
-                    : "bg-transparent border-gray-700  text-rich-black "
+            className={`flex flex-row justify-start border border-opacity-25 border-platinum  rounded-lg w-full p-2.5  hover:cursor-pointer hover:border-blue-munsell  ${
+                inputRef && isEditable
+                    ? "bg-platinum text-rich-black"
+                    : " placeholder-blue-munsell"
             } outline-none ${extraStyles} `}
         >
             <input
@@ -34,7 +32,11 @@ export default function HiddenInput({
                 id={type}
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
-                className="justify-start w-full placeholder-gray-500 bg-transparent outline-none"
+                className={`justify-start w-full bg-transparent outline-none ${
+                    inputRef && isEditable
+                        ? "placeholder-rich-black"
+                        : "placeholder-blue-munsell"
+                }`}
                 placeholder={placeholder}
                 required=""
                 autoComplete="off"
@@ -57,7 +59,9 @@ export default function HiddenInput({
                         viewBox="0 0 24 24"
                         strokeWidth={1.5}
                         stroke="currentColor"
-                        className="size-6"
+                        className={`size-6 ${
+                            inputRef && isEditable ? "text-rich-black" : "text-platinum"
+                        } `}
                     >
                         <path
                             strokeLinecap="round"

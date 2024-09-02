@@ -133,14 +133,14 @@ export const Settings = () => {
     };
 
     return (
-        <div className="w-screen min-h-screen bg-rich-black text-rich-black">
+        <div className="w-screen min-h-screen bg-rich-black text-platinum">
             <Header pageNum={3} />
             {!loading && (
                 <div className="flex justify-center px-12 py-20 gap-x-6 ">
-                    <div className="w-1/3 pt-2 pb-4 overflow-scroll border border-gray-700 rounded-lg shadow-xl bg-platinum">
-                        <div className="flex flex-col items-center">
-                            <div className="w-full rounded-lg md:mt-0 sm:max-w-md xl:p-0 ">
-                                <div className="space-y-4 md:space-y-6 sm:p-8">
+                    <div className="w-1/3 pt-2 pb-4 rounded-lg shadow-xl max-w-2/5 bg-platinum">
+                        <div className="flex flex-col items-center p-4">
+                            <div className="w-full rounded-lg shadow bg-rich-black">
+                                <div className="py-8 space-y-4 md:space-y-6 sm:p-8">
                                     <h1 className="pb-4 text-xl font-bold leading-tight tracking-tight md:text-2xl">
                                         Account Details
                                     </h1>
@@ -173,7 +173,7 @@ export const Settings = () => {
 
                                         <div className="flex items-end w-2/5 ">
                                             <button
-                                                className="bg-rich-black  border text-sm border-platinum  rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-1.5 hover:bg-red-500 text-platinum "
+                                                className="bg-midnight-green   text-sm rounded-lg block w-full p-1.5 hover:bg-red-500 text-platinum"
                                                 type="button"
                                                 disabled={isSaving}
                                                 onClick={(e) => {
@@ -188,7 +188,7 @@ export const Settings = () => {
 
                                         <div className="">
                                             <button
-                                                className="bg-rich-black border font-bold border-platinum rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 hover:bg-midnight-green text-platinum"
+                                                className="bg-midnight-green  font-bold border-platinum rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 hover:bg-platinum hover:text-rich-black text-platinum"
                                                 type="button"
                                                 onClick={handleAccountDetails}
                                                 disabled={isSaving}
@@ -201,10 +201,10 @@ export const Settings = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="w-1/3 pt-2 pb-4 border-gray-700 rounded-lg shadow-md overflow-scrollborder bg-platinum">
-                        <div className="flex flex-col items-center">
-                            <div className="w-full rounded-lg md:mt-0 sm:max-w-md xl:p-0 ">
-                                <div className="space-y-4 md:space-y-6 sm:p-8">
+                    <div className="w-1/3 pt-2 pb-4 rounded-lg shadow-xl max-w-2/5 bg-platinum">
+                        <div className="flex flex-col items-center justify-between p-4">
+                            <div className="w-full rounded-lg shadow bg-rich-black">
+                                <div className="h-full space-y-4 md:space-y-6 sm:p-8">
                                     <h1 className="pb-4 text-xl font-bold leading-tight tracking-tight md:text-2xl ">
                                         Credentials
                                     </h1>
@@ -227,9 +227,9 @@ export const Settings = () => {
                                             hidden={true}
                                         />
 
-                                        <div className="flex items-end w-2/5 ">
+                                        <div className="flex items-end w-2/5">
                                             <button
-                                                className="bg-rich-black  border text-sm border-platinum  rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-1.5 hover:bg-red-500 text-platinum "
+                                                className="bg-midnight-green   text-sm rounded-lg block w-full p-1.5 hover:bg-red-500 text-platinum"
                                                 type="button"
                                                 disabled={isSaving}
                                                 onClick={(e) => {
@@ -241,10 +241,9 @@ export const Settings = () => {
                                                 Delete Credentials
                                             </button>
                                         </div>
-
                                         <div className="">
                                             <button
-                                                className="bg-rich-black border font-bold border-platinum rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 hover:bg-midnight-green text-platinum"
+                                                className="bg-midnight-green  font-bold border-platinum rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 hover:bg-platinum hover:text-rich-black text-platinum"
                                                 type="button"
                                                 onClick={handleCredentials}
                                                 disabled={isSaving}

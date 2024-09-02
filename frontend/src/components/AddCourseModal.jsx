@@ -181,10 +181,10 @@ function AddCourseModal({ isOpen, onClose, updateRender, tokenBalance }) {
                                 </button>
                                 <button
                                     type="submit"
-                                    className={`justify-end w-1/4 px-4 py-2  bg-platinum text-rich-black rounded  ${
+                                    className={`justify-end w-1/4 px-4 py-2  bg-midnight-green rounded  ${
                                         tokenBalance < 1
                                             ? "hover:cursor-not-allowed hover:bg-red-500"
-                                            : "hover:bg-midnight-green hover:text-platinum"
+                                            : "hover:bg-blue-munsell"
                                     }`}
                                 >
                                     Add: 1 Token

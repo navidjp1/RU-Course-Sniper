@@ -5,6 +5,7 @@ import { Dashboard } from "./screens/Dashboard";
 import { Signup } from "./screens/Signup";
 import { Settings } from "./screens/Settings";
 import { Purchase } from "./screens/Purchase";
+import { PageNotFound } from "./screens/PageNotFound";
 import { Toaster } from "sonner";
 import { MantineProvider } from "@mantine/core";
 import { AuthProvider } from "./contexts/authContext";
@@ -67,6 +68,7 @@ function App() {
                                         </ProtectedRoute>
                                     }
                                 /> */}
+                                <Route path="*" element={<PageNotFound />} />
                             </Routes>
                         </BrowserRouter>
                     </div>
