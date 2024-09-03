@@ -33,8 +33,8 @@ export function CourseRow({ course, updateRender, isSniperRunning }) {
     const { bgColor, textColor } = statusConfig(course.status);
 
     return (
-        <tr className="max-w-2xl mx-auto mt-16">
-            <td className="px-4 py-8 ">
+        <tr className="max-w-2xl mx-auto mt-16 sm:w-auto">
+            <td className="lg:px-4 lg:py-8 ">
                 <div className="flex flex-col items-start gap-1">
                     <p className="block text-sm antialiased font-bold leading-normal text-blue-gray-900">
                         {course.title

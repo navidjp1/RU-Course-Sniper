@@ -3,6 +3,7 @@ import axios from "axios";
 import userModel from "../../models/User.js";
 import { delay } from "../../utils.js";
 import { login, relogin } from "./login.js";
+import { register } from "./snipe.js";
 import { updateUserPositions } from "../../controllers/courses.js";
 
 const url = "https://sims.rutgers.edu/webreg/pacLogin.htm";

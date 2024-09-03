@@ -1,4 +1,4 @@
-async function register(idObject) {
+export async function register(idObject) {
     const addID = idObject.add;
     const dropIDArray = idObject.drop;
 
@@ -7,6 +7,7 @@ async function register(idObject) {
 
     if (dropIDArray.length === 0) {
         const success = await add(addID);
+        console.log(`Tried to add ${addID} successfully? ${success}`);
         if (!success) return { status: 500, message: "Could not add course" };
     } else {
         for (const dropID of dropIDArray) {

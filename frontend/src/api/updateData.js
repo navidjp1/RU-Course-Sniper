@@ -7,9 +7,15 @@ export async function updateCreds(uid, RUID, PAC) {
             `http://localhost:3000/api/users/creds/${uid}`,
             { RUID, PAC }
         );
-        if (response.status !== 200) throw new Error(response.data);
+        if (response.status !== 200) throw new Error(response);
         return { status: 200 };
     } catch (error) {
+        if (error.response.status === 409) {
+            toast.error(
+                "There is already a user with that RUID. Two accounts cannot share the same RUID."
+            );
+            return { status: 409 };
+        }
         console.error(`Error updating user creds: ${error}`);
         toast.error("There was an error in the system. Try again later.");
         return { status: 500 };

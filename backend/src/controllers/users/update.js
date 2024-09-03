@@ -1,5 +1,5 @@
 import userModel from "../../models/User.js";
-import { encrypt } from "../../utils.js";
+import { decrypt, encrypt } from "../../utils.js";
 
 export const registerUser = async (req, res) => {
     const uid = req.params.uid;
@@ -41,6 +41,13 @@ export const updateCreds = async (req, res) => {
     try {
         const uid = req.params.uid;
         const { RUID, PAC } = req.body;
+
+        const userWithRUID = await userModel.findOne({ RUID: await decrypt(RUID) });
+
+        if (userWithRUID) {
+            return res.status(409).json({ message: "RUID already in DB" });
+        }
+
         const user = await userModel.findOne({ uid });
 
         if (!user) {

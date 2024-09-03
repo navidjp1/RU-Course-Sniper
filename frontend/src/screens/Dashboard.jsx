@@ -80,9 +80,9 @@ export const Dashboard = () => {
                                         {tokenBalance}.
                                     </p>
                                 </div>
-                                <div className="flex flex-row items-center w-2/5 p-4 place-content-center gap-x-4">
+                                <div className="flex flex-row items-center w-2/5 lg:p-4 place-content-center gap-x-1 lg:gap-x-4">
                                     <button
-                                        className={`w-48 h-12 p-1 text-xl font-bold text-center text-rich-black  rounded-md outline-none ${
+                                        className={`w-48 h-12 lg:text-xl font-bold text-center text-rich-black  rounded-md outline-none ${
                                             hidden
                                                 ? "bg-transparent border-transparent"
                                                 : isSniperRunning
@@ -97,7 +97,7 @@ export const Dashboard = () => {
                                         {!isSniperRunning ? "Start" : "Stop"} Sniping
                                     </button>
                                     <button
-                                        className={`w-48 h-12 p-1  text-xl font-bold text-center text-rich-black rounded-md outline-none bg-platinum  ${
+                                        className={`w-48 h-12 lg:text-xl font-bold text-center text-rich-black rounded-md outline-none bg-platinum  ${
                                             isSniperRunning
                                                 ? "hover:cursor-not-allowed hover:bg-red-500"
                                                 : "hover:bg-midnight-green hover:text-platinum"
@@ -133,7 +133,7 @@ export const Dashboard = () => {
                                             <tr>
                                                 <CourseTitle
                                                     title="Course"
-                                                    thStyles={"w-3/5"}
+                                                    thStyles={"lg:w-3/5"}
                                                 />
                                                 <CourseTitle
                                                     title="Index"

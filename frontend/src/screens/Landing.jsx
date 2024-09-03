@@ -53,26 +53,26 @@ export const Landing = () => {
 
     return (
         <div className="w-screen bg-rich-black">
-            <div className="flex items-center justify-center min-h-screen px-24 py-12 ">
-                <div className="w-3/5 p-6 text-center text-platinum">
-                    <h2 className="text-3xl font-bold tracking-tight ">
-                        RU Course Sniper
+            <div className="flex flex-col items-center justify-center min-h-screen gap-12 px-6 py-12 lg:flex-row lg:px-24">
+                <div className="max-w-lg p-6 text-center lg:w-3/5 lg:text-left text-platinum ">
+                    <h2 className="text-2xl font-bold tracking-tight lg:text-3xl">
+                        RU AutoSnipe
                     </h2>
-                    <p className="mt-6 text-lg leading-8 ">
-                        Distinctio et nulla eum soluta et neque labore quibusdam. Saepe et
-                        quasi iusto modi velit ut non voluptas in. Explicabo id ut
-                        laborum.
+                    <p className="mt-6 text-base leading-8 lg:text-lg">
+                        Automatically snipe the courses you want! There's no need to worry
+                        about having to snipe the course yourself, our bot will take care
+                        of that for you. Sign up to get started!
                     </p>
                 </div>
-                <div className="w-2/5 pt-2 pb-4 border border-gray-200 rounded-lg shadow-md bg-platinum">
+                <div className="max-w-lg pt-2 pb-4 border border-gray-200 rounded-lg shadow-md sm:w-auto lg:w-2/5 bg-platinum">
                     <div className="flex flex-col items-center justify-center p-4">
-                        <div className="w-full rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 bg-rich-black text-platinum">
+                        <div className="w-full rounded-lg shadow dark:border bg-rich-black text-platinum">
                             <div className="space-y-4 md:space-y-6 sm:p-8">
-                                <h1 className="pb-4 text-2xl font-bold leading-tight tracking-tight">
+                                <h1 className="text-xl font-bold leading-tight tracking-tight text-center md:text-2xl">
                                     Sign in to your account
                                 </h1>
                                 <button
-                                    className="bg-platinum text-rich-black border hover:text-blue-munsell font-semibold border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
+                                    className=" bg-platinum text-rich-black border hover:text-blue-munsell font-semibold border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                                     type="button"
                                     onClick={async () => await signInWithGoogle()}
                                 >
@@ -80,21 +80,15 @@ export const Landing = () => {
                                         <img
                                             src={googleIcon}
                                             alt="Google Icon"
-                                            className="size-4"
+                                            className="w-5 h-5"
                                         />
-                                        <span className="">Sign in with Google</span>{" "}
+                                        <span>Sign in with Google</span>
                                     </div>
                                 </button>
                                 <div className="flex items-center my-6">
-                                    <div
-                                        className="mr-3 border-t border-solid border-platinum grow"
-                                        aria-hidden="true"
-                                    ></div>
-                                    <div className="">Or, sign in with your email</div>
-                                    <div
-                                        className="ml-3 border-t border-solid border-platinum grow"
-                                        aria-hidden="true"
-                                    ></div>
+                                    <div className="mr-3 border-t border-solid border-platinum grow"></div>
+                                    <div>Or, sign in with your email</div>
+                                    <div className="ml-3 border-t border-solid border-platinum grow"></div>
                                 </div>
                                 <form
                                     className="space-y-4 md:space-y-6"
@@ -103,7 +97,7 @@ export const Landing = () => {
                                     <div>
                                         <label
                                             htmlFor="email"
-                                            className="block mb-2 text-sm font-medium text-left "
+                                            className="block mb-2 text-sm font-medium text-left"
                                         >
                                             Email
                                         </label>
@@ -116,12 +110,12 @@ export const Landing = () => {
                                             className="outline-none border border-opacity-25 border-platinum rounded-lg block w-full p-2.5 bg-rich-black placeholder:text-blue-munsell hover:cursor-pointer hover:border-blue-munsell"
                                             placeholder="example@gmail.com"
                                             required=""
-                                        ></input>
+                                        />
                                     </div>
                                     <div>
                                         <label
                                             htmlFor="password"
-                                            className="block mb-2 text-sm font-medium text-left "
+                                            className="block mb-2 text-sm font-medium text-left"
                                         >
                                             Password
                                         </label>
@@ -135,7 +129,7 @@ export const Landing = () => {
                                     </div>
                                     <div className="flex items-center justify-end">
                                         <button
-                                            className="text-sm font-medium hover:underline dark:text-primary-500"
+                                            className="text-sm font-medium hover:underline"
                                             onClick={(e) => handleForgotPassword(e)}
                                             type="button"
                                             disabled={disabled}
@@ -145,18 +139,18 @@ export const Landing = () => {
                                     </div>
 
                                     <button
-                                        className="bg-midnight-green hover:text-blue-munsell font-semibold  rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
+                                        className="bg-midnight-green hover:text-blue-munsell font-semibold rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                                         type="submit"
                                         disabled={isSigningIn}
                                     >
                                         {isSigningIn ? "Signing In..." : "Sign In"}
                                     </button>
 
-                                    <p className="font-light text-md ">
+                                    <p className="text-sm font-light lg:text-md">
                                         Don’t have an account yet?{" "}
                                         <a
                                             href="/signup"
-                                            className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                                            className="font-medium text-primary-600 hover:underline"
                                         >
                                             Sign up
                                         </a>
