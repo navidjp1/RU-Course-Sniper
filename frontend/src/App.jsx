@@ -10,59 +10,57 @@ import { Toaster } from "sonner";
 import { MantineProvider } from "@mantine/core";
 import { AuthProvider } from "./contexts/authContext";
 import { ProtectedRoute, AuthRoute } from "./components/RedirectRoute";
-import { Analytics } from "@vercel/analytics/react";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 
 function App() {
     return (
-        <Analytics>
-            <AuthProvider>
-                <MantineProvider>
-                    <Toaster
-                        richColors
-                        position="top-left"
-                        toastOptions={{
-                            className: "font-body",
-                        }}
-                    />
-                    {
-                        <div className="font-body">
-                            <BrowserRouter>
-                                <Routes>
-                                    <Route
-                                        path="/"
-                                        element={
-                                            <AuthRoute>
-                                                <Landing />
-                                            </AuthRoute>
-                                        }
-                                    />
-                                    <Route
-                                        path="/signup"
-                                        element={
-                                            <AuthRoute>
-                                                <Signup />
-                                            </AuthRoute>
-                                        }
-                                    />
-                                    <Route
-                                        path="/dashboard"
-                                        element={
-                                            <ProtectedRoute>
-                                                <Dashboard />
-                                            </ProtectedRoute>
-                                        }
-                                    />
-                                    <Route
-                                        path="/settings"
-                                        element={
-                                            <ProtectedRoute>
-                                                <Settings />
-                                            </ProtectedRoute>
-                                        }
-                                    />
-                                    {/* <Route
+        <AuthProvider>
+            <MantineProvider>
+                <Toaster
+                    richColors
+                    position="top-left"
+                    toastOptions={{
+                        className: "font-body",
+                    }}
+                />
+                {
+                    <div className="font-body">
+                        <BrowserRouter>
+                            <Routes>
+                                <Route
+                                    path="/"
+                                    element={
+                                        <AuthRoute>
+                                            <Landing />
+                                        </AuthRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/signup"
+                                    element={
+                                        <AuthRoute>
+                                            <Signup />
+                                        </AuthRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/dashboard"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Dashboard />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/settings"
+                                    element={
+                                        <ProtectedRoute>
+                                            <Settings />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                {/* <Route
                                     path="/purchase"
                                     element={
                                         <ProtectedRoute>
@@ -70,14 +68,13 @@ function App() {
                                         </ProtectedRoute>
                                     }
                                 /> */}
-                                    <Route path="*" element={<PageNotFound />} />
-                                </Routes>
-                            </BrowserRouter>
-                        </div>
-                    }
-                </MantineProvider>
-            </AuthProvider>
-        </Analytics>
+                                <Route path="*" element={<PageNotFound />} />
+                            </Routes>
+                        </BrowserRouter>
+                    </div>
+                }
+            </MantineProvider>
+        </AuthProvider>
     );
 }
 
