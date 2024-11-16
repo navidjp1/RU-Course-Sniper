@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/authContext";
 import { toast } from "sonner";
@@ -6,7 +5,7 @@ import axios from "axios";
 import ConfirmModal from "./ConfirmModal";
 import MultipleInputs from "./MultipleInputs";
 
-const api_base_url = process.env.API_BASE_URL || "http://localhost:3000";
+const api_base_url = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
 function AddCourseModal({ isOpen, onClose, updateRender, tokenBalance }) {
     const { currentUser } = useAuth();

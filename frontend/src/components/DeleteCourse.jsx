@@ -1,4 +1,3 @@
-import "dotenv/config";
 import axios from "axios";
 import { Trash2 } from "react-feather";
 import { useAuth } from "../contexts/authContext";
@@ -6,7 +5,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import ConfirmModal from "./ConfirmModal";
 
-const api_base_url = process.env.API_BASE_URL || "http://localhost:3000";
+const api_base_url = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
 const DeleteCourse = ({ updateRender, course, isSniperRunning }) => {
     const { currentUser } = useAuth();

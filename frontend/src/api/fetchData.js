@@ -1,8 +1,7 @@
-import "dotenv/config";
 import axios from "axios";
 import { toast } from "sonner";
 
-const api_base_url = process.env.API_BASE_URL || "http://localhost:3000";
+const api_base_url = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
 export async function fetchUserData(uid) {
     try {
