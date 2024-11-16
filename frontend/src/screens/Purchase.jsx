@@ -1,9 +1,13 @@
+import "dotenv/config";
 import axios from "axios";
 import Header from "../components/Header";
 import { useEffect, useState } from "react";
 import { useAuth } from "../contexts/authContext";
 import { fetchTokenBalance } from "../api/fetchData";
 import { toast } from "sonner";
+
+const api_base_url = process.env.API_BASE_URL || "http://localhost:3000";
+
 export const Purchase = () => {
     const { currentUser } = useAuth();
     const uid = currentUser.uid;
@@ -28,7 +32,7 @@ export const Purchase = () => {
 
         try {
             const response = await axios.post(
-                `http://localhost:3000/api/users/balance/${uid}`,
+                `${api_base_url}/api/users/balance/${uid}`,
                 { numTokens }
             );
             const msg = response.data.message;

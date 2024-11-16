@@ -1,9 +1,12 @@
+import "dotenv/config";
 import axios from "axios";
 import { toast } from "sonner";
 
+const api_base_url = process.env.API_BASE_URL || "http://localhost:3000";
+
 export async function registerUser(uid) {
     try {
-        const response = await axios.put(`http://localhost:3000/api/users/${uid}`);
+        const response = await axios.put(`${api_base_url}/api/users/${uid}`);
         if (response.status !== 200) throw new Error(response.data);
         return { status: 200 };
     } catch (error) {

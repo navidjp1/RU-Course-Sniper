@@ -1,9 +1,13 @@
+import "dotenv/config";
 import axios from "axios";
 import { Trash2 } from "react-feather";
 import { useAuth } from "../contexts/authContext";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import ConfirmModal from "./ConfirmModal";
+
+const api_base_url = process.env.API_BASE_URL || "http://localhost:3000";
+
 const DeleteCourse = ({ updateRender, course, isSniperRunning }) => {
     const { currentUser } = useAuth();
     const [disabled, setDisabled] = useState(false);
@@ -29,10 +33,10 @@ const DeleteCourse = ({ updateRender, course, isSniperRunning }) => {
         const uid = currentUser.uid;
 
         try {
-            const response = await axios.post(
-                "http://localhost:3000/api/courses/remove/",
-                { uid, course }
-            );
+            const response = await axios.post(`${api_base_url}/api/courses/remove/`, {
+                uid,
+                course,
+            });
 
             if (response.status !== 200) throw new Error(response.data);
             updateRender();

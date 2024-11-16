@@ -1,12 +1,15 @@
+import "dotenv/config";
 import axios from "axios";
 import { toast } from "sonner";
 
+const api_base_url = process.env.API_BASE_URL || "http://localhost:3000";
+
 export async function updateCreds(uid, RUID, PAC) {
     try {
-        const response = await axios.post(
-            `http://localhost:3000/api/users/creds/${uid}`,
-            { RUID, PAC }
-        );
+        const response = await axios.post(`${api_base_url}/api/users/creds/${uid}`, {
+            RUID,
+            PAC,
+        });
         if (response.status !== 200) throw new Error(response);
         return { status: 200 };
     } catch (error) {
@@ -24,10 +27,10 @@ export async function updateCreds(uid, RUID, PAC) {
 
 export async function updateDropIDs(uid, courseID, newDropIDs) {
     try {
-        const response = await axios.post(
-            `http://localhost:3000/api/users/dropids/${uid}`,
-            { courseID, newDropIDs }
-        );
+        const response = await axios.post(`${api_base_url}/api/users/dropids/${uid}`, {
+            courseID,
+            newDropIDs,
+        });
 
         if (response.status !== 200) throw new Error(response);
         return { status: 200 };

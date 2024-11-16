@@ -1,9 +1,12 @@
+import "dotenv/config";
 import axios from "axios";
 import { toast } from "sonner";
 
+const api_base_url = process.env.API_BASE_URL || "http://localhost:3000";
+
 export async function callStartSniper(uid) {
     try {
-        const response = await axios.get(`http://localhost:3000/api/sniper/start/${uid}`);
+        const response = await axios.get(`${api_base_url}/api/sniper/start/${uid}`);
         if (response.status !== 200) throw new Error(response);
 
         toast.success("Successfully started sniping your courses!");
@@ -39,7 +42,7 @@ export async function callStartSniper(uid) {
 
 export async function callStopSniper(uid) {
     try {
-        const response = await axios.get(`http://localhost:3000/api/sniper/stop/${uid}`);
+        const response = await axios.get(`${api_base_url}/api/sniper/stop/${uid}`);
         if (response.status !== 200) throw new Error(response);
 
         toast.success("Successfully stopped sniping your courses!");

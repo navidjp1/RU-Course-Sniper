@@ -1,9 +1,12 @@
+import "dotenv/config";
 import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/authContext";
 import { toast } from "sonner";
 import axios from "axios";
 import ConfirmModal from "./ConfirmModal";
 import MultipleInputs from "./MultipleInputs";
+
+const api_base_url = process.env.API_BASE_URL || "http://localhost:3000";
 
 function AddCourseModal({ isOpen, onClose, updateRender, tokenBalance }) {
     const { currentUser } = useAuth();
@@ -54,9 +57,7 @@ function AddCourseModal({ isOpen, onClose, updateRender, tokenBalance }) {
 
     const checkIfDuplicate = async () => {
         try {
-            const response = await axios.get(
-                `http://localhost:3000/api/courses/${courseID}`
-            );
+            const response = await axios.get(`${api_base_url}/api/courses/${courseID}`);
 
             if (response.status !== 200) throw new Error(response);
 
@@ -85,7 +86,7 @@ function AddCourseModal({ isOpen, onClose, updateRender, tokenBalance }) {
 
         try {
             const response = await axios.post(
-                `http://localhost:3000/api/courses/add/${courseID}`,
+                `${api_base_url}/api/courses/add/${courseID}`,
                 userData
             );
 
