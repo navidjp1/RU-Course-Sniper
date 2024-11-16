@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json());
 app.use(
     cors({
-        origin: "https://ru-autosnipe.vercel.app/",
+        origin: "https://ru-autosnipe.vercel.app",
     })
 );
 app.use("/api/users", usersRoutes);
