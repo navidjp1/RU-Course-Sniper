@@ -5,13 +5,21 @@ import mongoose from "mongoose";
 import usersRoutes from "./routes/users.js";
 import coursesRoutes from "./routes/courses.js";
 import sniperRoutes from "./routes/sniper.js";
+import { initializeProxy, getCachedCourses } from "./proxy/proxyHandler.js";
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(
+    cors({
+        origin: "https://ru-autosnipe.vercel.app/",
+    })
+);
 app.use("/api/users", usersRoutes);
 app.use("/api/courses", coursesRoutes);
 app.use("/api/sniper", sniperRoutes);
+app.get("/api/open-courses", getCachedCourses);
+
+initializeProxy();
 
 (async () => {
     try {
