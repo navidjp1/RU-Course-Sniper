@@ -1,5 +1,6 @@
 const url = "https://sims.rutgers.edu/webreg/pacLogin.htm";
 
+const semesterSelection = "#semesterSelection4";
 export const login = async (RUID, PAC, page) => {
     console.log("Attempting to login...");
 
@@ -15,8 +16,8 @@ export const login = async (RUID, PAC, page) => {
         await page.waitForSelector("#submit");
         await page.click("#submit");
 
-        await page.waitForSelector("#semesterSelection3");
-        await page.click("#semesterSelection3");
+        await page.waitForSelector(semesterSelection);
+        await page.click(semesterSelection); // change depending on semester
 
         const submit = await page.waitForSelector("#submit");
         await submit.click();

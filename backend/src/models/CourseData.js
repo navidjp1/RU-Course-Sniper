@@ -6,9 +6,9 @@ const courseDataSchema = new mongoose.Schema(
         section: { type: String },
         name: { type: String },
     },
-    { collection: "schedule_of_classes" }
+    { collection: "Spring-2025" }
 );
 
-const CourseData = mongoose.model("CourseData", courseDataSchema);
+const CourseData = mongoose.model("CourseData", courseDataSchema, "Spring-2025");
 
 export default CourseData;

@@ -2,6 +2,8 @@ import pt from "puppeteer";
 
 const url = "https://sims.rutgers.edu/webreg/pacLogin.htm";
 
+const semesterSelection = "#semesterSelection4";
+
 export async function testLogin(RUID, PAC, idObjects) {
     console.log("Testing login credentials...");
     const browser = await pt.launch({ headless: false });
@@ -20,14 +22,14 @@ export async function testLogin(RUID, PAC, idObjects) {
         await page.waitForSelector("#submit");
         await page.click("#submit");
 
-        await page.waitForSelector(".errors, #semesterSelection3");
+        await page.waitForSelector(`.errors, ${semesterSelection}`);
 
         if ((await page.$(".errors")) != null) {
             await browser.close();
             return "Invalid login credentials";
         }
-        await page.waitForSelector("#semesterSelection3");
-        await page.click("#semesterSelection3");
+        await page.waitForSelector(semesterSelection);
+        await page.click(semesterSelection);
 
         const submit = await page.waitForSelector("#submit");
         await submit.click();

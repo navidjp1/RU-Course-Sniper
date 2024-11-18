@@ -3,6 +3,7 @@ import { testLogin } from "../sniper/pacLogin/testLogin.js";
 import { handleSniper } from "../sniper/pacLogin/handler.js";
 import { decrypt } from "../utils.js";
 
+const userBrowsers = new Map();
 export const startSniper = async (req, res) => {
     try {
         const uid = req.params.uid;
@@ -19,13 +20,13 @@ export const startSniper = async (req, res) => {
         const idObjects = user.courseIDs.filter((obj) => obj.status === "INACTIVE");
 
         if (isSniping) {
-            return res.status(400).json({ message: "Already sniping" });
+            return res.status(400).json({ message: "Already sniping for RUID: " + RUID });
         }
         if (RUID === "" || PAC === "") {
             return res.status(400).json({ message: "No credentials" });
         }
         if (idObjects.length === 0) {
-            return res.status(400).json({ message: "No courses" });
+            return res.status(400).json({ message: "No courses for RUID: " + RUID });
         }
 
         if (!testedLogin) {
@@ -37,8 +38,15 @@ export const startSniper = async (req, res) => {
             await user.save();
         }
 
+        if (userBrowsers.has(uid)) {
+            return res.status(400).json({ message: "Already sniping for RUID: " + RUID });
+        }
+
+        const browser = await puppeteer.launch();
+        userBrowsers.set(userId, browser);
+
         // TODO: pass in user variable instead & update accordingly
-        handleSniper(true, RUID, PAC, idObjects, uid);
+        handleSniper(true, RUID, PAC, idObjects, uid, browser);
 
         // set status of all courses to "SNIPING"
         await setCoursesSniping(user);
@@ -54,9 +62,15 @@ export const startSniper = async (req, res) => {
 
 export const stopSniper = async (req, res) => {
     try {
-        const success = await handleSniper(false, "", "", [], "");
+        const uid = req.params.uid;
+        if (!userBrowsers.has(uid)) {
+            return res.status(400).json({ message: "Not sniping for RUID: " + RUID });
+        }
+        const browser = userBrowsers.get(uid);
+
+        const success = await handleSniper(false, "", "", [], "", browser);
         if (success) {
-            const uid = req.params.uid;
+            userBrowsers.delete(uid);
             const user = await userModel.findOne({ uid });
 
             if (!user) {

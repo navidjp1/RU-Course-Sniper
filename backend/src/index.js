@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json());
 app.use(
     cors({
-        origin: "https://ru-autosnipe.vercel.app",
+        origin: ["https://ru-autosnipe.vercel.app", "http://localhost:5173"],
     })
 );
 app.use("/api/users", usersRoutes);
@@ -23,7 +23,8 @@ initializeProxy();
 
 (async () => {
     try {
-        await mongoose.connect(process.env.MONGODB_URI);
+        await mongoose.connect(process.env.MONGODB_URI, { dbName: "main" });
+
         console.log("Connected to database");
     } catch (error) {
         console.log(`There was an error connecting to the database: ${error}`);

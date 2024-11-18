@@ -59,12 +59,12 @@ async function handleAfterRegister(uid, id) {
     }
 }
 
-export const handleSniper = async (shouldRun, RUID, PAC, idObjects, uid) => {
+export const handleSniper = async (shouldRun, RUID, PAC, idObjects, uid, browser) => {
     if (shouldRun && !isRunning) {
         isRunning = true;
 
-        console.log("Launching browser...");
-        const browser = await pt.launch({ headless: false });
+        console.log("Setting up page...");
+        // const browser = await pt.launch({ headless: true });
         context = await browser.createBrowserContext();
         page = await context.newPage();
         await page.setDefaultTimeout(15000);

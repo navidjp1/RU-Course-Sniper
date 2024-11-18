@@ -31,6 +31,7 @@ function getCachedCourses(req, res) {
 }
 
 function initializeProxy() {
+    console.log("Initializing proxy...");
     fetchCoursesAndCache();
     setInterval(fetchCoursesAndCache, REFRESH_INTERVAL);
 }

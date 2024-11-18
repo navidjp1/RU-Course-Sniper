@@ -146,8 +146,8 @@ async function logout() {
 
 async function semesterSelection() {
     try {
-        await page.waitForSelector("#semesterSelection3", { timeout: timeout });
-        await page.click("#semesterSelection3");
+        await page.waitForSelector("#semesterSelection4", { timeout: timeout });
+        await page.click("#semesterSelection4");
         await page.click("#submit");
     } catch (err) {
         console.log("Semester selection button not found");
@@ -174,7 +174,7 @@ async function errorFunc() {
     }
 
     await checkForElements();
-    if ((await page.$("#semesterSelection3")) != null) {
+    if ((await page.$("#semesterSelection4")) != null) {
         await semesterSelection();
     }
 
@@ -242,7 +242,7 @@ async function quickReload() {
 
 async function checkForElements() {
     try {
-        await page.waitForSelector("#j_username, #semesterSelection3", {
+        await page.waitForSelector("#j_username, #semesterSelection4", {
             timeout: timeout,
         });
     } catch (err) {
