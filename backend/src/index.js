@@ -7,6 +7,8 @@ import coursesRoutes from "./routes/courses.js";
 import sniperRoutes from "./routes/sniper.js";
 import { initializeProxy, getCachedCourses } from "./proxy/proxyHandler.js";
 
+const port = process.env.PORT || 3000;
+
 const app = express();
 app.use(express.json());
 app.use(
@@ -31,6 +33,6 @@ initializeProxy();
     }
 })();
 
-app.listen(3000, () => {
+app.listen(port, () => {
     console.log("server is running on port 3000");
 });
