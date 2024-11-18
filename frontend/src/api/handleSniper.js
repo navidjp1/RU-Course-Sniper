@@ -32,7 +32,7 @@ export async function callStartSniper(uid) {
                 "One or more of the courses you intend to drop are courses that you are not currently enrolled in. Please update them and try again."
             );
         } else {
-            console.error(`Error starting sniper: ${error}`);
+            console.error(`Error starting sniper: ${error.message}`);
             toast.error("There was an error in the system. Try again later.");
         }
         return { status: 500 };
@@ -42,7 +42,9 @@ export async function callStartSniper(uid) {
 export async function callStopSniper(uid) {
     try {
         const response = await axios.get(`${api_base_url}/api/sniper/stop/${uid}`);
-        if (response.status !== 200) throw new Error(response);
+        if (response.status !== 200) {
+            throw new Error(response.data.message);
+        }
 
         toast.success("Successfully stopped sniping your courses!");
 

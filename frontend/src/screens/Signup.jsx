@@ -16,7 +16,7 @@ export const Signup = () => {
 
         if (!username || !email || !password) return;
 
-        if (password.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/) == null) {
+        if (!password.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/)) {
             toast.warning(
                 "Make sure your password has minimum eight characters, at least one letter and one number."
             );

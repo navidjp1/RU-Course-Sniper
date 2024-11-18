@@ -70,7 +70,7 @@ export const Dashboard = () => {
                             <div className="flex flex-row w-full gap-x-12">
                                 <div className="justify-start w-3/5 text-left text-platinum">
                                     <h2 className="text-3xl font-bold tracking-tight ">
-                                        Your Courses
+                                        Your Courses - Spring 2025
                                     </h2>
                                     <p className="pb-8 mt-3 text-lg leading-8">
                                         You currently have{" "}
