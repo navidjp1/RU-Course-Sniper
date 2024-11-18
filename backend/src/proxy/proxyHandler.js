@@ -2,15 +2,20 @@ import NodeCache from "node-cache";
 import axios from "axios";
 
 const cache = new NodeCache();
-const REFRESH_INTERVAL = 4000; // 4 seconds
+const REFRESH_INTERVAL = 10000; // 10 seconds
 const CACHE_KEY = "openCourses";
+let requestCount = 0;
 
 async function fetchCoursesAndCache() {
     try {
+        requestCount++;
+        if (requestCount % 100 == 0) {
+            console.log(`Request count for proxy server: ${requestCount}`);
+        }
         const response = await axios.request({
             method: "GET",
             url: "https://classes.rutgers.edu/soc/api/openSections.json",
-            params: { year: "2024", term: "1", campus: "NB" },
+            params: { year: "2025", term: "1", campus: "NB" },
         });
         const courses = response.data;
         cache.set(CACHE_KEY, courses);
@@ -22,11 +27,9 @@ async function fetchCoursesAndCache() {
 function getCachedCourses(req, res) {
     const cachedCourses = cache.get(CACHE_KEY);
     if (cachedCourses) {
-        res.json(cachedCourses);
+        return cachedCourses;
     } else {
-        res.status(503).json({
-            error: "Data not available yet. Please try again later.",
-        });
+        return { error: "Data not available yet. Please try again later." };
     }
 }
 

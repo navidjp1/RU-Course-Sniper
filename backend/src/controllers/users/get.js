@@ -8,7 +8,7 @@ export const getCoursesAndBalance = async (req, res) => {
         const user = await userModel.findOne({ uid });
 
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(204).json({ message: "User not found" });
         }
 
         const userTokenBalance = user.tokenBalance;
@@ -34,7 +34,7 @@ export const getCoursesAndBalance = async (req, res) => {
         res.status(200).json({ courses, userTokenBalance, isSniping });
     } catch (err) {
         console.log(`Error fetching course data: ${err}`);
-        res.status(500).json({
+        res.status(206).json({
             message: `Error processing request: ${err.message}`,
         });
     }
@@ -46,7 +46,7 @@ export const getCreds = async (req, res) => {
         const user = await userModel.findOne({ uid });
 
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(204).json({ message: "User not found" });
         }
 
         const RUID = user.RUID ? await decrypt(user.RUID) : "";
@@ -54,7 +54,7 @@ export const getCreds = async (req, res) => {
         res.status(200).json({ RUID, PAC });
     } catch (err) {
         console.log(`Error fetching user creds: ${err}`);
-        res.status(500).json({
+        res.status(206).json({
             message: `Error processing request: ${err.message}`,
         });
     }
@@ -66,7 +66,7 @@ export const getBalance = async (req, res) => {
         const user = await userModel.findOne({ uid });
 
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(204).json({ message: "User not found" });
         }
 
         const userTokenBalance = user.tokenBalance;
@@ -74,7 +74,7 @@ export const getBalance = async (req, res) => {
         res.status(200).json({ userTokenBalance });
     } catch (err) {
         console.log(`Error fetching course data: ${err}`);
-        res.status(500).json({
+        res.status(206).json({
             message: `Error processing request: ${err.message}`,
         });
     }

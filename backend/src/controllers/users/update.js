@@ -10,7 +10,7 @@ export const registerUser = async (req, res) => {
         )
         .catch((err) => {
             console.log(err);
-            res.status(500).json({
+            res.status(206).json({
                 message: `Error processing request: ${err.message}`,
             });
         });
@@ -23,7 +23,7 @@ export const updateBalance = async (req, res) => {
         const user = await userModel.findOne({ uid });
 
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(204).json({ message: "User not found" });
         }
 
         user.tokenBalance += numTokens;
@@ -31,7 +31,7 @@ export const updateBalance = async (req, res) => {
         res.status(200).json({ message: "Tokens added successfully" });
     } catch (err) {
         console.log(`Error updating user token balance: ${err}`);
-        res.status(500).json({
+        res.status(206).json({
             message: `Error processing request: ${err.message}`,
         });
     }
@@ -45,13 +45,13 @@ export const updateCreds = async (req, res) => {
         const userWithRUID = await userModel.findOne({ RUID: await decrypt(RUID) });
 
         if (userWithRUID) {
-            return res.status(409).json({ message: "RUID already in DB" });
+            return res.status(204).json({ message: "RUID already in DB" });
         }
 
         const user = await userModel.findOne({ uid });
 
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(204).json({ message: "User not found" });
         }
 
         user.RUID = RUID ? await encrypt(RUID) : "";
@@ -62,7 +62,7 @@ export const updateCreds = async (req, res) => {
         res.status(200).json({ message: "Successfully updated credentials" });
     } catch (err) {
         console.log(`Error updating user token balance: ${err}`);
-        res.status(500).json({
+        res.status(206).json({
             message: `Error processing request: ${err.message}`,
         });
     }
@@ -76,7 +76,7 @@ export const updateDropIDs = async (req, res) => {
         const user = await userModel.findOne({ uid });
 
         if (!user) {
-            res.status(404).json({ message: "User not found" });
+            res.status(204).json({ message: "User not found" });
         }
 
         const courseToUpdate = user.courseIDs.find((course) => course.add === courseID);
@@ -89,6 +89,6 @@ export const updateDropIDs = async (req, res) => {
         });
     } catch (err) {
         console.log(`Error updating drop IDs for course index: ${courseID}: ${err}`);
-        res.status(500).json({ message: `Error updating drop IDs: ${err}` });
+        res.status(206).json({ message: `Error updating drop IDs: ${err}` });
     }
 };

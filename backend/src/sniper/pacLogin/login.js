@@ -2,7 +2,7 @@ const url = "https://sims.rutgers.edu/webreg/pacLogin.htm";
 
 const semesterSelection = "#semesterSelection4";
 export const login = async (RUID, PAC, page) => {
-    console.log("Attempting to login...");
+    console.log("Attempting to login... -> " + RUID);
 
     try {
         await page.goto(url);
@@ -28,7 +28,7 @@ export const login = async (RUID, PAC, page) => {
     } catch (error) {
         console.log(error);
         // take screenshot of page
-        return { status: 500, message: `Error processing request: ${error.message}` };
+        return { status: 206, message: `Error processing request: ${error.message}` };
     }
 };
 
@@ -49,6 +49,6 @@ export const logout = async (page) => {
     } catch (err) {
         console.log("Error logging out ", error);
 
-        return { status: 500, message: `Error processing request: ${error.message}` };
+        return { status: 206, message: `Error processing request: ${error.message}` };
     }
 };

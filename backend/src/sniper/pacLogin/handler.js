@@ -5,6 +5,7 @@ import { delay } from "../../utils.js";
 import { login, relogin } from "./login.js";
 import { register } from "./snipe.js";
 import { updateUserPositions } from "../../controllers/courses.js";
+import { getCachedCourses } from "../../proxy/proxyHandler.js";
 
 const url = "https://sims.rutgers.edu/webreg/pacLogin.htm";
 
@@ -21,17 +22,20 @@ let ids = [];
 
 async function sendRequest(uid) {
     try {
-        const response = await axios.get("http://localhost:4000/api/courses");
+        const response = await getCachedCourses();
+        if (response.error) {
+            throw new Error(response.error);
+        }
         ids.forEach(async (idObj) => {
             const id = idObj.add;
-            if (response.data.includes(id)) {
+            if (response.includes(id)) {
                 console.log(`Course index: ${id} was found!`);
                 // const { status, message } = await register(idObj);
                 // if (status == 200) {
                 //     await handleAfterRegister(uid, id);
                 //     return true;
                 // }
-                console.log(message);
+                // console.log(message);
             }
         });
     } catch (error) {
@@ -63,7 +67,7 @@ export const handleSniper = async (shouldRun, RUID, PAC, idObjects, uid, browser
     if (shouldRun && !isRunning) {
         isRunning = true;
 
-        console.log("Setting up page...");
+        console.log("Setting up page... -> " + RUID);
         // const browser = await pt.launch({ headless: true });
         context = await browser.createBrowserContext();
         page = await context.newPage();
@@ -84,7 +88,7 @@ export const handleSniper = async (shouldRun, RUID, PAC, idObjects, uid, browser
                 restartCount = ids.length === 0 ? 5 : restartCount - 1;
             } else {
                 if (requestCount % 10 == 0) {
-                    console.log(`${requestCount} iterations completed.`);
+                    console.log(`${requestCount} iterations completed. RUID: ${RUID}`);
                     if (requestCount % 200 == 0) {
                         await checkTime();
                         const { status, message } = await relogin();
@@ -95,15 +99,15 @@ export const handleSniper = async (shouldRun, RUID, PAC, idObjects, uid, browser
             await delay(4000);
         }
 
-        console.log("Closing browser...");
+        console.log("Closing browser... -> " + RUID);
         await browser.close();
     } else {
         isRunning = false;
-        console.log("Auto-sniper stopped.");
+        console.log("Auto-sniper stopped. -> " + RUID);
     }
 
     if (shouldRestart && restartCount <= 3) {
-        console.log("Auto-sniper restarting...");
+        console.log("Auto-sniper restarting... -> " + RUID);
         isRunning = false;
         shouldRestart = false;
         errorCount = 0;
@@ -113,7 +117,7 @@ export const handleSniper = async (shouldRun, RUID, PAC, idObjects, uid, browser
         await handleSniper(true, RUID, PAC, ids);
     }
 
-    console.log("Program halted.\n");
+    console.log(`Program halted for ${RUID}.\n`);
     return true;
 };
 

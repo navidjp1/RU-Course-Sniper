@@ -1,3 +1,4 @@
+import pt from "puppeteer";
 import userModel from "../models/User.js";
 import { testLogin } from "../sniper/pacLogin/testLogin.js";
 import { handleSniper } from "../sniper/pacLogin/handler.js";
@@ -10,7 +11,7 @@ export const startSniper = async (req, res) => {
         const user = await userModel.findOne({ uid });
 
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(204).json({ message: "User not found" });
         }
 
         const RUID = user.RUID ? await decrypt(user.RUID) : "";
@@ -20,30 +21,31 @@ export const startSniper = async (req, res) => {
         const idObjects = user.courseIDs.filter((obj) => obj.status === "INACTIVE");
 
         if (isSniping) {
-            return res.status(400).json({ message: "Already sniping for RUID: " + RUID });
+            return res.status(204).json({ message: "Already sniping for RUID: " + RUID });
         }
         if (RUID === "" || PAC === "") {
-            return res.status(400).json({ message: "No credentials" });
+            return res.status(204).json({ message: "No credentials" });
         }
         if (idObjects.length === 0) {
-            return res.status(400).json({ message: "No courses for RUID: " + RUID });
+            return res.status(204).json({ message: "No courses for RUID: " + RUID });
         }
 
         if (!testedLogin) {
             const msg = await testLogin(RUID, PAC, idObjects);
             if (msg != "Success") {
-                return res.status(400).json({ message: msg });
+                return res.status(206).json({ message: msg });
             }
             user.testedLogin = true;
             await user.save();
         }
 
         if (userBrowsers.has(uid)) {
-            return res.status(400).json({ message: "Already sniping for RUID: " + RUID });
+            return res.status(204).json({ message: "Already sniping for RUID: " + RUID });
         }
+        const browser = await pt.launch({ headless: false });
+        userBrowsers.set(uid, browser);
 
-        const browser = await puppeteer.launch();
-        userBrowsers.set(userId, browser);
+        console.log(userBrowsers);
 
         // TODO: pass in user variable instead & update accordingly
         handleSniper(true, RUID, PAC, idObjects, uid, browser);
@@ -54,17 +56,26 @@ export const startSniper = async (req, res) => {
         res.status(200).json("Successfully started sniping your courses!");
     } catch (err) {
         console.log(`Error starting sniper: ${err}`);
-        res.status(500).json({
+        res.status(206).json({
             message: `Error processing request: ${err.message}`,
         });
     }
 };
 
+// export const stopSniper = async (req, res) => {
+//     const uid = req.params.uid;
+//     const user = await userModel.findOne({ uid });
+//     await setCoursesInactive(user);
+//     res.status(200).json({ message: "Successfully stopped the sniper!" });
+// };
+
 export const stopSniper = async (req, res) => {
     try {
         const uid = req.params.uid;
         if (!userBrowsers.has(uid)) {
-            return res.status(400).json({ message: "Not sniping for RUID: " + RUID });
+            return res
+                .status(204)
+                .json({ message: "No browser present for uid: " + uid });
         }
         const browser = userBrowsers.get(uid);
 
@@ -74,16 +85,16 @@ export const stopSniper = async (req, res) => {
             const user = await userModel.findOne({ uid });
 
             if (!user) {
-                return res.status(404).json({ message: "User not found" });
+                return res.status(204).json({ message: "User not found" });
             }
             await setCoursesInactive(user);
             res.status(200).json({ message: "Successfully stopped the sniper!" });
         } else {
-            res.status(500).json({ message: `Error processing request ${err}` });
+            res.status(206).json({ message: `Error processing request ${err}` });
         }
     } catch (err) {
         console.log(`Error updating course statuses: ${err}`);
-        res.status(500).json({
+        res.status(206).json({
             message: `Error processing request: ${err.message}`,
         });
     }

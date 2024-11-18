@@ -5,7 +5,7 @@ const url = "https://sims.rutgers.edu/webreg/pacLogin.htm";
 const semesterSelection = "#semesterSelection4";
 
 export async function testLogin(RUID, PAC, idObjects) {
-    console.log("Testing login credentials...");
+    console.log("Testing login credentials for " + RUID + " ...");
     const browser = await pt.launch({ headless: false });
 
     try {
@@ -35,11 +35,17 @@ export async function testLogin(RUID, PAC, idObjects) {
         await submit.click();
 
         await page.waitForSelector(".courses");
-        const userCurrentCourses = await getUserCurrentCourses(page);
-        const msg = await checkValidDropIDs(idObjects, userCurrentCourses);
+
+        let msg = "Success";
+
+        const includesDropIDs = idObjects.some((obj) => obj.drop.length > 0);
+        if (includesDropIDs) {
+            console.log(`Validating drop IDs for ${RUID}...`);
+            const userCurrentCourses = await getUserCurrentCourses(page);
+            msg = await checkValidDropIDs(idObjects, userCurrentCourses);
+        }
 
         await browser.close();
-
         return msg;
     } catch (err) {
         // To do: provide more accurate error
@@ -77,5 +83,6 @@ async function checkValidDropIDs(idObjects, userCurrentCourses) {
 
         if (!valid) return "Invalid drop IDs";
     }
+
     return "Success";
 }
