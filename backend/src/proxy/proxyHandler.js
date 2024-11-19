@@ -9,14 +9,17 @@ let requestCount = 0;
 async function fetchCoursesAndCache() {
     try {
         requestCount++;
-        if (requestCount % 100 == 0) {
-            console.log(`Request count for proxy server: ${requestCount}`);
-        }
+
         const response = await axios.request({
             method: "GET",
             url: "https://classes.rutgers.edu/soc/api/openSections.json",
             params: { year: "2025", term: "1", campus: "NB" },
         });
+        if (requestCount % 5 == 0) {
+            console.log(`Request count for proxy server: ${requestCount}`);
+            console.log(response.data);
+        }
+
         const courses = response.data;
         cache.set(CACHE_KEY, courses);
     } catch (error) {
