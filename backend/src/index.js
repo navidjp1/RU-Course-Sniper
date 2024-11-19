@@ -23,6 +23,8 @@ app.get("/api/open-courses", getCachedCourses);
 
 initializeProxy();
 
+console.log("Mongo URI:", process.env.MONGODB_URI);
+
 (async () => {
     try {
         await mongoose.connect(process.env.MONGODB_URI, { dbName: "main" });
