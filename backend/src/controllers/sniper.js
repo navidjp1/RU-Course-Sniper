@@ -1,3 +1,4 @@
+import "dotenv/config";
 import pt from "puppeteer";
 import userModel from "../models/User.js";
 import { testLogin } from "../sniper/pacLogin/testLogin.js";
@@ -45,7 +46,12 @@ export const startSniper = async (req, res) => {
 
         console.log("Starting sniper browser for RUID: " + RUID);
 
-        const browser = await pt.launch({ headless: true });
+        const browser = await pt.launch({
+            executablePath:
+                process.env.NODE_ENV === "production"
+                    ? process.env.PUPPETEER_EXECUTABLE_PATH
+                    : pt.executablePath(),
+        });
         userBrowsers.set(uid, browser);
 
         console.log(userBrowsers);
