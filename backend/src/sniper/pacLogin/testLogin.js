@@ -6,7 +6,7 @@ const semesterSelection = "#semesterSelection4";
 
 export async function testLogin(RUID, PAC, idObjects) {
     console.log("Testing login credentials for " + RUID + " ...");
-    const browser = await pt.launch({ headless: false });
+    const browser = await pt.launch({ headless: true });
 
     try {
         let page = await browser.newPage();

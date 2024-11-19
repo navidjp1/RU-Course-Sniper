@@ -42,7 +42,7 @@ export const startSniper = async (req, res) => {
         if (userBrowsers.has(uid)) {
             return res.status(204).json({ message: "Already sniping for RUID: " + RUID });
         }
-        const browser = await pt.launch({ headless: false });
+        const browser = await pt.launch({ headless: true });
         userBrowsers.set(uid, browser);
 
         console.log(userBrowsers);
