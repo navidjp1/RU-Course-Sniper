@@ -21,7 +21,7 @@ app.use("/api/courses", coursesRoutes);
 app.use("/api/sniper", sniperRoutes);
 app.get("/api/open-courses", getCachedCourses);
 
-// initializeProxy();
+initializeProxy();
 
 (async () => {
     try {
