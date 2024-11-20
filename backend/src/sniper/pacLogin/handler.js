@@ -95,8 +95,7 @@ export const handleSniper = async (shouldRun, RUID, PAC, idObjects, uid) => {
             } else {
                 if (requestCount % 10 == 0) {
                     console.log(`${requestCount} iterations completed. RUID: ${RUID}`);
-                    // change back to 200
-                    if (requestCount % 50 == 0) {
+                    if (requestCount % 200 == 0) {
                         await checkTime();
                         const { status, message } = await relogin(RUID, PAC, page);
                         if (status != 200) await errorHandler(message, RUID, PAC);
@@ -105,6 +104,8 @@ export const handleSniper = async (shouldRun, RUID, PAC, idObjects, uid) => {
             }
             await delay(4000);
         }
+
+        requestCount = 0;
 
         console.log("Closing browser... -> " + RUID);
         await browser.close();

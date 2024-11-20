@@ -33,6 +33,7 @@ export async function testLogin(RUID, PAC, idObjects) {
         await page.waitForSelector(`.errors, ${semesterSelection}`);
 
         if ((await page.$(".errors")) != null) {
+            console.log("Login failed for RUID: " + RUID);
             await browser.close();
             return "Invalid login credentials";
         }
