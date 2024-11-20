@@ -7,7 +7,6 @@ export const courseExists = async (req, res) => {
         const id = await courseModel.findOne({ index: courseID });
 
         if (!id) {
-            console.log("course not found");
             return res.status(404).json({ message: "Course not found in DB" });
         }
 

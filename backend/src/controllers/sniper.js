@@ -107,3 +107,13 @@ async function setCoursesSniping(user) {
     });
     await user.save();
 }
+
+export const testServer = async (req, res) => {
+    try {
+        res.status(200).json({ message: "Server is running" });
+    } catch (err) {
+        res.status(500).json({
+            message: `Error processing request: ${err.message}`,
+        });
+    }
+};
