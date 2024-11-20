@@ -63,12 +63,17 @@ async function handleAfterRegister(uid, id) {
     }
 }
 
-export const handleSniper = async (shouldRun, RUID, PAC, idObjects, uid, browser) => {
+export const handleSniper = async (shouldRun, RUID, PAC, idObjects, uid) => {
     if (shouldRun && !isRunning) {
         isRunning = true;
 
-        console.log("Setting up page... -> " + RUID);
-        // const browser = await pt.launch({ headless: true });
+        console.log("Starting sniper browser for RUID: " + RUID);
+        const browser = await pt.launch({
+            executablePath:
+                process.env.NODE_ENV === "production"
+                    ? process.env.PUPPETEER_EXECUTABLE_PATH
+                    : pt.executablePath(),
+        });
         context = await browser.createBrowserContext();
         page = await context.newPage();
         await page.setDefaultTimeout(15000);

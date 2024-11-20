@@ -1,11 +1,9 @@
 import "dotenv/config";
-import pt from "puppeteer";
 import userModel from "../models/User.js";
 import { testLogin } from "../sniper/pacLogin/testLogin.js";
 import { handleSniper } from "../sniper/pacLogin/handler.js";
 import { decrypt } from "../utils.js";
 
-const userBrowsers = new Map();
 export const startSniper = async (req, res) => {
     try {
         const uid = req.params.uid;
@@ -40,24 +38,8 @@ export const startSniper = async (req, res) => {
             await user.save();
         }
 
-        if (userBrowsers.has(uid)) {
-            return res.status(204).json({ message: "Already sniping for RUID: " + RUID });
-        }
-
-        console.log("Starting sniper browser for RUID: " + RUID);
-
-        const browser = await pt.launch({
-            executablePath:
-                process.env.NODE_ENV === "production"
-                    ? process.env.PUPPETEER_EXECUTABLE_PATH
-                    : pt.executablePath(),
-        });
-        userBrowsers.set(uid, browser);
-
-        console.log(userBrowsers);
-
         // TODO: pass in user variable instead & update accordingly
-        handleSniper(true, RUID, PAC, idObjects, uid, browser);
+        handleSniper(true, RUID, PAC, idObjects, uid);
 
         // set status of all courses to "SNIPING"
         await setCoursesSniping(user);
@@ -81,22 +63,19 @@ export const startSniper = async (req, res) => {
 export const stopSniper = async (req, res) => {
     try {
         const uid = req.params.uid;
-        if (!userBrowsers.has(uid)) {
-            return res
-                .status(204)
-                .json({ message: "No browser present for uid: " + uid });
-        }
-        const browser = userBrowsers.get(uid);
 
-        const success = await handleSniper(false, "", "", [], "", browser);
+        console.log("Stopping sniper browser for RUID: " + uid);
+
+        const success = await handleSniper(false, "", "", [], "");
         if (success) {
-            userBrowsers.delete(uid);
             const user = await userModel.findOne({ uid });
 
             if (!user) {
                 return res.status(204).json({ message: "User not found" });
             }
+
             await setCoursesInactive(user);
+
             res.status(200).json({ message: "Successfully stopped the sniper!" });
         } else {
             res.status(206).json({ message: `Error processing request ${err}` });

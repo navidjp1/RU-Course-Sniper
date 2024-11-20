@@ -6,9 +6,14 @@ const semesterSelection = "#semesterSelection4";
 
 export async function testLogin(RUID, PAC, idObjects) {
     console.log("Testing login credentials for " + RUID + " ...");
-    const browser = await pt.launch({ headless: true });
 
     try {
+        const browser = await pt.launch({
+            executablePath:
+                process.env.NODE_ENV === "production"
+                    ? process.env.PUPPETEER_EXECUTABLE_PATH
+                    : pt.executablePath(),
+        });
         let page = await browser.newPage();
 
         await page.goto(url);
@@ -44,11 +49,12 @@ export async function testLogin(RUID, PAC, idObjects) {
             const userCurrentCourses = await getUserCurrentCourses(page);
             msg = await checkValidDropIDs(idObjects, userCurrentCourses);
         }
-
+        console.log("Closing browser for RUID: " + RUID);
         await browser.close();
         return msg;
     } catch (err) {
         // To do: provide more accurate error
+        console.log("Puppeteer error: " + err);
         await browser.close();
         return "Puppeteer error: " + err;
     }
