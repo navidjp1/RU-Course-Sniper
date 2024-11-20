@@ -5,39 +5,33 @@ const api_base_url = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000
 
 export async function updateCreds(uid, RUID, PAC) {
     try {
-        const response = await axios.post(`${api_base_url}/api/users/creds/${uid}`, {
-            RUID,
-            PAC,
-        });
-        if (response.status !== 200) throw new Error(response);
+        const creds = { RUID, PAC };
+        await axios.post(`${api_base_url}/api/users/creds/${uid}`, creds);
         return { status: 200 };
     } catch (error) {
-        if (error.response.status === 409) {
+        if (error.response.status === 400) {
             toast.error(
                 "There is already a user with that RUID. Two accounts cannot share the same RUID."
             );
-            return { status: 409 };
+            return { status: 400 };
         }
         console.error(`Error updating user creds: ${error}`);
         toast.error("There was an error in the system. Try again later.");
-        return { status: 500 };
+        return { status: error.response.status };
     }
 }
 
 export async function updateDropIDs(uid, courseID, newDropIDs) {
     try {
-        const response = await axios.post(`${api_base_url}/api/users/dropids/${uid}`, {
-            courseID,
-            newDropIDs,
-        });
+        const dropIDData = { courseID, newDropIDs };
+        await axios.post(`${api_base_url}/api/users/dropids/${uid}`, dropIDData);
 
-        if (response.status !== 200) throw new Error(response);
         return { status: 200 };
     } catch (error) {
         console.error(
             `Error updating drop IDs for course index: ${courseID}: ${error.response.data}`
         );
         toast.error("There was an error in the system. Try again later.");
-        return { status: 500 };
+        return { status: error.response.status };
     }
 }

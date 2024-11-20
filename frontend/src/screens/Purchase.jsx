@@ -35,11 +35,11 @@ export const Purchase = () => {
                 { numTokens }
             );
             const msg = response.data.message;
-            if (response.status !== 200) throw new Error(msg);
+
             setTokenBalance(tokenBalance + numTokens);
             toast.success("Successfully purchased " + numTokens + " tokens!");
         } catch (error) {
-            console.error(`Error updating token balance: ${error}`);
+            console.error(`Error updating token balance: ${error.response.data}`);
             toast.error("There was an error in the system. Try again later.");
         }
         setIsBuying(false);

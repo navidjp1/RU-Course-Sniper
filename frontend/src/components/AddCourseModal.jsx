@@ -56,13 +56,12 @@ function AddCourseModal({ isOpen, onClose, updateRender, tokenBalance }) {
 
     const checkIfDuplicate = async () => {
         try {
-            const response = await axios.get(`${api_base_url}/api/courses/${courseID}`);
-
-            if (response.status !== 200) throw new Error(response);
+            await axios.get(`${api_base_url}/api/courses/${courseID}`);
 
             addCourseToDB();
         } catch (error) {
             if (error.response.status === 404) {
+                // console.log(error.response.data.message);
                 setIsDupeModalOpen(true);
             } else {
                 console.error(
@@ -89,19 +88,18 @@ function AddCourseModal({ isOpen, onClose, updateRender, tokenBalance }) {
                 userData
             );
 
-            if (response.status === 500) throw new Error(response.data);
-
-            if (response.status === 208) {
-                toast.error("You are already sniping this course");
-                return;
-            }
-
             updateRender();
             toast.success(response.data.message);
             resetFormValues();
         } catch (error) {
-            console.error(`Error updating user creds: ${error}`);
-            toast.error("There was an error in the system. Try again later.");
+            if (error.response.status === 400) {
+                toast.error("You are already sniping this course");
+            } else {
+                console.error(
+                    `Error updating user creds: ${error.response.data.message}`
+                );
+                toast.error("There was an error in the system. Try again later.");
+            }
         }
 
         setIsConfirmModalOpen(false);

@@ -5,8 +5,7 @@ const api_base_url = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000
 
 export async function callStartSniper(uid) {
     try {
-        const response = await axios.get(`${api_base_url}/api/sniper/start/${uid}`);
-        if (response.status !== 200) throw new Error(response);
+        await axios.get(`${api_base_url}/api/sniper/start/${uid}`);
 
         toast.success("Successfully started sniping your courses!");
 
@@ -32,26 +31,23 @@ export async function callStartSniper(uid) {
                 "One or more of the courses you intend to drop are courses that you are not currently enrolled in. Please update them and try again."
             );
         } else {
-            console.error(`Error starting sniper: ${error.message}`);
+            console.error(`Error starting sniper: ${msg}`);
             toast.error("There was an error in the system. Try again later.");
         }
-        return { status: 500 };
+        return { status: error.response.status };
     }
 }
 
 export async function callStopSniper(uid) {
     try {
-        const response = await axios.get(`${api_base_url}/api/sniper/stop/${uid}`);
-        if (response.status !== 200) {
-            throw new Error(response.data.message);
-        }
+        await axios.get(`${api_base_url}/api/sniper/stop/${uid}`);
 
         toast.success("Successfully stopped sniping your courses!");
 
         return { status: 200 };
     } catch (error) {
-        console.error(`Error stopping sniper: ${error}`);
+        console.error(`Error stopping sniper: ${error.response.data}`);
         toast.error("There was an error in the system. Try again later.");
-        return { status: 500 };
+        return { status: error.response.status };
     }
 }

@@ -32,16 +32,13 @@ const DeleteCourse = ({ updateRender, course, isSniperRunning }) => {
         const uid = currentUser.uid;
 
         try {
-            const response = await axios.post(`${api_base_url}/api/courses/remove/`, {
-                uid,
-                course,
-            });
+            const courseData = { uid, course };
+            await axios.post(`${api_base_url}/api/courses/remove/`, courseData);
 
-            if (response.status !== 200) throw new Error(response.data);
             updateRender();
             toast.success("Successfully removed course!");
         } catch (error) {
-            console.error(`Error removing course: ${error}`);
+            console.error(`Error removing course: ${error.response.data}`);
             toast.error("There was an error in the system. Try again later.");
         }
 
