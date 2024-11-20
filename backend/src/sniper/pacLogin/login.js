@@ -48,9 +48,9 @@ export const logout = async (page) => {
         await page.click("#logout a");
 
         await page.goto(url);
-        return { status: 200, message: "Successfully logged in!" };
+        return { status: 200, message: "Successfully logged out!" };
     } catch (err) {
-        console.log("Error logging out ", error);
+        console.log("Error logging out -> " + err);
 
         return { status: 500, message: `Error processing request: ${error.message}` };
     }

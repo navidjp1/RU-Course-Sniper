@@ -21,9 +21,9 @@ app.use("/api/users", usersRoutes);
 app.use("/api/courses", coursesRoutes);
 app.use("/api/sniper", sniperRoutes);
 // app.get("/api/open-courses", getCachedCourses);
-// app.use("/", (req, res) => {
-//     res.status(200).send("Render server is up.");
-// });
+app.use("/", (req, res) => {
+    res.status(200).send("Server is running.");
+});
 
 initializeProxy();
 

@@ -95,7 +95,8 @@ export const handleSniper = async (shouldRun, RUID, PAC, idObjects, uid) => {
             } else {
                 if (requestCount % 10 == 0) {
                     console.log(`${requestCount} iterations completed. RUID: ${RUID}`);
-                    if (requestCount % 200 == 0) {
+                    // change back to 200
+                    if (requestCount % 50 == 0) {
                         await checkTime();
                         const { status, message } = await relogin();
                         if (status != 200) await errorHandler(message, RUID, PAC);
