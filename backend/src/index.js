@@ -16,6 +16,9 @@ app.use(
         origin: ["https://ru-autosnipe.vercel.app", "http://localhost:5173"],
     })
 );
+app.use("/", (req, res) => {
+    res.status(200).send("Render server is up.");
+});
 app.use("/api/users", usersRoutes);
 app.use("/api/courses", coursesRoutes);
 app.use("/api/sniper", sniperRoutes);
