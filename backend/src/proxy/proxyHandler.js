@@ -48,7 +48,6 @@ async function isDowntime() {
     let hour = date.getHours();
     let minute = date.getMinutes();
     let time = hour * 60 + minute;
-    console.log(time);
 
     if (time <= 6 * 60 + 5 && time >= 1 * 60 + 55) {
         if (first) console.log(`It is ${hour}:${minute}. WebReg is down...`);
