@@ -64,67 +64,74 @@ async function handleAfterRegister(uid, id) {
 }
 
 export const handleSniper = async (shouldRun, RUID, PAC, idObjects, uid) => {
-    if (shouldRun && !isRunning) {
-        isRunning = true;
+    console.log(`RUID in handler.js: ${RUID}`);
 
-        console.log("Starting sniper browser for RUID: " + RUID);
-        const browser = await pt.launch({
-            executablePath:
-                process.env.NODE_ENV === "production"
-                    ? process.env.PUPPETEER_EXECUTABLE_PATH
-                    : pt.executablePath(),
-        });
-        context = await browser.createBrowserContext();
-        page = await context.newPage();
-        await page.setDefaultTimeout(15000);
-
-        const { status, message } = await login(RUID, PAC, page);
-        if (status != 200) await errorHandler(message, RUID, PAC);
-
-        ids = idObjects;
-
-        while (isRunning) {
-            const registered = await sendRequest(uid);
-
-            if (registered) {
-                page.setDefaultTimeout(5000);
-                shouldRestart = true;
-                isRunning = false;
-                restartCount = ids.length === 0 ? 5 : restartCount - 1;
-            } else {
-                if (requestCount % 10 == 0) {
-                    console.log(`${requestCount} iterations completed. RUID: ${RUID}`);
-                    if (requestCount % 200 == 0) {
-                        await checkTime();
-                        const { status, message } = await relogin();
-                        if (status != 200) await errorHandler(message, RUID, PAC);
-                    }
-                }
-            }
-            await delay(4000);
-        }
-
-        console.log("Closing browser... -> " + RUID);
-        await browser.close();
-    } else {
-        isRunning = false;
-        console.log("Auto-sniper stopped. -> " + RUID);
-    }
-
-    if (shouldRestart && restartCount <= 3) {
-        console.log("Auto-sniper restarting... -> " + RUID);
-        isRunning = false;
-        shouldRestart = false;
-        errorCount = 0;
-        requestCount = 0;
-        restartCount += 1;
-        await delay(30000);
-        await handleSniper(true, RUID, PAC, ids);
-    }
-
-    console.log(`Program halted for ${RUID}.\n`);
     return true;
 };
+
+// export const handleSniper = async (shouldRun, RUID, PAC, idObjects, uid) => {
+//     if (shouldRun && !isRunning) {
+//         isRunning = true;
+
+//         console.log("Starting sniper browser for RUID: " + RUID);
+//         const browser = await pt.launch({
+//             executablePath:
+//                 process.env.NODE_ENV === "production"
+//                     ? process.env.PUPPETEER_EXECUTABLE_PATH
+//                     : pt.executablePath(),
+//         });
+//         context = await browser.createBrowserContext();
+//         page = await context.newPage();
+//         await page.setDefaultTimeout(15000);
+
+//         const { status, message } = await login(RUID, PAC, page);
+//         if (status != 200) await errorHandler(message, RUID, PAC);
+
+//         ids = idObjects;
+
+//         while (isRunning) {
+//             const registered = await sendRequest(uid);
+
+//             if (registered) {
+//                 page.setDefaultTimeout(5000);
+//                 shouldRestart = true;
+//                 isRunning = false;
+//                 restartCount = ids.length === 0 ? 5 : restartCount - 1;
+//             } else {
+//                 if (requestCount % 10 == 0) {
+//                     console.log(`${requestCount} iterations completed. RUID: ${RUID}`);
+//                     if (requestCount % 200 == 0) {
+//                         await checkTime();
+//                         const { status, message } = await relogin();
+//                         if (status != 200) await errorHandler(message, RUID, PAC);
+//                     }
+//                 }
+//             }
+//             await delay(4000);
+//         }
+
+//         console.log("Closing browser... -> " + RUID);
+//         await browser.close();
+//     } else {
+//         isRunning = false;
+//         console.log("Auto-sniper stopped. -> " + RUID);
+//     }
+
+//     if (shouldRestart && restartCount < 3) {
+//         console.log("Auto-sniper restarting... -> " + RUID);
+//         console.log(`Restart count: ${restartCount}`);
+//         isRunning = false;
+//         shouldRestart = false;
+//         errorCount = 0;
+//         requestCount = 0;
+//         restartCount += 1;
+//         await delay(30000);
+//         await handleSniper(true, RUID, PAC, ids);
+//     }
+
+//     console.log(`Program halted for ${RUID}.\n`);
+//     return true;
+// };
 
 async function checkTime() {
     let date = new Date();

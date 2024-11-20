@@ -38,6 +38,8 @@ export const startSniper = async (req, res) => {
             await user.save();
         }
 
+        console.log(`RUID in sniper.js: ${RUID}`);
+
         // TODO: pass in user variable instead & update accordingly
         handleSniper(true, RUID, PAC, idObjects, uid);
 
