@@ -1,5 +1,5 @@
+import "dotenv/config";
 import pt from "puppeteer";
-import axios from "axios";
 import userModel from "../../models/User.js";
 import { delay } from "../../utils.js";
 import { login, relogin } from "./login.js";
@@ -63,23 +63,18 @@ async function handleAfterRegister(uid, id) {
     }
 }
 
-// export const handleSniper = async (shouldRun, RUID, PAC, idObjects, uid) => {
-//     console.log(`RUID in handler.js: ${RUID}`);
-
-//     return true;
-// };
-
 export const handleSniper = async (shouldRun, RUID, PAC, idObjects, uid) => {
     if (shouldRun && !isRunning) {
         isRunning = true;
 
         console.log("Starting sniper browser for RUID: " + RUID);
-        const browser = await pt.launch({
-            executablePath:
-                process.env.NODE_ENV === "production"
-                    ? process.env.PUPPETEER_EXECUTABLE_PATH
-                    : pt.executablePath(),
-        });
+        const browser = await pt.launch();
+        // const browser = await pt.launch({
+        //     executablePath:
+        //         process.env.NODE_ENV === "production"
+        //             ? process.env.PUPPETEER_EXECUTABLE_PATH
+        //             : pt.executablePath(),
+        // });
         context = await browser.createBrowserContext();
         page = await context.newPage();
         await page.setDefaultTimeout(15000);

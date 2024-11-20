@@ -8,7 +8,7 @@ export async function register(idObject) {
     if (dropIDArray.length === 0) {
         const success = await add(addID);
         console.log(`Tried to add ${addID} successfully? ${success}`);
-        if (!success) return { status: 206, message: "Could not add course" };
+        if (!success) return { status: 500, message: "Could not add course" };
     } else {
         for (const dropID of dropIDArray) {
             const dropIDNumber = userCurrentCourses.indexOf(dropID) + 1;
@@ -17,13 +17,13 @@ export async function register(idObject) {
             }
             const success = await drop(dropIDNumber);
             if (!success) {
-                status = 206;
+                status = 500;
                 message += `Could not drop course ${dropID}\n`;
             }
         }
         const success = await add(addID);
         if (!success) {
-            status = 206;
+            status = 500;
             message += `Could not add wanted course: ${addID}\n`;
         }
 
@@ -31,7 +31,7 @@ export async function register(idObject) {
         for (const dropID of dropIDArray) {
             const success = await add(dropID);
             if (!success) {
-                status = 206;
+                status = 500;
                 message += `Could not re add dropped course: ${dropID}\n`;
             }
         }

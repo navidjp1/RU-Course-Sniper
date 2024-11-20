@@ -22,13 +22,16 @@ export const login = async (RUID, PAC, page) => {
         const submit = await page.waitForSelector("#submit");
         await submit.click();
 
-        await page.waitForSelector(".courses");
+        // DON'T FORGET TO UNCOMMENT THIS AFTER NOV 21
+        // await page.waitForSelector(".courses");
+
+        console.log(`${RUID} logged in successfully!`);
 
         return { status: 200, message: "Successfully logged in!" };
     } catch (error) {
         console.log(error);
         // take screenshot of page
-        return { status: 206, message: `Error processing request: ${error.message}` };
+        return { status: 500, message: `Error processing request: ${error.message}` };
     }
 };
 
@@ -49,6 +52,6 @@ export const logout = async (page) => {
     } catch (err) {
         console.log("Error logging out ", error);
 
-        return { status: 206, message: `Error processing request: ${error.message}` };
+        return { status: 500, message: `Error processing request: ${error.message}` };
     }
 };

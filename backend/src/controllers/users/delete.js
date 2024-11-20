@@ -5,14 +5,18 @@ export const deleteUser = async (req, res) => {
         const uid = req.params.uid;
         const user = await userModel.deleteOne({ uid });
 
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
         if (user.acknowledged === true && user.deletedCount === 1) {
             res.status(200).json({ message: "Credentials deleted successfully" });
         } else {
-            res.status(204).json({ message: "User not found" });
+            res.status(400).json({ message: "Error deleting user", user });
         }
     } catch (err) {
         console.log(`Error deleting user credentials: ${err}`);
-        res.status(206).json({
+        res.status(500).json({
             message: `Error processing request: ${err.message}`,
         });
     }
@@ -24,7 +28,7 @@ export const deleteCreds = async (req, res) => {
         const user = await userModel.findOne({ uid });
 
         if (!user) {
-            return res.status(204).json({ message: "User not found" });
+            return res.status(404).json({ message: "User not found" });
         }
 
         user.RUID = "";
@@ -33,7 +37,7 @@ export const deleteCreds = async (req, res) => {
         res.status(200).json({ message: "Credentials deleted successfully" });
     } catch (err) {
         console.log(`Error deleting user credentials: ${err}`);
-        res.status(206).json({
+        res.status(500).json({
             message: `Error processing request: ${err.message}`,
         });
     }

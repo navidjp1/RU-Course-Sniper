@@ -1,14 +1,17 @@
+import "dotenv/config";
 import pt from "puppeteer";
 
 const url = "https://sims.rutgers.edu/webreg/pacLogin.htm";
 
 const semesterSelection = "#semesterSelection4";
 
+let browser = null;
+
 export async function testLogin(RUID, PAC, idObjects) {
     console.log("Testing login credentials for " + RUID + " ...");
 
     try {
-        const browser = await pt.launch({
+        browser = await pt.launch({
             executablePath:
                 process.env.NODE_ENV === "production"
                     ? process.env.PUPPETEER_EXECUTABLE_PATH
@@ -39,7 +42,15 @@ export async function testLogin(RUID, PAC, idObjects) {
         const submit = await page.waitForSelector("#submit");
         await submit.click();
 
-        await page.waitForSelector(".courses");
+        await page.waitForSelector(".courses, .errors");
+
+        if ((await page.$(".errors")) != null) {
+            const errorMessage = await page.$eval(".errors h2 span", (element) =>
+                element.textContent.trim()
+            );
+            await browser.close();
+            return errorMessage;
+        }
 
         let msg = "Success";
 
@@ -54,6 +65,7 @@ export async function testLogin(RUID, PAC, idObjects) {
         return msg;
     } catch (err) {
         // To do: provide more accurate error
+
         console.log("Puppeteer error: " + err);
         await browser.close();
         return "Puppeteer error: " + err;
