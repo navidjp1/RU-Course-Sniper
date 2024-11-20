@@ -36,6 +36,7 @@ export const login = async (RUID, PAC, page) => {
 };
 
 export const relogin = async (RUID, PAC, page) => {
+    console.log("Attempting to logout and relogin... -> " + RUID);
     const { status, message } = await logout(page);
     if (status != 200) return { status, message };
 
@@ -49,8 +50,8 @@ export const logout = async (page) => {
 
         await page.goto(url);
         return { status: 200, message: "Successfully logged out!" };
-    } catch (err) {
-        console.log("Error logging out -> " + err);
+    } catch (error) {
+        console.log("Error logging out -> " + error);
 
         return { status: 500, message: `Error processing request: ${error.message}` };
     }
