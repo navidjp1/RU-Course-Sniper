@@ -5,11 +5,14 @@ const cache = new NodeCache();
 const REFRESH_INTERVAL = 15000; // 10 seconds
 const CACHE_KEY = "openCourses";
 let requestCount = 0;
-let first = true;
+let downtimeCount = 0;
 
 async function fetchCoursesAndCache() {
     try {
-        if (!(await isDowntime())) {
+        const downtime = await isDowntime();
+        if (downtime) {
+            downtimeCount++;
+        } else {
             requestCount++;
             if (requestCount % 10 == 0) {
                 console.log(`Request count for proxy server: ${requestCount}`);
@@ -50,13 +53,13 @@ async function isDowntime() {
     let time = hour * 60 + minute;
 
     if (time <= 6 * 60 + 5 && time >= 1 * 60 + 55) {
-        if (first) console.log(`It is ${hour}:${minute}. WebReg is down...`);
-        let timeout = (6 * 60 + 10 - time) * 60;
-        if (first) console.log(`Halting program for ${timeout} seconds.`);
-        first = false;
+        requestCount = 0;
+        if (downtimeCount % 10 == 0) {
+            console.log(`It is ${hour}:${minute}. WebReg is down...`);
+        }
         return true;
     } else {
-        first = true;
+        downtimeCount = 0;
         return false;
     }
 }
