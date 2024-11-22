@@ -52,10 +52,16 @@ async function isDowntime() {
     let minute = date.getMinutes();
     let time = hour * 60 + minute;
 
-    if (time <= 6 * 60 + 5 && time >= 1 * 60 + 55) {
+    const downtimeStart = 6 * 60 + 55;
+    const downtimeEnd = 11 * 60 + 5;
+
+    // const downtimeStart = 1 * 60 + 55;
+    // const downtimeEnd = 6 * 60 + 5;
+
+    if (time <= downtimeEnd && time >= downtimeStart) {
         requestCount = 0;
         if (downtimeCount % 10 == 0) {
-            console.log(`It is ${hour}:${minute}. WebReg is down...`);
+            console.log(`It is ${hour}:${minute} UTC. WebReg is down...`);
         }
         return true;
     } else {

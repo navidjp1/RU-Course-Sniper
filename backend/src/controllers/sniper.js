@@ -66,7 +66,7 @@ export const stopSniper = async (req, res) => {
 
         console.log("Stopping sniper browser for RUID: " + uid);
 
-        const success = await handleSniper(false, "", "", [], "");
+        const success = await handleSniper(false, "", "", [], uid);
         if (success) {
             const user = await userModel.findOne({ uid });
 
@@ -78,12 +78,12 @@ export const stopSniper = async (req, res) => {
 
             res.status(200).json({ message: "Successfully stopped the sniper!" });
         } else {
-            res.status(400).json({ message: `Error processing request ${err}` });
+            res.status(400).json({ message: `Error stopping sniper` });
         }
-    } catch (err) {
-        console.log(`Error updating course statuses: ${err}`);
+    } catch (error) {
+        console.log(`Error stopping sniper: ${error}`);
         res.status(500).json({
-            message: `Error processing request: ${err.message}`,
+            message: `Error processing request: ${error.message}`,
         });
     }
 };

@@ -12,13 +12,16 @@ const url = "https://sims.rutgers.edu/webreg/pacLogin.htm";
 let requestCount = 0;
 let errorCount = 0;
 let restartCount = 0;
-let isRunning = false;
-let shouldRestart = false;
+// let isRunning = false;
+// let shouldRestart = false;
 
-let context = null;
-let page = null;
+// let context = null;
+// let page = null;
 
 let ids = [];
+
+const userIsRunning = new Map();
+const userShouldRestart = new Map();
 
 async function sendRequest(uid) {
     try {
@@ -64,33 +67,37 @@ async function handleAfterRegister(uid, id) {
 }
 
 export const handleSniper = async (shouldRun, RUID, PAC, idObjects, uid) => {
+    const isRunning = userIsRunning.get(uid) || false;
+    const shouldRestart = userShouldRestart.get(uid) || false;
+
     if (shouldRun && !isRunning) {
-        isRunning = true;
+        userIsRunning.set(uid, true);
 
         console.log("Starting sniper browser for RUID: " + RUID);
-        const browser = await pt.launch();
-        // const browser = await pt.launch({
-        //     executablePath:
-        //         process.env.NODE_ENV === "production"
-        //             ? process.env.PUPPETEER_EXECUTABLE_PATH
-        //             : pt.executablePath(),
-        // });
-        context = await browser.createBrowserContext();
-        page = await context.newPage();
+        // const browser = await pt.launch();
+        const browser = await pt.launch({
+            executablePath:
+                process.env.NODE_ENV === "production"
+                    ? process.env.PUPPETEER_EXECUTABLE_PATH
+                    : pt.executablePath(),
+        });
+
+        const context = await browser.createBrowserContext();
+        const page = await context.newPage();
         await page.setDefaultTimeout(15000);
 
         const { status, message } = await login(RUID, PAC, page);
-        if (status != 200) await errorHandler(message, RUID, PAC);
+        if (status != 200) await errorHandler(message, RUID, PAC, uid, page, context);
 
         ids = idObjects;
 
-        while (isRunning) {
+        while (userIsRunning.get(uid) == true) {
             const registered = await sendRequest(uid);
 
             if (registered) {
                 page.setDefaultTimeout(5000);
-                shouldRestart = true;
-                isRunning = false;
+                userShouldRestart.set(uid, true);
+                userIsRunning.set(uid, false);
                 restartCount = ids.length === 0 ? 5 : restartCount - 1;
             } else {
                 if (requestCount % 10 == 0) {
@@ -98,7 +105,8 @@ export const handleSniper = async (shouldRun, RUID, PAC, idObjects, uid) => {
                     if (requestCount % 200 == 0) {
                         await checkTime();
                         const { status, message } = await relogin(RUID, PAC, page);
-                        if (status != 200) await errorHandler(message, RUID, PAC);
+                        if (status != 200)
+                            await errorHandler(message, RUID, PAC, uid, page, context);
                     }
                 }
             }
@@ -110,15 +118,15 @@ export const handleSniper = async (shouldRun, RUID, PAC, idObjects, uid) => {
         console.log("Closing browser... -> " + RUID);
         await browser.close();
     } else {
-        isRunning = false;
+        userIsRunning.set(uid, false);
         console.log("Auto-sniper stopped. -> " + RUID);
     }
 
     if (shouldRestart && restartCount < 3) {
         console.log("Auto-sniper restarting... -> " + RUID);
         console.log(`Restart count: ${restartCount}`);
-        isRunning = false;
-        shouldRestart = false;
+        userIsRunning.set(uid, false);
+        userShouldRestart.set(uid, false);
         errorCount = 0;
         requestCount = 0;
         restartCount += 1;
@@ -126,6 +134,8 @@ export const handleSniper = async (shouldRun, RUID, PAC, idObjects, uid) => {
         await handleSniper(true, RUID, PAC, ids);
     }
 
+    userIsRunning.delete(uid);
+    userShouldRestart.delete(uid);
     console.log(`Program halted for ${RUID}.\n`);
     return true;
 };
@@ -137,11 +147,17 @@ async function checkTime() {
     let second = date.getSeconds();
     let time = hour * 60 + minute;
 
-    console.log(`It is ${hour}:${minute}:${second}.`);
+    console.log(`It is ${hour}:${minute}:${second} UTC.`);
 
-    if (time <= 6 * 60 + 5 && time >= 1 * 60 + 55) {
-        console.log(`It is ${hour}:${minute}. WebReg is down...`);
-        let timeout = (6 * 60 + 10 - time) * 60;
+    const downtimeStart = 6 * 60 + 55;
+    const downtimeEnd = 11 * 60 + 5;
+
+    // const downtimeStart = 1 * 60 + 55;
+    // const downtimeEnd = 6 * 60 + 5;
+
+    if (time <= downtimeEnd && time >= downtimeStart) {
+        console.log(`It is ${hour}:${minute} UTC. WebReg is down...`);
+        let timeout = (downtimeEnd - time) * 60;
         console.log(`Halting program for ${timeout} seconds.`);
         await delay(timeout * 1000);
 
@@ -149,7 +165,10 @@ async function checkTime() {
     }
 }
 
-async function errorHandler(message, RUID, PAC) {
+async function errorHandler(message, RUID, PAC, uid, page, context) {
+    const isRunning = userIsRunning.get(uid) || false;
+    const shouldRestart = userShouldRestart.get(uid) || false;
+
     if (!isRunning && shouldRestart) return;
 
     errorCount++;
@@ -167,6 +186,7 @@ async function errorHandler(message, RUID, PAC) {
         }
     }
     page.setDefaultTimeout(5000);
-    shouldRestart = true;
-    isRunning = false;
+
+    userShouldRestart.set(uid, true);
+    userIsRunning.set(uid, false);
 }
