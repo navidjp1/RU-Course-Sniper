@@ -1,7 +1,6 @@
 import "dotenv/config";
 import userModel from "../models/User.js";
 import { testLogin } from "../sniper/pacLogin/testLogin.js";
-import { handleSniper } from "../sniper/pacLogin/handler.js";
 import { decrypt } from "../utils.js";
 import puppeteerManager from "../sniper/pacLogin/cluster.js";
 
@@ -47,9 +46,8 @@ export const startSniper = async (req, res) => {
         if (userObjs.has(uid))
             return res.status(400).json({ message: "Already sniping" });
 
-        const puppeteerObj = new puppeteerManager();
-        puppeteerObj.handleSniper(true, RUID, PAC, idObjects, uid);
-
+        const puppeteerObj = new puppeteerManager(RUID, PAC, uid, idObjects);
+        puppeteerObj.startBrowser();
         userObjs.set(uid, puppeteerObj);
 
         // set status of all courses to "SNIPING"
@@ -64,31 +62,24 @@ export const startSniper = async (req, res) => {
     }
 };
 
-// export const stopSniper = async (req, res) => {
-//     const uid = req.params.uid;
-//     const user = await userModel.findOne({ uid });
-//     await setCoursesInactive(user);
-//     res.status(200).json({ message: "Successfully stopped the sniper!" });
-// };
-
 export const stopSniper = async (req, res) => {
     try {
         const uid = req.params.uid;
-
-        console.log("Stopping sniper browser for RUID: " + uid);
 
         if (!userObjs.has(uid)) {
             return res.status(400).json({ message: "Not sniping" });
         }
 
-        const puppeteerObj = userObjs.get(uid);
-        puppeteerObj.handleSniper(false, "", "", [], uid);
+        let puppeteerObj = userObjs.get(uid);
+        puppeteerObj.stopBrowser();
+        puppeteerObj = null;
 
         // const success = await handleSniper(false, "", "", [], uid);
 
         const success = true;
         if (success) {
             userObjs.delete(uid);
+            // puppeteerObj = null;
 
             const user = await userModel.findOne({ uid });
 

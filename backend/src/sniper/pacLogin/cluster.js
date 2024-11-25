@@ -10,16 +10,19 @@ import { getCachedCourses } from "../../proxy/proxyHandler.js";
 const url = "https://sims.rutgers.edu/webreg/pacLogin.htm";
 
 class puppeteerManager {
-    constructor() {
+    constructor(RUID, PAC, uid, idObjects) {
+        this.RUID = RUID;
+        this.PAC = PAC;
+        this.uid = uid;
+        this.ids = idObjects;
         this.isRunning = false;
-        this.shouldRestart = false;
         this.requestCount = 0;
         this.errorCount = 0;
         this.restartCount = 0;
-        this.ids = [];
+        this.browser = null;
     }
 
-    async sendRequest(uid) {
+    async sendRequest() {
         try {
             const response = await getCachedCourses();
             if (response.error) {
@@ -31,7 +34,8 @@ class puppeteerManager {
                     console.log(`Course index: ${id} was found!`);
                     // const { status, message } = await register(idObj);
                     // if (status == 200) {
-                    //     await this.handleAfterRegister(uid, id);
+                    //     await this.handleAfterRegister(this.uid, id);
+                    //     this.isRunning = false;
                     //     return true;
                     // }
                     // console.log(message);
@@ -64,86 +68,72 @@ class puppeteerManager {
         }
     }
 
-    async handleSniper(shouldRun, RUID, PAC, idObjects, uid) {
-        if (shouldRun && !this.isRunning) {
-            this.isRunning = true;
+    async startBrowser() {
+        if (this.isRunning) return false;
 
-            console.log("Starting sniper browser for RUID: " + RUID);
-            // const browser = await pt.launch();
-            const browser = await pt.launch({
-                executablePath:
-                    process.env.NODE_ENV === "production"
-                        ? process.env.PUPPETEER_EXECUTABLE_PATH
-                        : pt.executablePath(),
-            });
+        this.isRunning = true;
 
-            const context = await browser.createBrowserContext();
-            const page = await context.newPage();
-            await page.setDefaultTimeout(15000);
+        console.log("Starting sniper browser for RUID: " + this.RUID);
 
-            const { status, message } = await login(RUID, PAC, page);
-            if (status != 200)
-                await this.errorHandler(message, RUID, PAC, uid, page, context);
+        const browser = await pt.launch({
+            executablePath:
+                process.env.NODE_ENV === "production"
+                    ? process.env.PUPPETEER_EXECUTABLE_PATH
+                    : pt.executablePath(),
+        });
 
-            this.ids = idObjects;
+        this.browser = browser;
 
-            while (this.isRunning == true) {
-                const registered = await this.sendRequest(uid);
+        const context = await browser.createBrowserContext();
+        const page = await context.newPage();
+        await page.setDefaultTimeout(15000);
 
-                if (registered) {
-                    page.setDefaultTimeout(5000);
-                    this.shouldRestart = true;
-                    this.isRunning = false;
-                    this.restartCount = ids.length === 0 ? 5 : restartCount - 1;
-                } else {
-                    if (this.requestCount % 10 == 0) {
-                        console.log(
-                            `${this.requestCount} iterations completed. RUID: ${RUID}`
-                        );
-                        if (this.requestCount % 200 == 0) {
-                            await this.checkTime();
-                            const { status, message } = await relogin(RUID, PAC, page);
-                            if (status != 200)
-                                await this.errorHandler(
-                                    message,
-                                    RUID,
-                                    PAC,
-                                    uid,
-                                    page,
-                                    context
-                                );
-                        }
-                    }
+        const { status, message } = await login(this.RUID, this.PAC, page);
+        if (status != 200) await this.errorHandler(message, page, context);
+
+        while (this.isRunning) {
+            const registered = await this.sendRequest();
+
+            if (this.requestCount % 10 == 0) {
+                console.log(
+                    `${this.requestCount} iterations completed. RUID: ${this.RUID}`
+                );
+                if (this.requestCount % 200 == 0) {
+                    await this.checkTime();
+                    const { status, message } = await relogin(this.RUID, this.PAC, page);
+                    if (status != 200) await this.errorHandler(message, page, context);
                 }
-                await delay(4000);
             }
 
-            this.requestCount = 0;
-
-            console.log("Closing browser... -> " + RUID);
-            await browser.close();
-        } else {
-            this.isRunning = false;
-            console.log("Auto-sniper stopped. -> " + RUID);
+            await delay(4000);
         }
 
-        if (this.shouldRestart && this.restartCount < 3) {
-            console.log("Auto-sniper restarting... -> " + RUID);
-            console.log(`Restart count: ${restartCount}`);
-            this.isRunning = false;
-            this.shouldRestart = false;
-            this.errorCount = 0;
-            this.requestCount = 0;
-            this.restartCount += 1;
-            await delay(30000);
-            await this.handleSniper(true, RUID, PAC, ids);
-        }
-
-        console.log(`Program halted for ${RUID}.\n`);
-        return true;
+        console.log(`Program halted for ${this.RUID}.\n`);
     }
 
-    async errorHandler(message, RUID, PAC, uid, page, context) {
+    async stopBrowser() {
+        if (!this.isRunning || !this.browser) return false;
+
+        console.log("Stopping sniper... -> " + this.RUID);
+        await this.browser.close();
+        this.isRunning = false;
+        this.requestCount = 0;
+        this.errorCount = 0;
+        this.restartCount = 0;
+        this.browser = null;
+    }
+
+    async restartBrowser() {
+        console.log("Restarting sniper... -> " + this.RUID);
+        console.log(`Restart count: ${this.restartCount}`);
+        const prevRestartCount = this.restartCount;
+        await delay(30000);
+        await this.stopBrowser();
+        this.restartCount = prevRestartCount + 1;
+        this.startBrowser();
+    }
+
+    async errorHandler(message, page, context) {
         if (!this.isRunning && this.shouldRestart) return;
 
         this.errorCount++;
@@ -154,16 +144,17 @@ class puppeteerManager {
             await page.close();
             page = await context.newPage();
             await page.setDefaultTimeout(15000);
-            const { status, message } = await login(RUID, PAC, page);
+            const { status, message } = await login(this.RUID, this.PAC, page);
             if (status == 200) {
                 this.errorCount = 0;
                 return;
             }
         }
-        page.setDefaultTimeout(5000);
 
-        this.shouldRestart = true;
-        this.isRunning = false;
+        page.setDefaultTimeout(5000);
+        if (this.restartCount < 3) {
+            this.restartBrowser();
+        }
     }
 
     async checkTime() {
