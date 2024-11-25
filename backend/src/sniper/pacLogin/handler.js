@@ -12,11 +12,6 @@ const url = "https://sims.rutgers.edu/webreg/pacLogin.htm";
 let requestCount = 0;
 let errorCount = 0;
 let restartCount = 0;
-// let isRunning = false;
-// let shouldRestart = false;
-
-// let context = null;
-// let page = null;
 
 let ids = [];
 

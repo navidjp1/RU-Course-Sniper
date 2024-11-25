@@ -3,6 +3,9 @@ import userModel from "../models/User.js";
 import { testLogin } from "../sniper/pacLogin/testLogin.js";
 import { handleSniper } from "../sniper/pacLogin/handler.js";
 import { decrypt } from "../utils.js";
+import puppeteerManager from "../sniper/pacLogin/cluster.js";
+
+const userObjs = new Map();
 
 export const startSniper = async (req, res) => {
     try {
@@ -39,7 +42,15 @@ export const startSniper = async (req, res) => {
         }
 
         // TODO: pass in user variable instead & update accordingly
-        handleSniper(true, RUID, PAC, idObjects, uid);
+        // handleSniper(true, RUID, PAC, idObjects, uid);
+
+        if (userObjs.has(uid))
+            return res.status(400).json({ message: "Already sniping" });
+
+        const puppeteerObj = new puppeteerManager();
+        puppeteerObj.handleSniper(true, RUID, PAC, idObjects, uid);
+
+        userObjs.set(uid, puppeteerObj);
 
         // set status of all courses to "SNIPING"
         await setCoursesSniping(user);
@@ -66,8 +77,19 @@ export const stopSniper = async (req, res) => {
 
         console.log("Stopping sniper browser for RUID: " + uid);
 
-        const success = await handleSniper(false, "", "", [], uid);
+        if (!userObjs.has(uid)) {
+            return res.status(400).json({ message: "Not sniping" });
+        }
+
+        const puppeteerObj = userObjs.get(uid);
+        puppeteerObj.handleSniper(false, "", "", [], uid);
+
+        // const success = await handleSniper(false, "", "", [], uid);
+
+        const success = true;
         if (success) {
+            userObjs.delete(uid);
+
             const user = await userModel.findOne({ uid });
 
             if (!user) {

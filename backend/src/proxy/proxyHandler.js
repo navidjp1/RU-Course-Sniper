@@ -14,7 +14,7 @@ async function fetchCoursesAndCache() {
             downtimeCount++;
         } else {
             requestCount++;
-            if (requestCount % 10 == 0) {
+            if (requestCount % 100 == 0) {
                 console.log(`Request count for proxy server: ${requestCount}`);
             }
             const response = await axios.request({
@@ -60,7 +60,7 @@ async function isDowntime() {
 
     if (time <= downtimeEnd && time >= downtimeStart) {
         requestCount = 0;
-        if (downtimeCount % 10 == 0) {
+        if (downtimeCount % 100 == 0) {
             console.log(`It is ${hour}:${minute} UTC. WebReg is down...`);
         }
         return true;
