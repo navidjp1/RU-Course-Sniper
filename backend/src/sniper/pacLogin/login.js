@@ -22,8 +22,7 @@ export const login = async (RUID, PAC, page) => {
         const submit = await page.waitForSelector("#submit");
         await submit.click();
 
-        // DON'T FORGET TO UNCOMMENT THIS AFTER NOV 21
-        // await page.waitForSelector(".courses");
+        await page.waitForSelector(".courses");
 
         console.log(`${RUID} logged in successfully!`);
 

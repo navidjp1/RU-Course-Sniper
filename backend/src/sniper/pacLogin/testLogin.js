@@ -55,10 +55,13 @@ export async function testLogin(RUID, PAC, idObjects) {
 
         let msg = "Success";
 
+        const userCurrentCourses = await getUserCurrentCourses(page);
+        console.log(`Validating add IDs for ${RUID}...`);
+        msg = await checkValidAddIDs(idObjects, userCurrentCourses);
+
         const includesDropIDs = idObjects.some((obj) => obj.drop.length > 0);
         if (includesDropIDs) {
             console.log(`Validating drop IDs for ${RUID}...`);
-            const userCurrentCourses = await getUserCurrentCourses(page);
             msg = await checkValidDropIDs(idObjects, userCurrentCourses);
         }
         console.log("Closing browser for RUID: " + RUID);
@@ -93,6 +96,18 @@ async function getUserCurrentCourses(page) {
     });
 
     return indexStrings;
+}
+
+async function checkValidAddIDs(idObjects, userCurrentCourses) {
+    for (const obj of idObjects) {
+        if (obj.status === "REGISTERED") continue;
+        const addID = obj.add;
+        const found = userCurrentCourses.includes(addID);
+
+        if (found) return "Invalid add ID";
+    }
+
+    return "Success";
 }
 
 async function checkValidDropIDs(idObjects, userCurrentCourses) {

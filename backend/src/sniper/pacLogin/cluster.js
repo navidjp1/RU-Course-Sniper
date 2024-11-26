@@ -16,41 +16,46 @@ class puppeteerManager {
         this.uid = uid;
         this.ids = idObjects;
         this.isRunning = false;
-        this.requestCount = 0;
-        this.errorCount = 0;
-        this.restartCount = 0;
+        this.requestCount = 1;
+        this.errorCount = 1;
+        this.restartCount = 1;
         this.browser = null;
     }
 
-    async sendRequest() {
+    async sendRequest(page) {
         try {
             const response = await getCachedCourses();
             if (response.error) {
                 throw new Error(response.error);
             }
-            this.ids.forEach(async (idObj) => {
+
+            for (const idObj of this.ids) {
                 const id = idObj.add;
                 if (response.includes(id)) {
                     console.log(`Course index: ${id} was found!`);
-                    // const { status, message } = await register(idObj);
-                    // if (status == 200) {
-                    //     await this.handleAfterRegister(this.uid, id);
-                    //     this.isRunning = false;
-                    //     return true;
-                    // }
-                    // console.log(message);
+                    const { status, message } = await register(idObj, page);
+                    console.log(message);
+                    if (status == 200) {
+                        await this.handleAfterRegister(this.uid, id);
+                    }
+                    if (this.ids.length == 0) {
+                        await this.stopBrowser();
+                        await this.setCoursesInactive();
+                    } else {
+                        this.restartCount--;
+                        this.restartBrowser();
+                    }
                 }
-            });
+            }
         } catch (error) {
             console.error(`Error fetching open courses: ${error}`);
         }
-
-        this.requestCount++;
-        return false;
     }
 
     async handleAfterRegister(uid, courseId) {
         try {
+            this.ids = this.ids.filter((obj) => obj.add !== courseId);
+
             const user = await userModel.findOne({ uid });
             const idObjects = user.courseIDs;
             const idObj = idObjects.find((obj) => obj.add === courseId);
@@ -58,7 +63,6 @@ class puppeteerManager {
             idObj.status = "REGISTERED";
             idObj.position = -1;
             await user.save();
-            this.ids = this.ids.filter((obj) => obj.add !== courseId);
 
             await updateUserPositions(courseId, oldPosition);
         } catch (error) {
@@ -76,6 +80,7 @@ class puppeteerManager {
         console.log("Starting sniper browser for RUID: " + this.RUID);
 
         const browser = await pt.launch({
+            headless: true,
             executablePath:
                 process.env.NODE_ENV === "production"
                     ? process.env.PUPPETEER_EXECUTABLE_PATH
@@ -85,25 +90,31 @@ class puppeteerManager {
         this.browser = browser;
 
         const context = await browser.createBrowserContext();
-        const page = await context.newPage();
+        let page = await context.newPage();
         await page.setDefaultTimeout(15000);
 
         const { status, message } = await login(this.RUID, this.PAC, page);
-        if (status != 200) await this.errorHandler(message, page, context);
+        if (status != 200) {
+            page = await this.errorHandler(message, page, context);
+        }
 
         while (this.isRunning) {
-            const registered = await this.sendRequest();
-
-            if (this.requestCount % 10 == 0) {
+            if (this.requestCount % 25 == 0) {
                 console.log(
                     `${this.requestCount} iterations completed. RUID: ${this.RUID}`
                 );
                 if (this.requestCount % 200 == 0) {
                     await this.checkTime();
                     const { status, message } = await relogin(this.RUID, this.PAC, page);
-                    if (status != 200) await this.errorHandler(message, page, context);
+                    if (status != 200) {
+                        page = await this.errorHandler(message, page, context);
+                    }
                 }
             }
+
+            this.requestCount++;
+
+            if (page) await this.sendRequest(page);
 
             await delay(4000);
         }
@@ -117,24 +128,28 @@ class puppeteerManager {
         console.log("Stopping sniper... -> " + this.RUID);
         await this.browser.close();
         this.isRunning = false;
-        this.requestCount = 0;
-        this.errorCount = 0;
-        this.restartCount = 0;
+        this.requestCount = 1;
+        this.errorCount = 1;
+        this.restartCount = 1;
         this.browser = null;
+
+        return true;
     }
 
     async restartBrowser() {
         console.log("Restarting sniper... -> " + this.RUID);
         console.log(`Restart count: ${this.restartCount}`);
         const prevRestartCount = this.restartCount;
-        await delay(30000);
         await this.stopBrowser();
+
+        console.log("Waiting 15 seconds...");
+        await delay(15000);
         this.restartCount = prevRestartCount + 1;
         this.startBrowser();
     }
 
     async errorHandler(message, page, context) {
-        if (!this.isRunning && this.shouldRestart) return;
+        if (!this.isRunning) return;
 
         this.errorCount++;
         console.log(`Error #${this.errorCount}: ${message}`);
@@ -143,18 +158,33 @@ class puppeteerManager {
             // open new page
             await page.close();
             page = await context.newPage();
-            await page.setDefaultTimeout(15000);
+            await page.setDefaultTimeout(30000);
             const { status, message } = await login(this.RUID, this.PAC, page);
             if (status == 200) {
-                this.errorCount = 0;
-                return;
+                this.errorCount = 1;
+                return page;
             }
         }
 
-        page.setDefaultTimeout(5000);
-        if (this.restartCount < 3) {
+        if (this.restartCount <= 3) {
             this.restartBrowser();
+        } else {
+            await this.stopBrowser();
+            await this.setCoursesInactive();
         }
+        return null;
+    }
+
+    async setCoursesInactive() {
+        const uid = this.uid;
+        const user = await userModel.findOne({ uid });
+        user.isSniping = false;
+        user.courseIDs.forEach((obj) => {
+            if (obj.status === "SNIPING") {
+                obj.status = "INACTIVE";
+            }
+        });
+        await user.save();
     }
 
     async checkTime() {

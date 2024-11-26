@@ -27,7 +27,7 @@ async function fetchCoursesAndCache() {
             cache.set(CACHE_KEY, courses);
         }
     } catch (error) {
-        console.error("Error fetching courses:", error);
+        console.error("Error fetching courses:", error.message);
     }
 }
 

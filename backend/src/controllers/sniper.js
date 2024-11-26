@@ -22,13 +22,13 @@ export const startSniper = async (req, res) => {
         const idObjects = user.courseIDs.filter((obj) => obj.status === "INACTIVE");
 
         if (isSniping) {
-            return res.status(400).json({ message: "Already sniping for RUID: " + RUID });
+            return res.status(400).json({ message: "Already sniping" });
         }
         if (RUID === "" || PAC === "") {
             return res.status(404).json({ message: "No credentials" });
         }
         if (idObjects.length === 0) {
-            return res.status(404).json({ message: "No courses for RUID: " + RUID });
+            return res.status(404).json({ message: "No courses" });
         }
 
         if (!testedLogin) {
@@ -71,12 +71,9 @@ export const stopSniper = async (req, res) => {
         }
 
         let puppeteerObj = userObjs.get(uid);
-        puppeteerObj.stopBrowser();
+        const success = puppeteerObj.stopBrowser();
         puppeteerObj = null;
 
-        // const success = await handleSniper(false, "", "", [], uid);
-
-        const success = true;
         if (success) {
             userObjs.delete(uid);
             // puppeteerObj = null;
