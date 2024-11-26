@@ -30,6 +30,10 @@ export async function callStartSniper(uid) {
             toast.error(
                 "One or more of the courses you intend to drop are courses that you are not currently enrolled in. Please update them and try again."
             );
+        } else if (msg === "Invalid add ID") {
+            toast.error(
+                "One or more of the courses you intend to add are courses that you are already enrolled in. Please remove them and try again."
+            );
         } else {
             console.error(`Error starting sniper: ${msg}`);
             toast.error("There was an error in the system. Try again later.");
