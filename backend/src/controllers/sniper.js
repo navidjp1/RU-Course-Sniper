@@ -40,9 +40,6 @@ export const startSniper = async (req, res) => {
             await user.save();
         }
 
-        // TODO: pass in user variable instead & update accordingly
-        // handleSniper(true, RUID, PAC, idObjects, uid);
-
         if (userObjs.has(uid))
             return res.status(400).json({ message: "Already sniping" });
 
@@ -76,7 +73,6 @@ export const stopSniper = async (req, res) => {
 
         if (success) {
             userObjs.delete(uid);
-            // puppeteerObj = null;
 
             const user = await userModel.findOne({ uid });
 

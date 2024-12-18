@@ -1,0 +1,20 @@
+version: "3"
+services:
+    backend:
+        build: ./backend
+        ports:
+            - "3000:3000"
+        networks:
+            - my-network
+
+    # proxy:
+    #     build: ./proxy
+    #     ports:
+    #         - "80:80"
+    #     networks:
+    #         - my-network
+    #     depends_on:
+    #         - backend
+
+networks:
+    my-network:
