@@ -3,7 +3,7 @@ import pt from "puppeteer";
 
 const url = "https://sims.rutgers.edu/webreg/pacLogin.htm";
 
-const semesterSelection = "#semesterSelection4";
+const semesterSelection = "#semesterSelection2";
 
 let browser = null;
 

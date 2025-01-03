@@ -1,6 +1,6 @@
 const url = "https://sims.rutgers.edu/webreg/pacLogin.htm";
 
-const semesterSelection = "#semesterSelection4";
+const semesterSelection = "#semesterSelection2";
 export const login = async (RUID, PAC, page) => {
     console.log("Attempting to login... -> " + RUID);
 
