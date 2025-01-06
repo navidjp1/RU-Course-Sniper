@@ -41,7 +41,13 @@ export const startSniper = async (req, res) => {
         }
 
         if (userObjs.has(uid))
-            return res.status(400).json({ message: "Already sniping" });
+            if (!isSniping) {
+                let puppeteerObj = userObjs.get(uid);
+                puppeteerObj = null;
+                userObjs.delete(uid);
+            } else {
+                return res.status(400).json({ message: "Already sniping" });
+            }
 
         const puppeteerObj = new puppeteerManager(RUID, PAC, uid, idObjects);
         puppeteerObj.startBrowser();
