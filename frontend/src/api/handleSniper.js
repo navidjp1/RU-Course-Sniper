@@ -50,7 +50,7 @@ export async function callStopSniper(uid) {
 
         return { status: 200 };
     } catch (error) {
-        console.error(`Error stopping sniper: ${error.response.data}`);
+        console.error(`Error stopping sniper: ${error.response.data.message}`);
         toast.error("There was an error in the system. Try again later.");
         return { status: error.response.status };
     }
