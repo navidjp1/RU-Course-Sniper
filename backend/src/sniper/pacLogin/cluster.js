@@ -142,6 +142,10 @@ class puppeteerManager {
         const prevRestartCount = this.restartCount;
         await this.stopBrowser();
 
+        if (this.restartCount === 3) {
+            console.log("Waiting 300 seconds...");
+            await delay(300000);
+        }
         console.log("Waiting 15 seconds...");
         await delay(15000);
         this.restartCount = prevRestartCount + 1;
