@@ -11,7 +11,7 @@ export async function register(idObject, page) {
         await page.waitForSelector(".spField, .error, .ok", { timeout: 120000 });
 
         let message = "";
-        let status = 500;
+        let status = 400;
 
         if ((await page.$(".spField")) != null) {
             const openSectionsText = await page.$eval(
@@ -26,6 +26,7 @@ export async function register(idObject, page) {
                 element.textContent.trim()
             );
             message = errorText;
+            status = 500;
         }
 
         if ((await page.$(".ok")) != null) {

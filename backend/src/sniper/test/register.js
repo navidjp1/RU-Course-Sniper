@@ -31,6 +31,10 @@ export async function register() {
     // message: "You are not eligible to take this course because you do not meet the placement requirement or have the prerequisite."
     // const id = "10770"
 
+    // major not declared yet (.error)
+    // message: "You cannot add this course. Please refer to the Schedule of Classes for course restrictions."
+    // const id = "10770"
+
     // already registered (.error)
     // message: "You are already registered for course 10745. Please refresh your schedule if the course is not currently displayed."
     // const id = "10745";

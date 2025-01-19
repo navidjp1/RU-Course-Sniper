@@ -101,7 +101,7 @@ export const removeCourse = async (req, res) => {
         }
 
         const position = id.position;
-        if (id.status !== "REGISTERED") {
+        if (id.status !== "REGISTERED" && id.status !== "ERROR") {
             await updateUserPositions(course.id, position);
         }
 
@@ -127,7 +127,7 @@ export async function updateUserPositions(courseIndex, coursePosition) {
         for (const user of usersWithCourse) {
             const idObjects = user.courseIDs;
             const id = idObjects.find((obj) => obj.add === courseIndex);
-            if (id.status === "REGISTERED") {
+            if (id.status === "REGISTERED" || id.status === "ERROR") {
                 continue;
             }
             if (id.position > coursePosition) {

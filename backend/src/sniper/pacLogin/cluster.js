@@ -35,9 +35,12 @@ class puppeteerManager {
                     console.log(`Course index: ${id} was found!`);
                     const { status, message } = await register(idObj, page);
                     console.log(message);
-                    if (status == 200) {
-                        await this.handleAfterRegister(this.uid, id);
+                    if (status == 200 || status == 500) {
+                        await this.handleAfterRegister(this.uid, id, status);
+
+                        // to do: update in user dashboard/notification tab that course has been removed from sniping list because of error.
                     }
+
                     if (this.ids.length == 0) {
                         await this.stopBrowser();
                         await this.setCoursesInactive();
@@ -52,7 +55,7 @@ class puppeteerManager {
         }
     }
 
-    async handleAfterRegister(uid, courseId) {
+    async handleAfterRegister(uid, courseId, status) {
         try {
             this.ids = this.ids.filter((obj) => obj.add !== courseId);
 
@@ -60,7 +63,7 @@ class puppeteerManager {
             const idObjects = user.courseIDs;
             const idObj = idObjects.find((obj) => obj.add === courseId);
             const oldPosition = idObj.position;
-            idObj.status = "REGISTERED";
+            idObj.status = status == 200 ? "REGISTERED" : "ERROR";
             idObj.position = -1;
             await user.save();
 

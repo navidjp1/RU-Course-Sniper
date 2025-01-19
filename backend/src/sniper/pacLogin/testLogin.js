@@ -100,7 +100,7 @@ async function getUserCurrentCourses(page) {
 
 async function checkValidAddIDs(idObjects, userCurrentCourses) {
     for (const obj of idObjects) {
-        if (obj.status === "REGISTERED") continue;
+        if (obj.status === "REGISTERED" || obj.status === "ERROR") continue;
         const addID = obj.add;
         const found = userCurrentCourses.includes(addID);
 
