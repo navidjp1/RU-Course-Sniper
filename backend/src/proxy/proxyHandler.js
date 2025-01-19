@@ -2,7 +2,7 @@ import NodeCache from "node-cache";
 import axios from "axios";
 
 const cache = new NodeCache();
-const REFRESH_INTERVAL = 15000; // 10 seconds
+const REFRESH_INTERVAL = 10000; // 10 seconds
 const CACHE_KEY = "openCourses";
 let requestCount = 0;
 let downtimeCount = 0;

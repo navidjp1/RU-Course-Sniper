@@ -214,6 +214,7 @@ class puppeteerManager {
             let timeout = (downtimeEnd - time) * 60;
             console.log(`Halting program for ${timeout} seconds.`);
             await delay(timeout * 1000);
+            this.requestCount = 1;
 
             // check whether large delay causes any issues
         }
