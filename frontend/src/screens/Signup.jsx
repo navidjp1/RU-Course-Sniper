@@ -16,20 +16,26 @@ export const Signup = () => {
 
         if (!username || !email || !password) return;
 
-        if (!password.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/)) {
+        if (
+            !password.match(
+                /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
+            )
+        ) {
             toast.warning(
-                "Make sure your password has minimum eight characters, at least one letter and one number."
+                "Password must be at least 8 characters long and contain at least one letter, one number, and one special character."
             );
             return;
         }
 
         if (!isSigningUp) {
             setIsSigningUp(true);
-            const success = await signUp(username, email, password);
+            const response = await signUp(username, email, password);
             // await new Promise((resolve) => setTimeout(resolve, 4000));
-            if (success) {
-                toast.success("Successfully signed up!");
+            if (response.status === 200) {
+                toast.success(response.message);
                 // navigate("/");
+            } else if (response.status === 500) {
+                toast.error("There was an error in the system. Try again later.");
             } else {
                 toast.info("You already have an account. Please log in.");
             }

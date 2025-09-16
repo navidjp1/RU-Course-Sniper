@@ -31,10 +31,13 @@ export const signUp = async (username, email, password) => {
         const response = await registerUser(auth.currentUser.uid);
         if (response.status !== 200) throw new Error("Error registering user in DB");
 
-        return true;
+        // Wait for an additional moment to ensure DB operations complete
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        return { status: 200, message: "Successfully signed up!" };
     } catch (error) {
         console.error("Error signing up: ", error);
-        return false;
+        return { status: 500, message: "Error signing up" };
     }
 };
 
@@ -54,8 +57,12 @@ export const signInWithGoogle = async () => {
         const user = userCredential.user;
 
         if (user.metadata.creationTime === user.metadata.lastSignInTime) {
-            const response = await registerUser(auth.currentUser.uid);
+            //const response = await registerUser(auth.currentUser.uid);
+            const response = await registerUser(user.uid);
             if (response.status !== 200) throw new Error("Error registering user in DB");
+
+            // Wait for DB operations to complete
+            await new Promise((resolve) => setTimeout(resolve, 1000));
         }
     } catch (error) {
         if (error.code === "auth/popup-closed-by-user") return;

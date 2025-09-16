@@ -22,6 +22,10 @@ export function CourseRow({ course, updateRender, isSniperRunning }) {
                 bgColor = "bg-green-200";
                 textColor = "text-green-900";
                 break;
+            case "ERROR":
+                bgColor = "bg-gray-200";
+                textColor = "text-gray-900";
+                break;
             default:
                 bgColor = "bg-gray-200";
                 textColor = "text-gray-900";
