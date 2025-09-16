@@ -4,37 +4,39 @@ An automated course registration system for Rutgers University students that hel
 
 ## 🎯 Features
 
-- **Automated Course Registration**: Continuously monitors course availability and automatically registers you when spots become available
-- **Multi-Course Support**: Add multiple courses to your sniper queue with priority ordering
-- **Drop/Add Functionality**: Automatically drop specified courses when adding new ones
-- **Real-time Dashboard**: Monitor your sniping status, course queue, and account balance
-- **Secure Authentication**: Firebase-based authentication with Google Sign-In support
-- **Dark/Light Mode**: Toggle between light and dark themes for better user experience
-- **Token-based System**: Credit-based system to manage usage
-- **Credential Management**: Securely store and encrypt your Rutgers login credentials
+-   **Automated Course Registration**: Continuously monitors course availability and automatically registers you when spots become available
+-   **Multi-Course Support**: Add multiple courses to your sniper queue with priority ordering
+-   **Drop/Add Functionality**: Automatically drop specified courses when adding new ones
+-   **Real-time Dashboard**: Monitor your sniping status, course queue, and account balance
+-   **Secure Authentication**: Firebase-based authentication with Google Sign-In support
+-   **Dark/Light Mode**: Toggle between light and dark themes for better user experience
+-   **Token-based System**: Credit-based system to manage usage
+-   **Credential Management**: Securely store and encrypt your Rutgers login credentials
 
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **React 18** with Vite
-- **Tailwind CSS** for styling
-- **Firebase Authentication**
-- **React Router** for navigation
-- **Axios** for API calls
-- **Sonner** for toast notifications
+
+-   **React 18** with Vite
+-   **Tailwind CSS** for styling
+-   **Firebase Authentication**
+-   **React Router** for navigation
+-   **Axios** for API calls
+-   **Sonner** for toast notifications
 
 ### Backend
-- **Node.js** with Express
-- **MongoDB** with Mongoose
-- **Puppeteer** for web automation
-- **Firebase Admin** for authentication
-- **Python** web scraper for course data
+
+-   **Node.js** with Express
+-   **MongoDB** with Mongoose
+-   **Puppeteer** for web automation
+-   **Firebase Admin** for authentication
+-   **Python** web scraper for course data
 
 ### Infrastructure
-- **Docker** containerization
-- **Docker Compose** for orchestration
-- **Vercel** for frontend deployment
 
+-   **Docker** containerization
+-   **Docker Compose** for orchestration
+-   **Vercel** for frontend deployment
 
 ## 📱 Usage
 
@@ -48,9 +50,9 @@ An automated course registration system for Rutgers University students that hel
 
 ## 🔒 Security
 
-- All user credentials are encrypted before storage
-- Firebase handles authentication securely
-- CORS protection for API endpoints
+-   All user credentials are encrypted before storage
+-   Firebase handles authentication securely
+-   CORS protection for API endpoints
 
 ## ⚠️ Disclaimer
 
