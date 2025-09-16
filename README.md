@@ -58,12 +58,4 @@ An automated course registration system for Rutgers University students that hel
 
 This tool is for educational purposes only. Users are responsible for complying with Rutgers University's terms of service and academic policies. Use at your own risk.
 
-## 📄 License
-
-This project is licensed under the ISC License.
-
-## 📞 Support
-
-If you encounter any issues or have questions, please open an issue on GitHub.
-
 ---
