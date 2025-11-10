@@ -9,6 +9,7 @@ from scraper import runScraper
 '''
 To Run:
 Move to webscraper directory
+Ensure chromedriver is updated to same version as chrome browser
 
 In terminal:
 source venv/bin/activate 

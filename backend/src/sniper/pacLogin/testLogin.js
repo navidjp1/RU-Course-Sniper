@@ -1,9 +1,6 @@
 import "dotenv/config";
 import pt from "puppeteer";
-
-const url = "https://sims.rutgers.edu/webreg/pacLogin.htm";
-
-const semesterSelection = "#semesterSelection2";
+import { URL, SEMESTER_SELECTION } from "./const.js";
 
 let browser = null;
 
@@ -16,10 +13,11 @@ export async function testLogin(RUID, PAC, idObjects) {
                 process.env.NODE_ENV === "production"
                     ? process.env.PUPPETEER_EXECUTABLE_PATH
                     : pt.executablePath(),
+            headless: process.env.NODE_ENV === "production" ? true : false,
         });
         let page = await browser.newPage();
 
-        await page.goto(url);
+        await page.goto(URL);
 
         await page.waitForSelector("#j_username");
         await page.type("#j_username", RUID, { delay: 100 });
@@ -30,15 +28,15 @@ export async function testLogin(RUID, PAC, idObjects) {
         await page.waitForSelector("#submit");
         await page.click("#submit");
 
-        await page.waitForSelector(`.errors, ${semesterSelection}`);
+        await page.waitForSelector(`.errors, ${SEMESTER_SELECTION}`);
 
         if ((await page.$(".errors")) != null) {
             console.log("Login failed for RUID: " + RUID);
             await browser.close();
             return "Invalid login credentials";
         }
-        await page.waitForSelector(semesterSelection);
-        await page.click(semesterSelection);
+        await page.waitForSelector(SEMESTER_SELECTION);
+        await page.click(SEMESTER_SELECTION);
 
         const submit = await page.waitForSelector("#submit");
         await submit.click();

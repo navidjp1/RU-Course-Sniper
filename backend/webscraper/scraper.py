@@ -16,7 +16,7 @@ def runScraper(code):
     chrome_options.add_argument("--headless=new")
     driver = webdriver.Chrome(service=service, options=chrome_options)
 
-    semester = '12025'
+    semester = '12026'
     campus = 'NB'
     level = 'U'
     # update above values based on desired attributes

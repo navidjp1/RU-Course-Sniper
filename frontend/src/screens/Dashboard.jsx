@@ -70,7 +70,7 @@ export const Dashboard = () => {
                             <div className="flex flex-row w-full gap-x-12">
                                 <div className="justify-start w-3/5 text-left text-platinum">
                                     <h2 className="text-3xl font-bold tracking-tight ">
-                                        Your Courses - Spring 2025
+                                        Your Courses - Spring 2026
                                     </h2>
                                     <p className="pb-8 mt-3 text-lg leading-8">
                                         You currently have{" "}
@@ -81,21 +81,6 @@ export const Dashboard = () => {
                                     </p>
                                 </div>
                                 <div className="flex flex-row items-center w-2/5 lg:p-4 place-content-center gap-x-1 lg:gap-x-4">
-                                    <button
-                                        className={`w-48 h-12 lg:text-xl font-bold text-center text-rich-black  rounded-md outline-none ${
-                                            hidden
-                                                ? "bg-transparent border-transparent"
-                                                : isSniperRunning
-                                                ? "bg-red-500 hover:bg-red-800"
-                                                : "bg-platinum hover:bg-midnight-green hover:text-platinum"
-                                        }`}
-                                        onClick={(e) => handleSniper(e)}
-                                        type="button"
-                                        disabled={disabled}
-                                        hidden={hidden}
-                                    >
-                                        {!isSniperRunning ? "Start" : "Stop"} Sniping
-                                    </button>
                                     <button
                                         className={`w-48 h-12 lg:text-xl font-bold text-center text-rich-black rounded-md outline-none bg-platinum  ${
                                             isSniperRunning
@@ -113,6 +98,22 @@ export const Dashboard = () => {
                                     >
                                         Add Course
                                     </button>
+                                    <button
+                                        className={`w-48 h-12 lg:text-xl font-bold text-center text-rich-black  rounded-md outline-none ${
+                                            hidden
+                                                ? "bg-transparent border-transparent"
+                                                : isSniperRunning
+                                                ? "bg-red-500 hover:bg-red-800"
+                                                : "bg-platinum hover:bg-midnight-green hover:text-platinum"
+                                        }`}
+                                        onClick={(e) => handleSniper(e)}
+                                        type="button"
+                                        disabled={disabled}
+                                        hidden={hidden}
+                                    >
+                                        {!isSniperRunning ? "Start" : "Stop"} Sniping
+                                    </button>
+
                                     <AddCourseModal
                                         isOpen={isCourseModalOpen}
                                         onClose={() => setIsCourseModalOpen(false)}

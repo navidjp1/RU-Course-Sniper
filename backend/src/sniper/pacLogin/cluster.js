@@ -7,8 +7,6 @@ import { register } from "./snipe.js";
 import { updateUserPositions } from "../../controllers/courses.js";
 import { getCachedCourses } from "../../proxy/proxyHandler.js";
 
-const url = "https://sims.rutgers.edu/webreg/pacLogin.htm";
-
 class puppeteerManager {
     constructor(RUID, PAC, uid, idObjects) {
         this.RUID = RUID;
@@ -88,6 +86,7 @@ class puppeteerManager {
                 process.env.NODE_ENV === "production"
                     ? process.env.PUPPETEER_EXECUTABLE_PATH
                     : pt.executablePath(),
+            headless: process.env.NODE_ENV === "production" ? true : false,
         });
 
         this.browser = browser;

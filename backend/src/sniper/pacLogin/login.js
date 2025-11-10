@@ -1,11 +1,10 @@
-const url = "https://sims.rutgers.edu/webreg/pacLogin.htm";
+import { URL, SEMESTER_SELECTION } from "./const.js";
 
-const semesterSelection = "#semesterSelection2";
 export const login = async (RUID, PAC, page) => {
     console.log("Attempting to login... -> " + RUID);
 
     try {
-        await page.goto(url);
+        await page.goto(URL);
 
         await page.waitForSelector("#j_username");
         await page.type("#j_username", RUID, { delay: 100 });
@@ -16,8 +15,8 @@ export const login = async (RUID, PAC, page) => {
         await page.waitForSelector("#submit");
         await page.click("#submit");
 
-        await page.waitForSelector(semesterSelection);
-        await page.click(semesterSelection); // change depending on semester
+        await page.waitForSelector(SEMESTER_SELECTION);
+        await page.click(SEMESTER_SELECTION); // change depending on semester
 
         const submit = await page.waitForSelector("#submit");
         await submit.click();
@@ -47,7 +46,7 @@ export const logout = async (page) => {
         await page.waitForSelector("#logout a");
         await page.click("#logout a");
 
-        await page.goto(url);
+        await page.goto(URL);
         return { status: 200, message: "Successfully logged out!" };
     } catch (error) {
         console.log("Error logging out -> " + error);
