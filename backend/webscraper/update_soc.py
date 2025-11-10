@@ -11,7 +11,7 @@ To Run:
 Move to webscraper directory
 
 In terminal:
-source webscraperVenv/bin/activate 
+source venv/bin/activate 
 python3 update_soc.py
 
 To Exit: 
@@ -44,7 +44,7 @@ df = df.astype(str)
 
 MONGO_URI = os.getenv('MONGO_URI')
 DATABASE_NAME = 'main'
-COLLECTION_NAME = 'Spring-2025' # change based on desired semester
+COLLECTION_NAME = 'Spring-2026' # change based on desired semester
 
 
 try:

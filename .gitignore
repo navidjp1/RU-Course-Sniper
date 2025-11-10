@@ -4,7 +4,9 @@ credentials.json
 
 # Backend:
 /node_modules
-
+chromedriver
+venv
+__pycache__
 
 # Frontend
 # Logs
