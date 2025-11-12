@@ -20,7 +20,7 @@ async function fetchCoursesAndCache() {
             const response = await axios.request({
                 method: "GET",
                 url: "https://classes.rutgers.edu/soc/api/openSections.json",
-                params: { year: "2025", term: "1", campus: "NB" },
+                params: { year: "2026", term: "1", campus: "NB" },
             });
 
             const courses = response.data;
