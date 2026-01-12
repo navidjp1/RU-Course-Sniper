@@ -1,4 +1,4 @@
-import { URL, SEMESTER_SELECTION } from "./const.js";
+import { URL, getSemesterSelector } from "./const.js";
 
 export const login = async (RUID, PAC, page) => {
     console.log("Attempting to login... -> " + RUID);
@@ -15,8 +15,12 @@ export const login = async (RUID, PAC, page) => {
         await page.waitForSelector("#submit");
         await page.click("#submit");
 
+        await page.waitForSelector(".semesterInputClass");
+
+        const SEMESTER_SELECTION = await getSemesterSelector(page);
+
         await page.waitForSelector(SEMESTER_SELECTION);
-        await page.click(SEMESTER_SELECTION); // change depending on semester
+        await page.click(SEMESTER_SELECTION);
 
         const submit = await page.waitForSelector("#submit");
         await submit.click();

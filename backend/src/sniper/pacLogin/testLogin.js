@@ -1,6 +1,6 @@
 import "dotenv/config";
 import pt from "puppeteer";
-import { URL, SEMESTER_SELECTION } from "./const.js";
+import { URL, getSemesterSelector } from "./const.js";
 
 let browser = null;
 
@@ -28,13 +28,16 @@ export async function testLogin(RUID, PAC, idObjects) {
         await page.waitForSelector("#submit");
         await page.click("#submit");
 
-        await page.waitForSelector(`.errors, ${SEMESTER_SELECTION}`);
+        await page.waitForSelector(".errors, .semesterInputClass");
 
         if ((await page.$(".errors")) != null) {
             console.log("Login failed for RUID: " + RUID);
             await browser.close();
             return "Invalid login credentials";
         }
+
+        const SEMESTER_SELECTION = await getSemesterSelector(page);
+
         await page.waitForSelector(SEMESTER_SELECTION);
         await page.click(SEMESTER_SELECTION);
 
