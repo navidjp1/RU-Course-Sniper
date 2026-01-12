@@ -9,11 +9,12 @@ export async function testLogin(RUID, PAC, idObjects) {
 
     try {
         browser = await pt.launch({
+            // headless: process.env.NODE_ENV === "production" ? true : false,
+            headless: true,
             executablePath:
                 process.env.NODE_ENV === "production"
                     ? process.env.PUPPETEER_EXECUTABLE_PATH
                     : pt.executablePath(),
-            headless: process.env.NODE_ENV === "production" ? true : false,
         });
         let page = await browser.newPage();
 

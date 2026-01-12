@@ -81,11 +81,12 @@ class puppeteerManager {
         console.log("Starting sniper browser for RUID: " + this.RUID);
 
         const browser = await pt.launch({
+            // headless: process.env.NODE_ENV === "production" ? true : false,
+            headless: true,
             executablePath:
                 process.env.NODE_ENV === "production"
                     ? process.env.PUPPETEER_EXECUTABLE_PATH
                     : pt.executablePath(),
-            headless: process.env.NODE_ENV === "production" ? true : false,
         });
 
         this.browser = browser;
